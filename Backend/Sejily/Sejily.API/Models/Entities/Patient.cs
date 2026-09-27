@@ -20,4 +20,6 @@ public class Patient
 
     public ICollection<GuardianPatient> Guardians { get; set; }
         = new List<GuardianPatient>();
+    public ICollection<GuardianPatient> Dependents { get; set; }
+           = new List<GuardianPatient>();
 }

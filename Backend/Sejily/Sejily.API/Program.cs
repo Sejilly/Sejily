@@ -1,42 +1,93 @@
-
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Sejily.API.Data;
+using Sejily.API.Models.Entities;
+using System.Text;
 
-namespace Sejily.API
+namespace Sejily.API;
+
+public class Program
 {
-    public class Program
+    public static void Main(string[] args)
     {
-        public static void Main(string[] args)
-        {
-            var builder = WebApplication.CreateBuilder(args);
+        // 1. Create the application builder
+        var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
-
-            builder.Services.AddControllers();
-            // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-
-            builder.Services.AddDbContext<SejilyDbContext>(options =>
+        // 2. Register DbContext
+        builder.Services.AddDbContext<SejilyDbContext>(options =>
             options.UseSqlServer(
-            builder.Configuration.GetConnectionString("DefaultConnection")));
+                builder.Configuration.GetConnectionString("DefaultConnection")));
 
-            builder.Services.AddOpenApi();
+        // 3. Register ASP.NET Core Identity
+        builder.Services
+            .AddIdentity<User, IdentityRole<int>>()
+            .AddEntityFrameworkStores<SejilyDbContext>()
+            .AddDefaultTokenProviders();
 
-            var app = builder.Build();
-
-            // Configure the HTTP request pipeline.
-            if (app.Environment.IsDevelopment())
+        // 4. Configure JWT Authentication
+        builder.Services
+            .AddAuthentication(options =>
             {
-                app.MapOpenApi();
-            }
+                options.DefaultAuthenticateScheme =
+                    JwtBearerDefaults.AuthenticationScheme;
 
-            app.UseHttpsRedirection();
+                options.DefaultChallengeScheme =
+                    JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters =
+                    new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
 
-            app.UseAuthorization();
+                        ValidIssuer =
+                            builder.Configuration["Jwt:Issuer"],
+
+                        ValidAudience =
+                            builder.Configuration["Jwt:Audience"],
+
+                        IssuerSigningKey =
+                            new SymmetricSecurityKey(
+                                Encoding.UTF8.GetBytes(
+                                    builder.Configuration["Jwt:Key"]!))
+                    };
+            });
+
+        // 5. Register Controllers
+        builder.Services.AddControllers();
+
+        // 6. Swagger
+        builder.Services.AddEndpointsApiExplorer();
+        builder.Services.AddSwaggerGen();
 
 
-            app.MapControllers();
+        // 7. Build the application
+        var app = builder.Build();
 
-            app.Run();
+
+        // 8. Configure HTTP request pipeline
+        if (app.Environment.IsDevelopment())
+        {
+            app.UseSwagger();
+            app.UseSwaggerUI();
         }
+
+        app.UseHttpsRedirection();
+
+        app.UseAuthentication();
+
+        app.UseAuthorization();
+
+        app.MapControllers();
+
+
+        // 9. Run the application
+        app.Run();
     }
 }

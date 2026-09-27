@@ -1,11 +1,15 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Sejily.API.Models.Entities;
 
 namespace Sejily.API.Data;
 
-public class SejilyDbContext : DbContext
+public class SejilyDbContext
+    : IdentityDbContext<User, IdentityRole<int>, int>
 {
-    public SejilyDbContext(DbContextOptions<SejilyDbContext> options)
+    public SejilyDbContext(
+        DbContextOptions<SejilyDbContext> options)
         : base(options)
     {
     }
@@ -14,48 +18,30 @@ public class SejilyDbContext : DbContext
     // DbSets
     // =========================
 
-    public DbSet<User> Users { get; set; }
-
     public DbSet<Patient> Patients { get; set; }
-
     public DbSet<Doctor> Doctors { get; set; }
 
-    public DbSet<Guardian> Guardians { get; set; }
-
     public DbSet<ChronicDisease> ChronicDiseases { get; set; }
-
     public DbSet<Allergy> Allergies { get; set; }
-
     public DbSet<Medication> Medications { get; set; }
 
     public DbSet<Workplace> Workplaces { get; set; }
-
     public DbSet<DoctorWorkplace> DoctorWorkplaces { get; set; }
 
     public DbSet<GuardianPatient> GuardianPatients { get; set; }
 
     public DbSet<PatientChronicDisease> PatientChronicDiseases { get; set; }
-
     public DbSet<PatientAllergy> PatientAllergies { get; set; }
-
     public DbSet<PatientFrequentMedication> PatientFrequentMedications { get; set; }
 
-
-    // =========================
-    // Model Configuration
-    // =========================
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
 
-
         // =========================
         // User
         // =========================
-
-        modelBuilder.Entity<User>()
-            .HasKey(u => u.UserId);
 
         modelBuilder.Entity<User>()
             .Property(u => u.NationalID)
@@ -74,15 +60,6 @@ public class SejilyDbContext : DbContext
         modelBuilder.Entity<User>()
             .Property(u => u.Address)
             .HasMaxLength(500)
-            .IsRequired();
-
-        modelBuilder.Entity<User>()
-            .Property(u => u.Phone)
-            .HasMaxLength(20)
-            .IsRequired();
-
-        modelBuilder.Entity<User>()
-            .Property(u => u.PasswordHash)
             .IsRequired();
 
 
@@ -143,20 +120,6 @@ public class SejilyDbContext : DbContext
             .HasOne(d => d.User)
             .WithOne(u => u.Doctor)
             .HasForeignKey<Doctor>(d => d.UserId)
-            .OnDelete(DeleteBehavior.Cascade);
-
-
-        // =========================
-        // Guardian
-        // =========================
-
-        modelBuilder.Entity<Guardian>()
-            .HasKey(g => g.UserId);
-
-        modelBuilder.Entity<Guardian>()
-            .HasOne(g => g.User)
-            .WithOne(u => u.Guardian)
-            .HasForeignKey<Guardian>(g => g.UserId)
             .OnDelete(DeleteBehavior.Cascade);
 
 
@@ -243,22 +206,15 @@ public class SejilyDbContext : DbContext
         // DoctorWorkplace
         // =========================
 
-        // Composite Primary Key
         modelBuilder.Entity<DoctorWorkplace>()
-            .HasKey(dw => new
-            {
-                dw.DoctorId,
-                dw.WorkplaceId
-            });
+            .HasKey(dw => new { dw.DoctorId, dw.WorkplaceId });
 
-        // Doctor -> DoctorWorkplace
         modelBuilder.Entity<DoctorWorkplace>()
             .HasOne(dw => dw.Doctor)
             .WithMany(d => d.Workplaces)
             .HasForeignKey(dw => dw.DoctorId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        // Workplace -> DoctorWorkplace
         modelBuilder.Entity<DoctorWorkplace>()
             .HasOne(dw => dw.Workplace)
             .WithMany(w => w.Doctors)
@@ -270,49 +226,37 @@ public class SejilyDbContext : DbContext
         // GuardianPatient
         // =========================
 
-        // Composite Primary Key
         modelBuilder.Entity<GuardianPatient>()
-            .HasKey(gp => new
-            {
-                gp.GuardianId,
-                gp.PatientId
-            });
+            .HasKey(gp => new { gp.GuardianId, gp.PatientId });
 
-        // Guardian -> GuardianPatient
+        // Guardian side
         modelBuilder.Entity<GuardianPatient>()
             .HasOne(gp => gp.Guardian)
-            .WithMany(g => g.Patients)
+            .WithMany(p => p.Dependents)
             .HasForeignKey(gp => gp.GuardianId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.NoAction);
 
-        // Patient -> GuardianPatient
+        // Patient side
         modelBuilder.Entity<GuardianPatient>()
             .HasOne(gp => gp.Patient)
             .WithMany(p => p.Guardians)
             .HasForeignKey(gp => gp.PatientId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.NoAction);
 
 
         // =========================
         // PatientChronicDisease
         // =========================
 
-        // Composite Primary Key
         modelBuilder.Entity<PatientChronicDisease>()
-            .HasKey(pcd => new
-            {
-                pcd.PatientId,
-                pcd.DiseaseId
-            });
+            .HasKey(pcd => new { pcd.PatientId, pcd.DiseaseId });
 
-        // Patient -> PatientChronicDisease
         modelBuilder.Entity<PatientChronicDisease>()
             .HasOne(pcd => pcd.Patient)
             .WithMany(p => p.ChronicDiseases)
             .HasForeignKey(pcd => pcd.PatientId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        // ChronicDisease -> PatientChronicDisease
         modelBuilder.Entity<PatientChronicDisease>()
             .HasOne(pcd => pcd.Disease)
             .WithMany(d => d.Patients)
@@ -324,22 +268,15 @@ public class SejilyDbContext : DbContext
         // PatientAllergy
         // =========================
 
-        // Composite Primary Key
         modelBuilder.Entity<PatientAllergy>()
-            .HasKey(pa => new
-            {
-                pa.PatientId,
-                pa.AllergyId
-            });
+            .HasKey(pa => new { pa.PatientId, pa.AllergyId });
 
-        // Patient -> PatientAllergy
         modelBuilder.Entity<PatientAllergy>()
             .HasOne(pa => pa.Patient)
             .WithMany(p => p.Allergies)
             .HasForeignKey(pa => pa.PatientId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        // Allergy -> PatientAllergy
         modelBuilder.Entity<PatientAllergy>()
             .HasOne(pa => pa.Allergy)
             .WithMany(a => a.Patients)
@@ -351,22 +288,15 @@ public class SejilyDbContext : DbContext
         // PatientFrequentMedication
         // =========================
 
-        // Composite Primary Key
         modelBuilder.Entity<PatientFrequentMedication>()
-            .HasKey(pfm => new
-            {
-                pfm.PatientId,
-                pfm.MedicationId
-            });
+            .HasKey(pfm => new { pfm.PatientId, pfm.MedicationId });
 
-        // Patient -> PatientFrequentMedication
         modelBuilder.Entity<PatientFrequentMedication>()
             .HasOne(pfm => pfm.Patient)
             .WithMany(p => p.FrequentMedications)
             .HasForeignKey(pfm => pfm.PatientId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        // Medication -> PatientFrequentMedication
         modelBuilder.Entity<PatientFrequentMedication>()
             .HasOne(pfm => pfm.Medication)
             .WithMany(m => m.Patients)

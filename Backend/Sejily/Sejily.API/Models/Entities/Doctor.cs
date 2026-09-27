@@ -20,6 +20,5 @@ public class Doctor
     public ICollection<DoctorWorkplace> Workplaces { get; set; }
         = new List<DoctorWorkplace>();
 
-    public ICollection<GuardianPatient> GuardianPatients { get; set; }
-        = new List<GuardianPatient>();
+    
 }

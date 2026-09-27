@@ -14,7 +14,7 @@ public class GuardianPatient
 
     public DateTime? VerifiedAt { get; set; }
 
-    public Guardian Guardian { get; set; } = null!;
+    public Patient Guardian { get; set; } = null!;
 
     public Patient Patient { get; set; } = null!;
 }

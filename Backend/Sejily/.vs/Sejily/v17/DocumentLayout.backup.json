@@ -3,80 +3,12 @@
   "WorkspaceRootPath": "D:\\C#project\\Sejily\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{0CD4CBEC-41D5-4CD6-B4CD-82BCAA723EB2}|Sejily.API\\Sejily.API.csproj|d:\\c#project\\sejily\\sejily.api\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
-      "RelativeMoniker": "D:0:0:{0CD4CBEC-41D5-4CD6-B4CD-82BCAA723EB2}|Sejily.API\\Sejily.API.csproj|solutionrelative:sejily.api\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{0CD4CBEC-41D5-4CD6-B4CD-82BCAA723EB2}|Sejily.API\\Sejily.API.csproj|d:\\c#project\\sejily\\sejily.api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{0CD4CBEC-41D5-4CD6-B4CD-82BCAA723EB2}|Sejily.API\\Sejily.API.csproj|solutionrelative:sejily.api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{0CD4CBEC-41D5-4CD6-B4CD-82BCAA723EB2}|Sejily.API\\Sejily.API.csproj|d:\\c#project\\sejily\\sejily.api\\data\\sejilydbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{0CD4CBEC-41D5-4CD6-B4CD-82BCAA723EB2}|Sejily.API\\Sejily.API.csproj|solutionrelative:sejily.api\\data\\sejilydbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{0CD4CBEC-41D5-4CD6-B4CD-82BCAA723EB2}|Sejily.API\\Sejily.API.csproj|d:\\c#project\\sejily\\sejily.api\\models\\entities\\guardianpatient.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{0CD4CBEC-41D5-4CD6-B4CD-82BCAA723EB2}|Sejily.API\\Sejily.API.csproj|solutionrelative:sejily.api\\models\\entities\\guardianpatient.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{0CD4CBEC-41D5-4CD6-B4CD-82BCAA723EB2}|Sejily.API\\Sejily.API.csproj|d:\\c#project\\sejily\\sejily.api\\models\\entities\\doctorworkplace.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{0CD4CBEC-41D5-4CD6-B4CD-82BCAA723EB2}|Sejily.API\\Sejily.API.csproj|solutionrelative:sejily.api\\models\\entities\\doctorworkplace.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{0CD4CBEC-41D5-4CD6-B4CD-82BCAA723EB2}|Sejily.API\\Sejily.API.csproj|d:\\c#project\\sejily\\sejily.api\\models\\entities\\workplace.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{0CD4CBEC-41D5-4CD6-B4CD-82BCAA723EB2}|Sejily.API\\Sejily.API.csproj|solutionrelative:sejily.api\\models\\entities\\workplace.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{0CD4CBEC-41D5-4CD6-B4CD-82BCAA723EB2}|Sejily.API\\Sejily.API.csproj|d:\\c#project\\sejily\\sejily.api\\models\\entities\\guardian.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{0CD4CBEC-41D5-4CD6-B4CD-82BCAA723EB2}|Sejily.API\\Sejily.API.csproj|solutionrelative:sejily.api\\models\\entities\\guardian.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{0CD4CBEC-41D5-4CD6-B4CD-82BCAA723EB2}|Sejily.API\\Sejily.API.csproj|d:\\c#project\\sejily\\sejily.api\\models\\entities\\doctor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{0CD4CBEC-41D5-4CD6-B4CD-82BCAA723EB2}|Sejily.API\\Sejily.API.csproj|solutionrelative:sejily.api\\models\\entities\\doctor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{0CD4CBEC-41D5-4CD6-B4CD-82BCAA723EB2}|Sejily.API\\Sejily.API.csproj|d:\\c#project\\sejily\\sejily.api\\models\\entities\\patientallergy.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{0CD4CBEC-41D5-4CD6-B4CD-82BCAA723EB2}|Sejily.API\\Sejily.API.csproj|solutionrelative:sejily.api\\models\\entities\\patientallergy.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{0CD4CBEC-41D5-4CD6-B4CD-82BCAA723EB2}|Sejily.API\\Sejily.API.csproj|d:\\c#project\\sejily\\sejily.api\\models\\entities\\patientchronicdisease.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{0CD4CBEC-41D5-4CD6-B4CD-82BCAA723EB2}|Sejily.API\\Sejily.API.csproj|solutionrelative:sejily.api\\models\\entities\\patientchronicdisease.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{0CD4CBEC-41D5-4CD6-B4CD-82BCAA723EB2}|Sejily.API\\Sejily.API.csproj|d:\\c#project\\sejily\\sejily.api\\models\\entities\\patientfrequentmedication.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{0CD4CBEC-41D5-4CD6-B4CD-82BCAA723EB2}|Sejily.API\\Sejily.API.csproj|solutionrelative:sejily.api\\models\\entities\\patientfrequentmedication.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{0CD4CBEC-41D5-4CD6-B4CD-82BCAA723EB2}|Sejily.API\\Sejily.API.csproj|d:\\c#project\\sejily\\sejily.api\\models\\entities\\medication.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{0CD4CBEC-41D5-4CD6-B4CD-82BCAA723EB2}|Sejily.API\\Sejily.API.csproj|solutionrelative:sejily.api\\models\\entities\\medication.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{0CD4CBEC-41D5-4CD6-B4CD-82BCAA723EB2}|Sejily.API\\Sejily.API.csproj|d:\\c#project\\sejily\\sejily.api\\models\\entities\\allergy.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{0CD4CBEC-41D5-4CD6-B4CD-82BCAA723EB2}|Sejily.API\\Sejily.API.csproj|solutionrelative:sejily.api\\models\\entities\\allergy.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{0CD4CBEC-41D5-4CD6-B4CD-82BCAA723EB2}|Sejily.API\\Sejily.API.csproj|d:\\c#project\\sejily\\sejily.api\\models\\entities\\chronicdisease.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{0CD4CBEC-41D5-4CD6-B4CD-82BCAA723EB2}|Sejily.API\\Sejily.API.csproj|solutionrelative:sejily.api\\models\\entities\\chronicdisease.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{0CD4CBEC-41D5-4CD6-B4CD-82BCAA723EB2}|Sejily.API\\Sejily.API.csproj|d:\\c#project\\sejily\\sejily.api\\models\\entities\\patient.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{0CD4CBEC-41D5-4CD6-B4CD-82BCAA723EB2}|Sejily.API\\Sejily.API.csproj|solutionrelative:sejily.api\\models\\entities\\patient.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{0CD4CBEC-41D5-4CD6-B4CD-82BCAA723EB2}|Sejily.API\\Sejily.API.csproj|d:\\c#project\\sejily\\sejily.api\\models\\entities\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{0CD4CBEC-41D5-4CD6-B4CD-82BCAA723EB2}|Sejily.API\\Sejily.API.csproj|solutionrelative:sejily.api\\models\\entities\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{0CD4CBEC-41D5-4CD6-B4CD-82BCAA723EB2}|Sejily.API\\Sejily.API.csproj|d:\\c#project\\sejily\\sejily.api\\models\\enums\\verificationstatus.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{0CD4CBEC-41D5-4CD6-B4CD-82BCAA723EB2}|Sejily.API\\Sejily.API.csproj|solutionrelative:sejily.api\\models\\enums\\verificationstatus.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{0CD4CBEC-41D5-4CD6-B4CD-82BCAA723EB2}|Sejily.API\\Sejily.API.csproj|d:\\c#project\\sejily\\sejily.api\\models\\enums\\relationshiptype.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{0CD4CBEC-41D5-4CD6-B4CD-82BCAA723EB2}|Sejily.API\\Sejily.API.csproj|solutionrelative:sejily.api\\models\\enums\\relationshiptype.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{0CD4CBEC-41D5-4CD6-B4CD-82BCAA723EB2}|Sejily.API\\Sejily.API.csproj|d:\\c#project\\sejily\\sejily.api\\models\\enums\\bloodtype.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{0CD4CBEC-41D5-4CD6-B4CD-82BCAA723EB2}|Sejily.API\\Sejily.API.csproj|solutionrelative:sejily.api\\models\\enums\\bloodtype.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{0CD4CBEC-41D5-4CD6-B4CD-82BCAA723EB2}|Sejily.API\\Sejily.API.csproj|d:\\c#project\\sejily\\sejily.api\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{0CD4CBEC-41D5-4CD6-B4CD-82BCAA723EB2}|Sejily.API\\Sejily.API.csproj|solutionrelative:sejily.api\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
     }
   ],
   "DocumentGroupContainers": [
@@ -86,7 +18,7 @@
       "DocumentGroups": [
         {
           "DockedHeight": 200,
-          "SelectedChildIndex": 4,
+          "SelectedChildIndex": 3,
           "Children": [
             {
               "$type": "Bookmark",
@@ -102,20 +34,20 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 0,
               "Title": "Program.cs",
               "DocumentMoniker": "D:\\C#project\\Sejily\\Sejily.API\\Program.cs",
               "RelativeDocumentMoniker": "Sejily.API\\Program.cs",
               "ToolTip": "D:\\C#project\\Sejily\\Sejily.API\\Program.cs",
               "RelativeToolTip": "Sejily.API\\Program.cs",
-              "ViewState": "AgIAAAMAAAAAAAAAAAAAABEAAABFAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAEsAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-09-26T04:20:43.398Z",
+              "WhenOpened": "2026-09-27T12:39:03.823Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
               "Title": "appsettings.json",
               "DocumentMoniker": "D:\\C#project\\Sejily\\Sejily.API\\appsettings.json",
               "RelativeDocumentMoniker": "Sejily.API\\appsettings.json",
@@ -124,227 +56,6 @@
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
               "WhenOpened": "2026-09-26T04:16:31.729Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "SejilyDbContext.cs",
-              "DocumentMoniker": "D:\\C#project\\Sejily\\Sejily.API\\Data\\SejilyDbContext.cs",
-              "RelativeDocumentMoniker": "Sejily.API\\Data\\SejilyDbContext.cs",
-              "ToolTip": "D:\\C#project\\Sejily\\Sejily.API\\Data\\SejilyDbContext.cs",
-              "RelativeToolTip": "Sejily.API\\Data\\SejilyDbContext.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAHcBAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-09-26T04:09:56.336Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "GuardianPatient.cs",
-              "DocumentMoniker": "D:\\C#project\\Sejily\\Sejily.API\\Models\\Entities\\GuardianPatient.cs",
-              "RelativeDocumentMoniker": "Sejily.API\\Models\\Entities\\GuardianPatient.cs",
-              "ToolTip": "D:\\C#project\\Sejily\\Sejily.API\\Models\\Entities\\GuardianPatient.cs",
-              "RelativeToolTip": "Sejily.API\\Models\\Entities\\GuardianPatient.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABMAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-09-26T04:09:30.893Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "DoctorWorkplace.cs",
-              "DocumentMoniker": "D:\\C#project\\Sejily\\Sejily.API\\Models\\Entities\\DoctorWorkplace.cs",
-              "RelativeDocumentMoniker": "Sejily.API\\Models\\Entities\\DoctorWorkplace.cs",
-              "ToolTip": "D:\\C#project\\Sejily\\Sejily.API\\Models\\Entities\\DoctorWorkplace.cs",
-              "RelativeToolTip": "Sejily.API\\Models\\Entities\\DoctorWorkplace.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-09-26T04:09:05.189Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "Workplace.cs",
-              "DocumentMoniker": "D:\\C#project\\Sejily\\Sejily.API\\Models\\Entities\\Workplace.cs",
-              "RelativeDocumentMoniker": "Sejily.API\\Models\\Entities\\Workplace.cs",
-              "ToolTip": "D:\\C#project\\Sejily\\Sejily.API\\Models\\Entities\\Workplace.cs",
-              "RelativeToolTip": "Sejily.API\\Models\\Entities\\Workplace.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-09-26T04:08:40.702Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "Guardian.cs",
-              "DocumentMoniker": "D:\\C#project\\Sejily\\Sejily.API\\Models\\Entities\\Guardian.cs",
-              "RelativeDocumentMoniker": "Sejily.API\\Models\\Entities\\Guardian.cs",
-              "ToolTip": "D:\\C#project\\Sejily\\Sejily.API\\Models\\Entities\\Guardian.cs",
-              "RelativeToolTip": "Sejily.API\\Models\\Entities\\Guardian.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-09-26T04:08:15.777Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "Doctor.cs",
-              "DocumentMoniker": "D:\\C#project\\Sejily\\Sejily.API\\Models\\Entities\\Doctor.cs",
-              "RelativeDocumentMoniker": "Sejily.API\\Models\\Entities\\Doctor.cs",
-              "ToolTip": "D:\\C#project\\Sejily\\Sejily.API\\Models\\Entities\\Doctor.cs",
-              "RelativeToolTip": "Sejily.API\\Models\\Entities\\Doctor.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABgAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-09-26T04:07:40.422Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 10,
-              "Title": "PatientFrequentMedication.cs",
-              "DocumentMoniker": "D:\\C#project\\Sejily\\Sejily.API\\Models\\Entities\\PatientFrequentMedication.cs",
-              "RelativeDocumentMoniker": "Sejily.API\\Models\\Entities\\PatientFrequentMedication.cs",
-              "ToolTip": "D:\\C#project\\Sejily\\Sejily.API\\Models\\Entities\\PatientFrequentMedication.cs",
-              "RelativeToolTip": "Sejily.API\\Models\\Entities\\PatientFrequentMedication.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-09-26T04:06:11.334Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 9,
-              "Title": "PatientChronicDisease.cs",
-              "DocumentMoniker": "D:\\C#project\\Sejily\\Sejily.API\\Models\\Entities\\PatientChronicDisease.cs",
-              "RelativeDocumentMoniker": "Sejily.API\\Models\\Entities\\PatientChronicDisease.cs",
-              "ToolTip": "D:\\C#project\\Sejily\\Sejily.API\\Models\\Entities\\PatientChronicDisease.cs",
-              "RelativeToolTip": "Sejily.API\\Models\\Entities\\PatientChronicDisease.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-09-26T04:05:57.148Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "PatientAllergy.cs",
-              "DocumentMoniker": "D:\\C#project\\Sejily\\Sejily.API\\Models\\Entities\\PatientAllergy.cs",
-              "RelativeDocumentMoniker": "Sejily.API\\Models\\Entities\\PatientAllergy.cs",
-              "ToolTip": "D:\\C#project\\Sejily\\Sejily.API\\Models\\Entities\\PatientAllergy.cs",
-              "RelativeToolTip": "Sejily.API\\Models\\Entities\\PatientAllergy.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-09-26T04:05:33.354Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 11,
-              "Title": "Medication.cs",
-              "DocumentMoniker": "D:\\C#project\\Sejily\\Sejily.API\\Models\\Entities\\Medication.cs",
-              "RelativeDocumentMoniker": "Sejily.API\\Models\\Entities\\Medication.cs",
-              "ToolTip": "D:\\C#project\\Sejily\\Sejily.API\\Models\\Entities\\Medication.cs",
-              "RelativeToolTip": "Sejily.API\\Models\\Entities\\Medication.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-09-26T04:04:56.439Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 12,
-              "Title": "Allergy.cs",
-              "DocumentMoniker": "D:\\C#project\\Sejily\\Sejily.API\\Models\\Entities\\Allergy.cs",
-              "RelativeDocumentMoniker": "Sejily.API\\Models\\Entities\\Allergy.cs",
-              "ToolTip": "D:\\C#project\\Sejily\\Sejily.API\\Models\\Entities\\Allergy.cs",
-              "RelativeToolTip": "Sejily.API\\Models\\Entities\\Allergy.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-09-26T03:56:46.881Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 13,
-              "Title": "ChronicDisease.cs",
-              "DocumentMoniker": "D:\\C#project\\Sejily\\Sejily.API\\Models\\Entities\\ChronicDisease.cs",
-              "RelativeDocumentMoniker": "Sejily.API\\Models\\Entities\\ChronicDisease.cs",
-              "ToolTip": "D:\\C#project\\Sejily\\Sejily.API\\Models\\Entities\\ChronicDisease.cs",
-              "RelativeToolTip": "Sejily.API\\Models\\Entities\\ChronicDisease.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-09-26T03:56:16.531Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 14,
-              "Title": "Patient.cs",
-              "DocumentMoniker": "D:\\C#project\\Sejily\\Sejily.API\\Models\\Entities\\Patient.cs",
-              "RelativeDocumentMoniker": "Sejily.API\\Models\\Entities\\Patient.cs",
-              "ToolTip": "D:\\C#project\\Sejily\\Sejily.API\\Models\\Entities\\Patient.cs",
-              "RelativeToolTip": "Sejily.API\\Models\\Entities\\Patient.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABYAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-09-26T03:53:10.22Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 15,
-              "Title": "User.cs",
-              "DocumentMoniker": "D:\\C#project\\Sejily\\Sejily.API\\Models\\Entities\\User.cs",
-              "RelativeDocumentMoniker": "Sejily.API\\Models\\Entities\\User.cs",
-              "ToolTip": "D:\\C#project\\Sejily\\Sejily.API\\Models\\Entities\\User.cs",
-              "RelativeToolTip": "Sejily.API\\Models\\Entities\\User.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAB0AAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-09-26T03:52:18.657Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 16,
-              "Title": "VerificationStatus.cs",
-              "DocumentMoniker": "D:\\C#project\\Sejily\\Sejily.API\\Models\\Enums\\VerificationStatus.cs",
-              "RelativeDocumentMoniker": "Sejily.API\\Models\\Enums\\VerificationStatus.cs",
-              "ToolTip": "D:\\C#project\\Sejily\\Sejily.API\\Models\\Enums\\VerificationStatus.cs",
-              "RelativeToolTip": "Sejily.API\\Models\\Enums\\VerificationStatus.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-09-26T03:51:44.115Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 17,
-              "Title": "RelationshipType.cs",
-              "DocumentMoniker": "D:\\C#project\\Sejily\\Sejily.API\\Models\\Enums\\RelationshipType.cs",
-              "RelativeDocumentMoniker": "Sejily.API\\Models\\Enums\\RelationshipType.cs",
-              "ToolTip": "D:\\C#project\\Sejily\\Sejily.API\\Models\\Enums\\RelationshipType.cs",
-              "RelativeToolTip": "Sejily.API\\Models\\Enums\\RelationshipType.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-09-26T03:51:18.404Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 18,
-              "Title": "BloodType.cs",
-              "DocumentMoniker": "D:\\C#project\\Sejily\\Sejily.API\\Models\\Enums\\BloodType.cs",
-              "RelativeDocumentMoniker": "Sejily.API\\Models\\Enums\\BloodType.cs",
-              "ToolTip": "D:\\C#project\\Sejily\\Sejily.API\\Models\\Enums\\BloodType.cs",
-              "RelativeToolTip": "Sejily.API\\Models\\Enums\\BloodType.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-09-26T03:50:26.609Z",
               "EditorCaption": ""
             },
             {
