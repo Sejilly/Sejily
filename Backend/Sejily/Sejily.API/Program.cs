@@ -5,7 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 using Sejily.API.Data;
 using Sejily.API.Models.Entities;
 using System.Text;
-
+using System.Text.Json.Serialization;
 namespace Sejily.API;
 
 public class Program
@@ -60,7 +60,13 @@ public class Program
             });
 
         // 5. Register Controllers
-        builder.Services.AddControllers();
+        builder.Services
+     .AddControllers()
+     .AddJsonOptions(options =>
+     {
+         options.JsonSerializerOptions.Converters.Add(
+             new JsonStringEnumConverter());
+     });
 
         // 6. Swagger
         builder.Services.AddEndpointsApiExplorer();

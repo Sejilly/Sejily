@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "/py7/2BvS1s=",
+  "dgSpecHash": "NtktrUtHzKc=",
   "success": true,
-  "projectFilePath": "D:\\C#project\\Sejily\\Sejily.API\\Sejily.API.csproj",
+  "projectFilePath": "D:\\projectgit\\Sejily\\Backend\\Sejily\\Sejily.API\\Sejily.API.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\User\\.nuget\\packages\\azure.core\\1.41.0\\azure.core.1.41.0.nupkg.sha512",
     "C:\\Users\\User\\.nuget\\packages\\azure.identity\\1.12.1\\azure.identity.1.12.1.nupkg.sha512",

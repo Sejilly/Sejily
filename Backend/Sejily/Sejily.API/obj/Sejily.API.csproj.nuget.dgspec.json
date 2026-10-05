@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\C#project\\Sejily\\Sejily.API\\Sejily.API.csproj": {}
+    "D:\\projectgit\\Sejily\\Backend\\Sejily\\Sejily.API\\Sejily.API.csproj": {}
   },
   "projects": {
-    "D:\\C#project\\Sejily\\Sejily.API\\Sejily.API.csproj": {
+    "D:\\projectgit\\Sejily\\Backend\\Sejily\\Sejily.API\\Sejily.API.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\C#project\\Sejily\\Sejily.API\\Sejily.API.csproj",
+        "projectUniqueName": "D:\\projectgit\\Sejily\\Backend\\Sejily\\Sejily.API\\Sejily.API.csproj",
         "projectName": "Sejily.API",
-        "projectPath": "D:\\C#project\\Sejily\\Sejily.API\\Sejily.API.csproj",
+        "projectPath": "D:\\projectgit\\Sejily\\Backend\\Sejily\\Sejily.API\\Sejily.API.csproj",
         "packagesPath": "C:\\Users\\User\\.nuget\\packages\\",
-        "outputPath": "D:\\C#project\\Sejily\\Sejily.API\\obj\\",
+        "outputPath": "D:\\projectgit\\Sejily\\Backend\\Sejily\\Sejily.API\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

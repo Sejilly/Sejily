@@ -5,8 +5,7 @@ using Sejily.API.Models.Entities;
 
 namespace Sejily.API.Data;
 
-public class SejilyDbContext
-    : IdentityDbContext<User, IdentityRole<int>, int>
+public class SejilyDbContext : IdentityDbContext<User, IdentityRole<int>, int>
 {
     public SejilyDbContext(
         DbContextOptions<SejilyDbContext> options)
@@ -83,7 +82,7 @@ public class SejilyDbContext
             .HasOne(p => p.User)
             .WithOne(u => u.Patient)
             .HasForeignKey<Patient>(p => p.UserId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.NoAction);
 
 
         // =========================
@@ -213,13 +212,13 @@ public class SejilyDbContext
             .HasOne(dw => dw.Doctor)
             .WithMany(d => d.Workplaces)
             .HasForeignKey(dw => dw.DoctorId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.NoAction);
 
         modelBuilder.Entity<DoctorWorkplace>()
             .HasOne(dw => dw.Workplace)
             .WithMany(w => w.Doctors)
             .HasForeignKey(dw => dw.WorkplaceId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.NoAction);
 
 
         // =========================
@@ -255,13 +254,13 @@ public class SejilyDbContext
             .HasOne(pcd => pcd.Patient)
             .WithMany(p => p.ChronicDiseases)
             .HasForeignKey(pcd => pcd.PatientId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.NoAction);
 
         modelBuilder.Entity<PatientChronicDisease>()
             .HasOne(pcd => pcd.Disease)
             .WithMany(d => d.Patients)
             .HasForeignKey(pcd => pcd.DiseaseId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.NoAction);
 
 
         // =========================
@@ -275,13 +274,13 @@ public class SejilyDbContext
             .HasOne(pa => pa.Patient)
             .WithMany(p => p.Allergies)
             .HasForeignKey(pa => pa.PatientId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.NoAction);
 
         modelBuilder.Entity<PatientAllergy>()
             .HasOne(pa => pa.Allergy)
             .WithMany(a => a.Patients)
             .HasForeignKey(pa => pa.AllergyId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.NoAction);
 
 
         // =========================
@@ -295,12 +294,12 @@ public class SejilyDbContext
             .HasOne(pfm => pfm.Patient)
             .WithMany(p => p.FrequentMedications)
             .HasForeignKey(pfm => pfm.PatientId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.NoAction);
 
         modelBuilder.Entity<PatientFrequentMedication>()
             .HasOne(pfm => pfm.Medication)
             .WithMany(m => m.Patients)
             .HasForeignKey(pfm => pfm.MedicationId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.NoAction);
     }
 }
