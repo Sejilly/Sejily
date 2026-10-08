@@ -1,0 +1,312 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "D:\\projectgit\\Sejily\\Backend\\Sejily\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\projectgit\\Sejily\\Backend\\Sejily\\Sejily.API\\Migrations\\20261005023857_Addauthentication2.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Sejily.API\\Migrations\\20261005023857_Addauthentication2.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0CD4CBEC-41D5-4CD6-B4CD-82BCAA723EB2}|Sejily.API\\Sejily.API.csproj|d:\\projectgit\\sejily\\backend\\sejily\\sejily.api\\controllers\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0CD4CBEC-41D5-4CD6-B4CD-82BCAA723EB2}|Sejily.API\\Sejily.API.csproj|solutionrelative:sejily.api\\controllers\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0CD4CBEC-41D5-4CD6-B4CD-82BCAA723EB2}|Sejily.API\\Sejily.API.csproj|d:\\projectgit\\sejily\\backend\\sejily\\sejily.api\\dtos\\auth\\loginrequest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0CD4CBEC-41D5-4CD6-B4CD-82BCAA723EB2}|Sejily.API\\Sejily.API.csproj|solutionrelative:sejily.api\\dtos\\auth\\loginrequest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0CD4CBEC-41D5-4CD6-B4CD-82BCAA723EB2}|Sejily.API\\Sejily.API.csproj|d:\\projectgit\\sejily\\backend\\sejily\\sejily.api\\dtos\\auth\\registerpatientrequest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0CD4CBEC-41D5-4CD6-B4CD-82BCAA723EB2}|Sejily.API\\Sejily.API.csproj|solutionrelative:sejily.api\\dtos\\auth\\registerpatientrequest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0CD4CBEC-41D5-4CD6-B4CD-82BCAA723EB2}|Sejily.API\\Sejily.API.csproj|d:\\projectgit\\sejily\\backend\\sejily\\sejily.api\\dtos\\auth\\registerdoctorrequest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0CD4CBEC-41D5-4CD6-B4CD-82BCAA723EB2}|Sejily.API\\Sejily.API.csproj|solutionrelative:sejily.api\\dtos\\auth\\registerdoctorrequest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\projectgit\\Sejily\\Backend\\Sejily\\Sejily.API\\Migrations\\20261005014649_AddIdentity.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Sejily.API\\Migrations\\20261005014649_AddIdentity.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0CD4CBEC-41D5-4CD6-B4CD-82BCAA723EB2}|Sejily.API\\Sejily.API.csproj|d:\\projectgit\\sejily\\backend\\sejily\\sejily.api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0CD4CBEC-41D5-4CD6-B4CD-82BCAA723EB2}|Sejily.API\\Sejily.API.csproj|solutionrelative:sejily.api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0CD4CBEC-41D5-4CD6-B4CD-82BCAA723EB2}|Sejily.API\\Sejily.API.csproj|d:\\projectgit\\sejily\\backend\\sejily\\sejily.api\\models\\entities\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0CD4CBEC-41D5-4CD6-B4CD-82BCAA723EB2}|Sejily.API\\Sejily.API.csproj|solutionrelative:sejily.api\\models\\entities\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0CD4CBEC-41D5-4CD6-B4CD-82BCAA723EB2}|Sejily.API\\Sejily.API.csproj|d:\\projectgit\\sejily\\backend\\sejily\\sejily.api\\models\\entities\\doctor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0CD4CBEC-41D5-4CD6-B4CD-82BCAA723EB2}|Sejily.API\\Sejily.API.csproj|solutionrelative:sejily.api\\models\\entities\\doctor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\projectgit\\Sejily\\Backend\\Sejily\\Sejily.API\\Migrations\\20261005020002_Addauthentication.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Sejily.API\\Migrations\\20261005020002_Addauthentication.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0CD4CBEC-41D5-4CD6-B4CD-82BCAA723EB2}|Sejily.API\\Sejily.API.csproj|d:\\projectgit\\sejily\\backend\\sejily\\sejily.api\\data\\sejilydbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0CD4CBEC-41D5-4CD6-B4CD-82BCAA723EB2}|Sejily.API\\Sejily.API.csproj|solutionrelative:sejily.api\\data\\sejilydbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0CD4CBEC-41D5-4CD6-B4CD-82BCAA723EB2}|Sejily.API\\Sejily.API.csproj|d:\\projectgit\\sejily\\backend\\sejily\\sejily.api\\appsettings.development.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{0CD4CBEC-41D5-4CD6-B4CD-82BCAA723EB2}|Sejily.API\\Sejily.API.csproj|solutionrelative:sejily.api\\appsettings.development.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0CD4CBEC-41D5-4CD6-B4CD-82BCAA723EB2}|Sejily.API\\Sejily.API.csproj|d:\\projectgit\\sejily\\backend\\sejily\\sejily.api\\sejily.api.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}",
+      "RelativeMoniker": "D:0:0:{0CD4CBEC-41D5-4CD6-B4CD-82BCAA723EB2}|Sejily.API\\Sejily.API.csproj|solutionrelative:sejily.api\\sejily.api.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\projectgit\\Sejily\\Backend\\Sejily\\Sejily.API\\Sejily.API.csproj.user||{FA3CD31E-987B-443A-9B81-186104E8DAC1}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Sejily.API\\Sejily.API.csproj.user||{FA3CD31E-987B-443A-9B81-186104E8DAC1}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0CD4CBEC-41D5-4CD6-B4CD-82BCAA723EB2}|Sejily.API\\Sejily.API.csproj|d:\\projectgit\\sejily\\backend\\sejily\\sejily.api\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{0CD4CBEC-41D5-4CD6-B4CD-82BCAA723EB2}|Sejily.API\\Sejily.API.csproj|solutionrelative:sejily.api\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0CD4CBEC-41D5-4CD6-B4CD-82BCAA723EB2}|Sejily.API\\Sejily.API.csproj|d:\\projectgit\\sejily\\backend\\sejily\\sejily.api\\sejily.api.http||{5703B403-55E7-4C63-8C88-A8F52C7A45C5}",
+      "RelativeMoniker": "D:0:0:{0CD4CBEC-41D5-4CD6-B4CD-82BCAA723EB2}|Sejily.API\\Sejily.API.csproj|solutionrelative:sejily.api\\sejily.api.http||{5703B403-55E7-4C63-8C88-A8F52C7A45C5}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 1,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedHeight": 200,
+          "SelectedChildIndex": 3,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{3ae79031-e1bc-11d0-8f78-00a0c9110057}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{0ad07096-bba9-4900-a651-0598d26f6d24}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{fbcae063-e2c0-4ab1-a516-996ea3dafb72}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "20261005023857_Addauthentication2.cs",
+              "DocumentMoniker": "D:\\projectgit\\Sejily\\Backend\\Sejily\\Sejily.API\\Migrations\\20261005023857_Addauthentication2.cs",
+              "RelativeDocumentMoniker": "Sejily.API\\Migrations\\20261005023857_Addauthentication2.cs",
+              "ToolTip": "D:\\projectgit\\Sejily\\Backend\\Sejily\\Sejily.API\\Migrations\\20261005023857_Addauthentication2.cs",
+              "RelativeToolTip": "Sejily.API\\Migrations\\20261005023857_Addauthentication2.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-10-05T02:38:57.51Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "RegisterPatientRequest.cs",
+              "DocumentMoniker": "D:\\projectgit\\Sejily\\Backend\\Sejily\\Sejily.API\\DTOs\\Auth\\RegisterPatientRequest.cs",
+              "RelativeDocumentMoniker": "Sejily.API\\DTOs\\Auth\\RegisterPatientRequest.cs",
+              "ToolTip": "D:\\projectgit\\Sejily\\Backend\\Sejily\\Sejily.API\\DTOs\\Auth\\RegisterPatientRequest.cs",
+              "RelativeToolTip": "Sejily.API\\DTOs\\Auth\\RegisterPatientRequest.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-10-05T02:34:41.245Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "RegisterDoctorRequest.cs",
+              "DocumentMoniker": "D:\\projectgit\\Sejily\\Backend\\Sejily\\Sejily.API\\DTOs\\Auth\\RegisterDoctorRequest.cs",
+              "RelativeDocumentMoniker": "Sejily.API\\DTOs\\Auth\\RegisterDoctorRequest.cs",
+              "ToolTip": "D:\\projectgit\\Sejily\\Backend\\Sejily\\Sejily.API\\DTOs\\Auth\\RegisterDoctorRequest.cs",
+              "RelativeToolTip": "Sejily.API\\DTOs\\Auth\\RegisterDoctorRequest.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-10-05T02:34:31.396Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{34e76e81-ee4a-11d0-ae2e-00a0c90fffc3}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "Doctor.cs",
+              "DocumentMoniker": "D:\\projectgit\\Sejily\\Backend\\Sejily\\Sejily.API\\Models\\Entities\\Doctor.cs",
+              "RelativeDocumentMoniker": "Sejily.API\\Models\\Entities\\Doctor.cs",
+              "ToolTip": "D:\\projectgit\\Sejily\\Backend\\Sejily\\Sejily.API\\Models\\Entities\\Doctor.cs",
+              "RelativeToolTip": "Sejily.API\\Models\\Entities\\Doctor.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-10-05T02:13:42.039Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "20261005020002_Addauthentication.cs",
+              "DocumentMoniker": "D:\\projectgit\\Sejily\\Backend\\Sejily\\Sejily.API\\Migrations\\20261005020002_Addauthentication.cs",
+              "RelativeDocumentMoniker": "Sejily.API\\Migrations\\20261005020002_Addauthentication.cs",
+              "ToolTip": "D:\\projectgit\\Sejily\\Backend\\Sejily\\Sejily.API\\Migrations\\20261005020002_Addauthentication.cs",
+              "RelativeToolTip": "Sejily.API\\Migrations\\20261005020002_Addauthentication.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAARAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-10-05T02:00:02.762Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "AuthController.cs",
+              "DocumentMoniker": "D:\\projectgit\\Sejily\\Backend\\Sejily\\Sejily.API\\Controllers\\AuthController.cs",
+              "RelativeDocumentMoniker": "Sejily.API\\Controllers\\AuthController.cs",
+              "ToolTip": "D:\\projectgit\\Sejily\\Backend\\Sejily\\Sejily.API\\Controllers\\AuthController.cs",
+              "RelativeToolTip": "Sejily.API\\Controllers\\AuthController.cs",
+              "ViewState": "AgIAAL0AAAAAAAAAAAAAANgAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-10-05T01:51:32.581Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "LoginRequest.cs",
+              "DocumentMoniker": "D:\\projectgit\\Sejily\\Backend\\Sejily\\Sejily.API\\DTOs\\Auth\\LoginRequest.cs",
+              "RelativeDocumentMoniker": "Sejily.API\\DTOs\\Auth\\LoginRequest.cs",
+              "ToolTip": "D:\\projectgit\\Sejily\\Backend\\Sejily\\Sejily.API\\DTOs\\Auth\\LoginRequest.cs",
+              "RelativeToolTip": "Sejily.API\\DTOs\\Auth\\LoginRequest.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-10-05T01:49:29.517Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "20261005014649_AddIdentity.cs",
+              "DocumentMoniker": "D:\\projectgit\\Sejily\\Backend\\Sejily\\Sejily.API\\Migrations\\20261005014649_AddIdentity.cs",
+              "RelativeDocumentMoniker": "Sejily.API\\Migrations\\20261005014649_AddIdentity.cs",
+              "ToolTip": "D:\\projectgit\\Sejily\\Backend\\Sejily\\Sejily.API\\Migrations\\20261005014649_AddIdentity.cs",
+              "RelativeToolTip": "Sejily.API\\Migrations\\20261005014649_AddIdentity.cs",
+              "ViewState": "AgIAAAoCAAAAAAAAAAAYwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-10-05T01:46:49.592Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "Program.cs",
+              "DocumentMoniker": "D:\\projectgit\\Sejily\\Backend\\Sejily\\Sejily.API\\Program.cs",
+              "RelativeDocumentMoniker": "Sejily.API\\Program.cs",
+              "ToolTip": "D:\\projectgit\\Sejily\\Backend\\Sejily\\Sejily.API\\Program.cs",
+              "RelativeToolTip": "Sejily.API\\Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAEQAAAAIAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-27T12:39:03.823Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{d78612c7-9962-4b83-95d9-268046dad23a}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "User.cs",
+              "DocumentMoniker": "D:\\projectgit\\Sejily\\Backend\\Sejily\\Sejily.API\\Models\\Entities\\User.cs",
+              "RelativeDocumentMoniker": "Sejily.API\\Models\\Entities\\User.cs",
+              "ToolTip": "D:\\projectgit\\Sejily\\Backend\\Sejily\\Sejily.API\\Models\\Entities\\User.cs",
+              "RelativeToolTip": "Sejily.API\\Models\\Entities\\User.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAAUAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-10-05T01:04:26.746Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "Sejily.API.csproj.user",
+              "DocumentMoniker": "D:\\projectgit\\Sejily\\Backend\\Sejily\\Sejily.API\\Sejily.API.csproj.user",
+              "RelativeDocumentMoniker": "Sejily.API\\Sejily.API.csproj.user",
+              "ToolTip": "D:\\projectgit\\Sejily\\Backend\\Sejily\\Sejily.API\\Sejily.API.csproj.user",
+              "RelativeToolTip": "Sejily.API\\Sejily.API.csproj.user",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003464|",
+              "WhenOpened": "2026-10-05T01:31:53.396Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "Sejily.API.csproj",
+              "DocumentMoniker": "D:\\projectgit\\Sejily\\Backend\\Sejily\\Sejily.API\\Sejily.API.csproj",
+              "RelativeDocumentMoniker": "Sejily.API\\Sejily.API.csproj",
+              "ToolTip": "D:\\projectgit\\Sejily\\Backend\\Sejily\\Sejily.API\\Sejily.API.csproj",
+              "RelativeToolTip": "Sejily.API\\Sejily.API.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2026-10-05T01:31:51.564Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "appsettings.Development.json",
+              "DocumentMoniker": "D:\\projectgit\\Sejily\\Backend\\Sejily\\Sejily.API\\appsettings.Development.json",
+              "RelativeDocumentMoniker": "Sejily.API\\appsettings.Development.json",
+              "ToolTip": "D:\\projectgit\\Sejily\\Backend\\Sejily\\Sejily.API\\appsettings.Development.json",
+              "RelativeToolTip": "Sejily.API\\appsettings.Development.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-10-05T01:31:46.419Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "SejilyDbContext.cs",
+              "DocumentMoniker": "D:\\projectgit\\Sejily\\Backend\\Sejily\\Sejily.API\\Data\\SejilyDbContext.cs",
+              "RelativeDocumentMoniker": "Sejily.API\\Data\\SejilyDbContext.cs",
+              "ToolTip": "D:\\projectgit\\Sejily\\Backend\\Sejily\\Sejily.API\\Data\\SejilyDbContext.cs",
+              "RelativeToolTip": "Sejily.API\\Data\\SejilyDbContext.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAFQAAAAtAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-10-05T01:04:59.995Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "D:\\projectgit\\Sejily\\Backend\\Sejily\\Sejily.API\\appsettings.json",
+              "RelativeDocumentMoniker": "Sejily.API\\appsettings.json",
+              "ToolTip": "D:\\projectgit\\Sejily\\Backend\\Sejily\\Sejily.API\\appsettings.json",
+              "RelativeToolTip": "Sejily.API\\appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAAVAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-09-26T04:16:31.729Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "Sejily.API.http",
+              "DocumentMoniker": "D:\\projectgit\\Sejily\\Backend\\Sejily\\Sejily.API\\Sejily.API.http",
+              "RelativeDocumentMoniker": "Sejily.API\\Sejily.API.http",
+              "ToolTip": "D:\\projectgit\\Sejily\\Backend\\Sejily\\Sejily.API\\Sejily.API.http",
+              "RelativeToolTip": "Sejily.API\\Sejily.API.http",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003502|",
+              "WhenOpened": "2026-10-05T01:31:55.664Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
