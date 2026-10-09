@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Sejily.API.Data;
+using Sejily.API.Services;
 using Sejily.API.Models.Entities;
 using System.Text;
 using System.Text.Json.Serialization;
@@ -25,6 +26,8 @@ public class Program
             .AddIdentity<User, IdentityRole<int>>()
             .AddEntityFrameworkStores<SejilyDbContext>()
             .AddDefaultTokenProviders();
+
+            builder.Services.AddScoped<IDependentService, DependentService>();
 
         // 4. Configure JWT Authentication
         builder.Services
