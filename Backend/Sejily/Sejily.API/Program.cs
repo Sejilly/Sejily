@@ -27,7 +27,8 @@ public class Program
             .AddEntityFrameworkStores<SejilyDbContext>()
             .AddDefaultTokenProviders();
 
-            builder.Services.AddScoped<IDependentService, DependentService>();
+        builder.Services.AddScoped<IDependentService, DependentService>();
+        builder.Services.AddScoped<IKinshipVerificationService, KinshipVerificationService>();
 
         // 4. Configure JWT Authentication
         builder.Services
