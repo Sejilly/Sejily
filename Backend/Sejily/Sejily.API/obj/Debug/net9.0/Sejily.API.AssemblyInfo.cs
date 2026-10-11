@@ -11,10 +11,11 @@
 using System;
 using System.Reflection;
 
+[assembly: Microsoft.Extensions.Configuration.UserSecrets.UserSecretsIdAttribute("620c2674-96a5-4493-9ed5-9a95a3244ace")]
 [assembly: System.Reflection.AssemblyCompanyAttribute("Sejily.API")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ea453c7a22d292e1be9771818bee03126a55025a")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+66b6adbdeecd1605bfce0e5253f71ee8308139e6")]
 [assembly: System.Reflection.AssemblyProductAttribute("Sejily.API")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Sejily.API")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
