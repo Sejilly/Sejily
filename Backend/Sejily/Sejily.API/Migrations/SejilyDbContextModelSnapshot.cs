@@ -317,6 +317,9 @@ namespace Sejily.API.Migrations
                     b.Property<int>("FailedAttempts")
                         .HasColumnType("int");
 
+                    b.Property<DateTime?>("LastSentAtUtc")
+                        .HasColumnType("datetime2");
+
                     b.Property<bool>("OtpConsumed")
                         .HasColumnType("bit");
 
@@ -324,6 +327,9 @@ namespace Sejily.API.Migrations
                         .IsRequired()
                         .HasMaxLength(64)
                         .HasColumnType("nvarchar(64)");
+
+                    b.Property<Guid?>("RequestId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime?>("ResetTokenExpiresAtUtc")
                         .HasColumnType("datetime2");

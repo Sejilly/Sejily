@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -22,32 +23,35 @@ public class AuthController : ControllerBase
     private readonly SejilyDbContext _context;
     private readonly IConfiguration _configuration;
     private readonly IOtpSmsSender _otpSmsSender;
+
+    private const int OtpLifetimeMinutes = 5;
+    private const int OtpResendCooldownSeconds = 60;
+    private const int MaxOtpAttempts = 5;
+    private const int PasswordResetWindowMinutes = 10;
+
     public AuthController(
         UserManager<User> userManager,
         SejilyDbContext context,
         IConfiguration configuration,
-        IOtpSmsSender otpSmsSender
-        )
+        IOtpSmsSender otpSmsSender)
     {
         _userManager = userManager;
         _context = context;
         _configuration = configuration;
-        _otpSmsSender= otpSmsSender;
+        _otpSmsSender = otpSmsSender;
     }
 
-    // =========================
+    // =====================================
     // Register Patient
-    // =========================
+    // =====================================
 
     [HttpPost("register/patient")]
     public async Task<IActionResult> RegisterPatient(
         RegisterPatientRequest request)
     {
-        // Check if National ID with accountType already exists
-        var existingUser = await _context.Users
-      .AnyAsync(u =>
-          u.NationalID == request.NationalID &&
-          u.AccountType == AccountType.Patient);
+        var existingUser = await _context.Users.AnyAsync(u =>
+            u.NationalID == request.NationalID &&
+            u.AccountType == AccountType.Patient);
 
         if (existingUser)
         {
@@ -55,7 +59,6 @@ public class AuthController : ControllerBase
                 "A Patient account with this National ID already exists.");
         }
 
-        // Create Identity User
         var user = new User
         {
             UserName = $"{request.NationalID}_Patient",
@@ -64,19 +67,17 @@ public class AuthController : ControllerBase
             FullName = request.FullName,
             Address = request.Address,
             DateOfBirth = request.DateOfBirth,
-           
             PhoneNumber = request.PhoneNumber
         };
 
-        var result = await _userManager
-            .CreateAsync(user, request.Password);
+        var result = await _userManager.CreateAsync(
+            user, request.Password);
 
         if (!result.Succeeded)
         {
             return BadRequest(result.Errors);
         }
 
-        // Create Patient profile
         var patient = new Patient
         {
             UserId = user.Id,
@@ -85,7 +86,6 @@ public class AuthController : ControllerBase
         };
 
         _context.Patients.Add(patient);
-
         await _context.SaveChangesAsync();
 
         return Ok(new
@@ -95,27 +95,24 @@ public class AuthController : ControllerBase
         });
     }
 
-
-    // =========================
+    // =====================================
     // Register Doctor
-    // =========================
+    // =====================================
 
     [HttpPost("register/doctor")]
     public async Task<IActionResult> RegisterDoctor(
         RegisterDoctorRequest request)
     {
-        // Check if National ID with accountType already exists
-        var existingUser = await _context.Users
-    .AnyAsync(u =>
-        u.NationalID == request.NationalID &&
-        u.AccountType == AccountType.Doctor);
+        var existingUser = await _context.Users.AnyAsync(u =>
+            u.NationalID == request.NationalID &&
+            u.AccountType == AccountType.Doctor);
 
         if (existingUser)
         {
             return BadRequest(
                 "A Doctor account with this National ID already exists.");
         }
-        // Create Identity User
+
         var user = new User
         {
             UserName = $"{request.NationalID}_Doctor",
@@ -124,23 +121,20 @@ public class AuthController : ControllerBase
             FullName = request.FullName,
             Address = request.Address,
             DateOfBirth = request.DateOfBirth,
-            
             PhoneNumber = request.PhoneNumber
         };
 
-        var result = await _userManager
-            .CreateAsync(user, request.Password);
+        var result = await _userManager.CreateAsync(
+            user, request.Password);
 
         if (!result.Succeeded)
         {
             return BadRequest(result.Errors);
         }
 
-        // Create Doctor profile
         var doctor = new Doctor
         {
             UserId = user.Id,
-           
             SyndicateCardNumber = request.SyndicateCardNumber,
             MedicalLicenseNumber = request.MedicalLicenseNumber,
             Specialization = request.Specialization,
@@ -148,7 +142,6 @@ public class AuthController : ControllerBase
         };
 
         _context.Doctors.Add(doctor);
-
         await _context.SaveChangesAsync();
 
         return Ok(new
@@ -158,19 +151,20 @@ public class AuthController : ControllerBase
         });
     }
 
-
-    // =========================
+    // =====================================
     // Login
-    // =========================
+    // =====================================
 
     [HttpPost("login/patient")]
-    public async Task<IActionResult> LoginPatient(LoginRequest request)
+    public async Task<IActionResult> LoginPatient(
+        LoginRequest request)
     {
         return await LoginByType(request, AccountType.Patient);
     }
 
     [HttpPost("login/doctor")]
-    public async Task<IActionResult> LoginDoctor(LoginRequest request)
+    public async Task<IActionResult> LoginDoctor(
+        LoginRequest request)
     {
         return await LoginByType(request, AccountType.Doctor);
     }
@@ -184,28 +178,34 @@ public class AuthController : ControllerBase
             u.AccountType == accountType);
 
         if (user == null)
-            return Unauthorized("Invalid National ID or password.");
+        {
+            return Unauthorized(
+                "Invalid National ID or password.");
+        }
 
         var passwordCorrect = await _userManager
             .CheckPasswordAsync(user, request.Password);
 
         if (!passwordCorrect)
-            return Unauthorized("Invalid National ID or password.");
+        {
+            return Unauthorized(
+                "Invalid National ID or password.");
+        }
 
         var claims = new List<Claim>
-    {
-        new Claim(
-            ClaimTypes.NameIdentifier,
-            user.Id.ToString()),
+        {
+            new(
+                ClaimTypes.NameIdentifier,
+                user.Id.ToString()),
 
-        new Claim(
-            ClaimTypes.Name,
-            user.UserName!),
+            new(
+                ClaimTypes.Name,
+                user.UserName!),
 
-        new Claim(
-            "AccountType",
-            user.AccountType.ToString())
-    };
+            new(
+                "AccountType",
+                user.AccountType.ToString())
+        };
 
         var key = _configuration["Jwt:Key"];
         var issuer = _configuration["Jwt:Issuer"];
@@ -229,50 +229,147 @@ public class AuthController : ControllerBase
             .WriteToken(token);
 
         return Ok(new { token = tokenString });
-    
-}
-    ////////////////////
+    }
+
+    // =====================================
+    // Step 1: Forgot Password
+    // National ID + Phone + Account Type
+    // =====================================
+
     [HttpPost("forgot-password")]
     public async Task<IActionResult> ForgotPassword(
-    ForgotPasswordRequest request)
+        ForgotPasswordRequest request)
     {
-        var genericResponse = new
-        {
-            message = "If the account exists and has a phone number, " +
-                      "a reset code will be sent."
-        };
+        const string message =
+            "If the account exists and the phone number matches, " +
+            "a reset code will be sent.";
+
+        var requestId = Guid.NewGuid();
+        var now = DateTime.UtcNow;
 
         var user = await _context.Users.FirstOrDefaultAsync(u =>
             u.NationalID == request.NationalID &&
-            u.AccountType == request.AccountType);
+            u.AccountType == request.AccountType!.Value);
+
+        if (user == null ||
+            string.IsNullOrWhiteSpace(user.PhoneNumber) ||
+            NormalizeEgyptianPhone(user.PhoneNumber) !=
+            NormalizeEgyptianPhone(request.PhoneNumber))
+        {
+            // Use the same response format even if no account matches.
+            return Ok(new
+            {
+                message,
+                requestId
+            });
+        }
+
+        // Avoid sending another code within the cooldown period.
+        var recentRequest = await _context.PasswordResetOtps
+            .Where(x =>
+                x.UserId == user.Id &&
+                x.RequestId != null &&
+                x.LastSentAtUtc != null &&
+                x.LastSentAtUtc > now.AddSeconds(
+                    -OtpResendCooldownSeconds) &&
+                x.VerifiedAtUtc == null &&
+                !x.ResetUsed)
+            .OrderByDescending(x => x.LastSentAtUtc)
+            .FirstOrDefaultAsync();
+
+        if (recentRequest?.RequestId is Guid existingRequestId)
+        {
+            return Ok(new
+            {
+                message,
+                requestId = existingRequestId
+            });
+        }
+
+        try
+        {
+            await CreateAndSendOtpAsync(user, requestId);
+
+            return Ok(new
+            {
+                message,
+                requestId
+            });
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(
+                $"OTP sending failed: {ex.GetType().Name}");
+
+            return StatusCode(503, new
+            {
+                message = "Unable to send the reset code. Please try again later."
+            });
+        }
+    }
+
+    // =====================================
+    // Resend OTP
+    // RequestId is sent in the background
+    // =====================================
+
+    [HttpPost("resend-otp")]
+    public async Task<IActionResult> ResendOtp(
+        ResendOtpRequest request)
+    {
+        if (request.RequestId == null ||
+            request.RequestId == Guid.Empty)
+        {
+            return BadRequest("Invalid or expired reset request.");
+        }
+
+        var resetRequest = await _context.PasswordResetOtps
+            .FirstOrDefaultAsync(x =>
+                x.RequestId == request.RequestId.Value);
+
+        if (resetRequest == null ||
+            resetRequest.VerifiedAtUtc != null ||
+            resetRequest.ResetUsed)
+        {
+            return BadRequest("Invalid or expired reset request.");
+        }
+
+        var now = DateTime.UtcNow;
+
+        if (resetRequest.LastSentAtUtc.HasValue &&
+            now < resetRequest.LastSentAtUtc.Value.AddSeconds(
+                OtpResendCooldownSeconds))
+        {
+            return StatusCode(429, new
+            {
+                message =
+                    "Please wait before requesting another OTP."
+            });
+        }
+
+        var user = await _userManager.FindByIdAsync(
+            resetRequest.UserId.ToString());
 
         if (user == null ||
             string.IsNullOrWhiteSpace(user.PhoneNumber))
         {
-            return Ok(genericResponse);
+            return BadRequest("Invalid or expired reset request.");
         }
 
-        var otp = RandomNumberGenerator
-            .GetInt32(0, 1_000_000)
-            .ToString("D6");
+        var otp = GenerateOtp();
 
-        var resetRequest = new PasswordResetOtp
-        {
-            UserId = user.Id,
-            OtpHash = HashSecret(otp),
-            ExpiresAtUtc = DateTime.UtcNow.AddMinutes(5),
-            FailedAttempts = 0,
-            OtpConsumed = false,
-            ResetUsed = false
-        };
+        // Keep the same RequestId; only the OTP changes.
+        resetRequest.OtpHash = HashSecret(otp);
+        resetRequest.ExpiresAtUtc =
+            now.AddMinutes(OtpLifetimeMinutes);
+        resetRequest.LastSentAtUtc = now;
+        resetRequest.FailedAttempts = 0;
+        resetRequest.OtpConsumed = false;
 
-        var oldRequests = await _context.PasswordResetOtps
-            .Where(x => x.UserId == user.Id && !x.ResetUsed)
-            .ToListAsync();
-
-
-        _context.PasswordResetOtps.RemoveRange(oldRequests);
-        _context.PasswordResetOtps.Add(resetRequest);
+        resetRequest.VerifiedAtUtc = null;
+        resetRequest.ResetTokenHash = null;
+        resetRequest.ResetTokenExpiresAtUtc = null;
+        resetRequest.ResetUsed = false;
 
         await _context.SaveChangesAsync();
 
@@ -284,58 +381,70 @@ public class AuthController : ControllerBase
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"SMS Error: {ex.GetType().Name}");
-            Console.WriteLine($"SMS Error Message: {ex.Message}");
+            Console.WriteLine(
+                $"OTP sending failed: {ex.GetType().Name}");
 
             _context.PasswordResetOtps.Remove(resetRequest);
             await _context.SaveChangesAsync();
 
             return StatusCode(503, new
             {
-                message = "Unable to send the SMS. Check the server logs."
+                message = "Unable to send the reset code."
             });
         }
 
-        return Ok(genericResponse);
+        return Ok(new
+        {
+            message = "A new OTP has been sent if delivery succeeded.",
+            requestId = request.RequestId
+        });
     }
 
+    // =====================================
+    // Step 2: Verify OTP
+    // User enters the OTP only.
+    // RequestId is sent in the background.
+    // =====================================
 
     [HttpPost("verify-otp")]
-    public async Task<IActionResult> VerifyOtp(VerifyOtpRequest request)
+    public async Task<IActionResult> VerifyOtp(
+        VerifyOtpRequest request)
     {
-        var user = await _context.Users.FirstOrDefaultAsync(u =>
-            u.NationalID == request.NationalID &&
-            u.AccountType == request.AccountType);
-
-        if (user == null)
+        if (request.RequestId == null ||
+            request.RequestId == Guid.Empty)
         {
             return BadRequest("Invalid or expired OTP.");
         }
 
-        var resetRequest = await _context.PasswordResetOtps
-            .Where(x =>
-                x.UserId == user.Id &&
-                !x.OtpConsumed &&
-                x.ExpiresAtUtc > DateTime.UtcNow)
-            .OrderByDescending(x => x.Id)
-            .FirstOrDefaultAsync();
+        var now = DateTime.UtcNow;
 
-        if (resetRequest == null || resetRequest.FailedAttempts >= 5)
+        var resetRequest = await _context.PasswordResetOtps
+            .FirstOrDefaultAsync(x =>
+                x.RequestId == request.RequestId.Value);
+
+        if (resetRequest == null ||
+            resetRequest.OtpConsumed ||
+            resetRequest.VerifiedAtUtc != null ||
+            resetRequest.ExpiresAtUtc <= now ||
+            resetRequest.FailedAttempts >= MaxOtpAttempts)
         {
             return BadRequest("Invalid or expired OTP.");
         }
 
         var submittedHash = HashSecret(request.Otp);
 
-        var expectedBytes = Encoding.UTF8.GetBytes(resetRequest.OtpHash);
-        var submittedBytes = Encoding.UTF8.GetBytes(submittedHash);
+        var expectedBytes = Encoding.UTF8.GetBytes(
+            resetRequest.OtpHash);
+
+        var submittedBytes = Encoding.UTF8.GetBytes(
+            submittedHash);
 
         if (!CryptographicOperations.FixedTimeEquals(
-                expectedBytes, submittedBytes))
+            expectedBytes, submittedBytes))
         {
             resetRequest.FailedAttempts++;
 
-            if (resetRequest.FailedAttempts >= 5)
+            if (resetRequest.FailedAttempts >= MaxOtpAttempts)
             {
                 resetRequest.OtpConsumed = true;
             }
@@ -345,51 +454,54 @@ public class AuthController : ControllerBase
             return BadRequest("Invalid or expired OTP.");
         }
 
-        // Consume the OTP so it cannot be used again.
+        // OTP is now consumed and cannot be verified again.
         resetRequest.OtpConsumed = true;
-        resetRequest.VerifiedAtUtc = DateTime.UtcNow;
+        resetRequest.VerifiedAtUtc = now;
 
-        // Generate a separate token for resetting the password.
-        var resetToken = Convert.ToBase64String(
-            RandomNumberGenerator.GetBytes(32));
-
-        resetRequest.ResetTokenHash = HashSecret(resetToken);
+        // This expiry now limits the password-reset stage.
+        // No reset token is sent to the user.
+        resetRequest.ResetTokenHash = null;
         resetRequest.ResetTokenExpiresAtUtc =
-            DateTime.UtcNow.AddMinutes(10);
+            now.AddMinutes(PasswordResetWindowMinutes);
         resetRequest.ResetUsed = false;
 
         await _context.SaveChangesAsync();
 
         return Ok(new
         {
-            message = "OTP verified successfully.",
-            resetToken
+            message =
+                "OTP verified successfully. You can now reset your password."
         });
     }
 
+    // =====================================
+    // Step 3: Reset Password
+    // New password + confirmation
+    // =====================================
 
     [HttpPost("reset-password")]
     public async Task<IActionResult> ResetPassword(
-    ResetPasswordRequest request)
+        ResetPasswordRequest request)
     {
-        if (string.IsNullOrWhiteSpace(request.ResetToken))
+        if (request.RequestId == null ||
+            request.RequestId == Guid.Empty)
         {
-            return BadRequest("Invalid or expired reset token.");
+            return BadRequest("Invalid or expired reset request.");
         }
 
-        var tokenHash = HashSecret(request.ResetToken);
         var now = DateTime.UtcNow;
 
         var resetRequest = await _context.PasswordResetOtps
             .FirstOrDefaultAsync(x =>
-                x.ResetTokenHash == tokenHash &&
+                x.RequestId == request.RequestId.Value &&
                 x.VerifiedAtUtc != null &&
                 !x.ResetUsed &&
+                x.ResetTokenExpiresAtUtc != null &&
                 x.ResetTokenExpiresAtUtc > now);
 
         if (resetRequest == null)
         {
-            return BadRequest("Invalid or expired reset token.");
+            return BadRequest("Invalid or expired reset request.");
         }
 
         var user = await _userManager.FindByIdAsync(
@@ -400,43 +512,139 @@ public class AuthController : ControllerBase
             return BadRequest("Unable to reset the password.");
         }
 
-        var identityToken =
-            await _userManager.GeneratePasswordResetTokenAsync(user);
+        // Keep the password update and request consumption together.
+        await using var transaction =
+            await _context.Database.BeginTransactionAsync();
 
-        var result = await _userManager.ResetPasswordAsync(
-            user,
-            identityToken,
-            request.NewPassword);
-
-        if (!result.Succeeded)
+        try
         {
-            return BadRequest(new
+            // Identity token is generated and used internally.
+            // It is never returned to the frontend.
+            var identityToken =
+                await _userManager.GeneratePasswordResetTokenAsync(user);
+
+            var result = await _userManager.ResetPasswordAsync(
+                user,
+                identityToken,
+                request.NewPassword);
+
+            if (!result.Succeeded)
             {
-                message = "Password reset failed.",
-                errors = result.Errors.Select(e => e.Description)
+                await transaction.RollbackAsync();
+
+                return BadRequest(new
+                {
+                    message = "Password reset failed.",
+                    errors = result.Errors.Select(
+                        e => e.Description)
+                });
+            }
+
+            resetRequest.ResetUsed = true;
+            resetRequest.OtpConsumed = true;
+
+            // Invalidate every other reset request for this user.
+            var otherRequests = await _context.PasswordResetOtps
+                .Where(x =>
+                    x.UserId == user.Id &&
+                    x.Id != resetRequest.Id)
+                .ToListAsync();
+
+            foreach (var item in otherRequests)
+            {
+                item.OtpConsumed = true;
+                item.ResetUsed = true;
+                item.ResetTokenExpiresAtUtc = now;
+            }
+
+            await _context.SaveChangesAsync();
+            await transaction.CommitAsync();
+
+            return Ok(new
+            {
+                message = "Password reset successfully."
             });
         }
+        catch
+        {
+            await transaction.RollbackAsync();
+            throw;
+        }
+    }
 
-        resetRequest.ResetUsed = true;
+    // =====================================
+    // Helper Methods
+    // =====================================
 
-        var otherRequests = await _context.PasswordResetOtps
-            .Where(x =>
-                x.UserId == user.Id &&
-                x.Id != resetRequest.Id)
+    private async Task CreateAndSendOtpAsync(
+        User user,
+        Guid requestId)
+    {
+        var now = DateTime.UtcNow;
+
+        // Invalidate any older requests for this user.
+        var oldRequests = await _context.PasswordResetOtps
+            .Where(x => x.UserId == user.Id)
             .ToListAsync();
 
-        foreach (var item in otherRequests)
-        {
-            item.OtpConsumed = true;
-            item.ResetUsed = true;
-        }
+        _context.PasswordResetOtps.RemoveRange(oldRequests);
 
+        var otp = GenerateOtp();
+
+        var resetRequest = new PasswordResetOtp
+        {
+            UserId = user.Id,
+            RequestId = requestId,
+            LastSentAtUtc = now,
+
+            OtpHash = HashSecret(otp),
+            ExpiresAtUtc = now.AddMinutes(OtpLifetimeMinutes),
+
+            FailedAttempts = 0,
+            OtpConsumed = false,
+            VerifiedAtUtc = null,
+
+            ResetTokenHash = null,
+            ResetTokenExpiresAtUtc = null,
+            ResetUsed = false
+        };
+
+        _context.PasswordResetOtps.Add(resetRequest);
         await _context.SaveChangesAsync();
 
-        return Ok(new
+        try
         {
-            message = "Password reset successfully."
-        });
+            await _otpSmsSender.SendOtpAsync(
+                user.PhoneNumber!,
+                otp);
+        }
+        catch
+        {
+            _context.PasswordResetOtps.Remove(resetRequest);
+            await _context.SaveChangesAsync();
+            throw;
+        }
+    }
+
+    private static string GenerateOtp()
+    {
+        return RandomNumberGenerator
+            .GetInt32(0, 1_000_000)
+            .ToString("D6");
+    }
+
+    private static string NormalizeEgyptianPhone(string phone)
+    {
+        var digits = new string(
+            phone.Where(char.IsDigit).ToArray());
+
+        if (digits.Length == 11 &&
+            digits.StartsWith("01"))
+        {
+            return "2" + digits;
+        }
+
+        return digits;
     }
 
     private string HashSecret(string value)
@@ -457,5 +665,4 @@ public class AuthController : ControllerBase
 
         return Convert.ToHexString(hash);
     }
-
 }

@@ -160,6 +160,37 @@
         }
       }
     },
+    "/api/Auth/resend-otp": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResendOtpRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResendOtpRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResendOtpRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/Auth/verify-otp": {
       "post": {
         "tags": [
@@ -287,13 +318,19 @@
       "ForgotPasswordRequest": {
         "required": [
           "accountType",
-          "nationalID"
+          "nationalID",
+          "phoneNumber"
         ],
         "type": "object",
         "properties": {
           "nationalID": {
-            "maxLength": 14,
-            "minLength": 14,
+            "minLength": 1,
+            "pattern": "^\\d{14}$",
+            "type": "string"
+          },
+          "phoneNumber": {
+            "minLength": 1,
+            "pattern": "^(?:01[0125]\\d{8}|\\+?20(?:10|11|12|15)\\d{8})$",
             "type": "string"
           },
           "accountType": {
@@ -317,6 +354,10 @@
         "additionalProperties": false
       },
       "RegisterDoctorRequest": {
+        "required": [
+          "confirmPassword",
+          "password"
+        ],
         "type": "object",
         "properties": {
           "nationalID": {
@@ -340,8 +381,14 @@
             "nullable": true
           },
           "password": {
+            "maxLength": 100,
+            "minLength": 8,
             "type": "string",
-            "nullable": true
+            "format": "password"
+          },
+          "confirmPassword": {
+            "minLength": 1,
+            "type": "string"
           },
           "syndicateCardNumber": {
             "type": "string",
@@ -359,6 +406,10 @@
         "additionalProperties": false
       },
       "RegisterPatientRequest": {
+        "required": [
+          "confirmPassword",
+          "password"
+        ],
         "type": "object",
         "properties": {
           "nationalID": {
@@ -385,8 +436,14 @@
             "nullable": true
           },
           "password": {
+            "maxLength": 100,
+            "minLength": 8,
             "type": "string",
-            "nullable": true
+            "format": "password"
+          },
+          "confirmPassword": {
+            "minLength": 1,
+            "type": "string"
           },
           "healthCardNumber": {
             "type": "string",
@@ -395,39 +452,55 @@
         },
         "additionalProperties": false
       },
-      "ResetPasswordRequest": {
+      "ResendOtpRequest": {
         "required": [
-          "newPassword",
-          "resetToken"
+          "requestId"
         ],
         "type": "object",
         "properties": {
-          "resetToken": {
-            "minLength": 1,
-            "type": "string"
+          "requestId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ResetPasswordRequest": {
+        "required": [
+          "confirmPassword",
+          "newPassword",
+          "requestId"
+        ],
+        "type": "object",
+        "properties": {
+          "requestId": {
+            "type": "string",
+            "format": "uuid"
           },
           "newPassword": {
             "maxLength": 100,
             "minLength": 8,
-            "type": "string"
+            "type": "string",
+            "format": "password"
+          },
+          "confirmPassword": {
+            "minLength": 1,
+            "type": "string",
+            "format": "password"
           }
         },
         "additionalProperties": false
       },
       "VerifyOtpRequest": {
         "required": [
-          "nationalID",
-          "otp"
+          "otp",
+          "requestId"
         ],
         "type": "object",
         "properties": {
-          "nationalID": {
-            "maxLength": 14,
-            "minLength": 14,
-            "type": "string"
-          },
-          "accountType": {
-            "$ref": "#/components/schemas/AccountType"
+          "requestId": {
+            "type": "string",
+            "format": "uuid"
           },
           "otp": {
             "minLength": 1,

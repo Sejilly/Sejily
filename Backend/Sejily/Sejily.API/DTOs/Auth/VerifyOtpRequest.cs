@@ -6,12 +6,10 @@ namespace Sejily.API.DTOs.Auth;
 public class VerifyOtpRequest
 {
     [Required]
-    [StringLength(14, MinimumLength = 14)]
-    public string NationalID { get; set; } = string.Empty;
-
-    public AccountType AccountType { get; set; }
+    public Guid? RequestId { get; set; }
 
     [Required]
-    [RegularExpression(@"^\d{6}$")]
+    [RegularExpression(@"^\d{6}$",
+        ErrorMessage = "OTP must contain exactly 6 digits.")]
     public string Otp { get; set; } = string.Empty;
 }

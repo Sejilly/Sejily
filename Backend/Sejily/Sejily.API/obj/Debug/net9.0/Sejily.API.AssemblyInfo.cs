@@ -15,7 +15,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Sejily.API")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+7211bfeb49e17e3f9890833abcf41a3353619f90")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+66b6adbdeecd1605bfce0e5253f71ee8308139e6")]
 [assembly: System.Reflection.AssemblyProductAttribute("Sejily.API")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Sejily.API")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

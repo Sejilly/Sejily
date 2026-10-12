@@ -6,9 +6,17 @@ namespace Sejily.API.DTOs.Auth;
 public class ForgotPasswordRequest
 {
     [Required]
-    [StringLength(14, MinimumLength = 14)]
-    public string NationalID { get; set; } = null!;
+    [RegularExpression(@"^\d{14}$",
+       ErrorMessage = "National ID must contain exactly 14 digits.")]
+    public string NationalID { get; set; } = string.Empty;
 
     [Required]
-    public AccountType AccountType { get; set; }
+    [RegularExpression(
+        @"^(?:01[0125]\d{8}|\+?20(?:10|11|12|15)\d{8})$",
+        ErrorMessage = "Enter a valid Egyptian mobile number.")]
+    public string PhoneNumber { get; set; } = string.Empty;
+
+    [Required]
+    [EnumDataType(typeof(AccountType))]
+    public AccountType? AccountType { get; set; }
 }

@@ -21,4 +21,11 @@ public class PasswordResetOtp
     public DateTime? ResetTokenExpiresAtUtc { get; set; }
 
     public bool ResetUsed { get; set; }
+    /// <summary>
+    /// front
+    /// </summary>
+    public Guid? RequestId { get; set; }
+
+    public DateTime? LastSentAtUtc { get; set; }
+
 }
