@@ -1,4 +1,5 @@
 ﻿using Sejily.API.DTOs.Dependents;
+using Sejily.API.Models.Enums;
 
 namespace Sejily.API.Services;
 
@@ -8,14 +9,6 @@ public interface IDependentService
         int guardianUserId, AddDependentRequest request);
 
     Task<List<DependentResponse>> GetDependentsAsync(int guardianUserId);
-}
-
-public enum AddDependentStatus
-{
-    Created,
-    GuardianNotFound,   // the caller has no Patient profile (F1.1 dependency)
-    Conflict,           // National ID or Health Card Number already exists
-    Invalid             // rejected by ASP.NET Core Identity
 }
 
 public record AddDependentResult(
