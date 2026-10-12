@@ -4,6 +4,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Sejily.API.Data;
 using Sejily.API.Models.Entities;
+using Sejily.API.Services;
+
 using System.Text;
 using System.Text.Json.Serialization;
 namespace Sejily.API;
@@ -71,8 +73,8 @@ public class Program
         // 6. Swagger
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
-
-
+        // builder.Services.AddHttpClient<IOtpSmsSender, SmsMisrOtpSmsSender>();
+        builder.Services.AddScoped<IOtpSmsSender, ConsoleOtpSmsSender>();
         // 7. Build the application
         var app = builder.Build();
 

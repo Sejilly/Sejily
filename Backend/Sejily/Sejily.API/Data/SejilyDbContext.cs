@@ -32,12 +32,27 @@ public class SejilyDbContext : IdentityDbContext<User, IdentityRole<int>, int>
     public DbSet<PatientChronicDisease> PatientChronicDiseases { get; set; }
     public DbSet<PatientAllergy> PatientAllergies { get; set; }
     public DbSet<PatientFrequentMedication> PatientFrequentMedications { get; set; }
-
-
+    
+    /// //////////
+    public DbSet<PasswordResetOtp> PasswordResetOtps { get; set; }
+    /// <param name="modelBuilder"></param>
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+        // =========================
+        // OTP
+        // =========================
+        modelBuilder.Entity<PasswordResetOtp>()
+       .HasKey(x => x.Id);
 
+        modelBuilder.Entity<PasswordResetOtp>()
+            .Property(x => x.OtpHash)
+            .HasMaxLength(64)
+            .IsRequired();
+
+        modelBuilder.Entity<PasswordResetOtp>()
+            .Property(x => x.ResetTokenHash)
+            .HasMaxLength(64);
         // =========================
         // User
         // =========================
@@ -48,8 +63,8 @@ public class SejilyDbContext : IdentityDbContext<User, IdentityRole<int>, int>
             .IsRequired();
 
         modelBuilder.Entity<User>()
-            .HasIndex(u => u.NationalID)
-            .IsUnique();
+        .HasIndex(u => new { u.NationalID, u.AccountType })
+        .IsUnique();
 
         modelBuilder.Entity<User>()
             .Property(u => u.FullName)
@@ -72,7 +87,7 @@ public class SejilyDbContext : IdentityDbContext<User, IdentityRole<int>, int>
         modelBuilder.Entity<Patient>()
             .Property(p => p.HealthCardNumber)
             .HasMaxLength(50)
-            .IsRequired();
+            ;
 
         modelBuilder.Entity<Patient>()
             .HasIndex(p => p.HealthCardNumber)
@@ -119,7 +134,7 @@ public class SejilyDbContext : IdentityDbContext<User, IdentityRole<int>, int>
             .HasOne(d => d.User)
             .WithOne(u => u.Doctor)
             .HasForeignKey<Doctor>(d => d.UserId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.NoAction);
 
 
         // =========================

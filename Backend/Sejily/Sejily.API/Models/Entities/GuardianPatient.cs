@@ -8,11 +8,11 @@ public class GuardianPatient
 
     public int PatientId { get; set; }
 
-    public RelationshipType Relationship { get; set; }
+    public RelationshipType Relationship { get; set; } 
 
     public VerificationStatus VerificationStatus { get; set; }
 
-    public DateTime? VerifiedAt { get; set; }
+    public DateTime? VerifiedAt { get; set; } 
 
     public Patient Guardian { get; set; } = null!;
 

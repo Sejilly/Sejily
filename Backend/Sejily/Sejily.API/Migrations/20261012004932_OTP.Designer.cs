@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Sejily.API.Data;
 
@@ -11,9 +12,11 @@ using Sejily.API.Data;
 namespace Sejily.API.Migrations
 {
     [DbContext(typeof(SejilyDbContext))]
-    partial class SejilyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20261012004932_OTP")]
+    partial class OTP
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

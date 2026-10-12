@@ -10,7 +10,8 @@ public class User : IdentityUser<int>
     public string FullName { get; set; } = null!;
     public string Address { get; set; } = null!;
     public DateTime DateOfBirth { get; set; }
-    public BloodType BloodType { get; set; }
+    public AccountType AccountType { get; set; }
+    // public BloodType BloodType { get; set; }
 
     // A user can have one profile based on the selected account type.
     public Patient? Patient { get; set; }
