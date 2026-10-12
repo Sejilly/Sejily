@@ -15,10 +15,6 @@ public class KinshipVerificationService : IKinshipVerificationService
 
     // F1.4 - SIMULATED kinship verification.
     // There is no real check here, so a valid request cannot fail.
-    //
-    // IMPORTANT: this is self-service on purpose (the guardian verifies their own
-    // link). When real verification arrives (admin review / documents), this
-    // endpoint must be removed or restricted, otherwise "Verified" means nothing.
     public async Task<VerifyKinshipResult> VerifyAsync(
         int guardianUserId, int dependentUserId)
     {
