@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Sejily.API.DTOs.Dependents;
-using Sejily.API.Models.Entities;
+using Sejily.API.Models.Enums;
 using Sejily.API.Services;
 using System.Security.Claims;
 

@@ -2,9 +2,10 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using Sejily.API.Data;
-using Sejily.API.Services;
 using Sejily.API.Models.Entities;
+using Sejily.API.Services;
 using System.Text;
 using System.Text.Json.Serialization;
 namespace Sejily.API;
@@ -74,9 +75,39 @@ public class Program
 
         // 6. Swagger
         builder.Services.AddEndpointsApiExplorer();
-        builder.Services.AddSwaggerGen();
+        //builder.Services.AddSwaggerGen();
 
+        //Add Authentication in swagger
+        builder.Services.AddSwaggerGen(options =>
+        {
+            options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+            {
+                Name = "Authorization",
+                Type = SecuritySchemeType.Http,
+                Scheme = "bearer",
+                BearerFormat = "JWT",
+                In = ParameterLocation.Header,
+                Description = "Paste the JWT only (without the word Bearer)."
+            });
 
+            options.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            Array.Empty<string>()
+        }
+    });
+        });
+
+        // builder.Services.AddHttpClient<IOtpSmsSender, SmsMisrOtpSmsSender>();
+        builder.Services.AddScoped<IOtpSmsSender, ConsoleOtpSmsSender>();
         // 7. Build the application
         var app = builder.Build();
 
