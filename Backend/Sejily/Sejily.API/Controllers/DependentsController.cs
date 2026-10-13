@@ -11,7 +11,7 @@ namespace Sejily.API.Controllers;
 // [Authorize(Policy = "PatientOnly")].
 [ApiController]
 [Route("api/[controller]")]
-[Authorize]
+[Authorize(Policy = "PersonalAccountOnly")]
 public class DependentsController : ControllerBase
 {
     private readonly IDependentService _dependentService;
