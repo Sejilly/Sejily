@@ -6,11 +6,10 @@ using System.Security.Claims;
 
 namespace Sejily.API.Controllers;
 
-// Requires a valid JWT. After the separate-accounts change, switch to
 // [Authorize(Policy = "PatientOnly")].
 [ApiController]
 [Route("api/dependents/{dependentId:int}/verification")]
-[Authorize]
+[Authorize(Policy = "PersonalAccountOnly")]
 public class KinshipVerificationController : ControllerBase
 {
     private readonly IKinshipVerificationService _verificationService;

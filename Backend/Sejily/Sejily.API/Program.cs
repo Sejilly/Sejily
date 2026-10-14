@@ -28,9 +28,6 @@ public class Program
             .AddEntityFrameworkStores<SejilyDbContext>()
             .AddDefaultTokenProviders();
 
-        builder.Services.AddScoped<IDependentService, DependentService>();
-        builder.Services.AddScoped<IKinshipVerificationService, KinshipVerificationService>();
-
         // 4. Configure JWT Authentication
         builder.Services
             .AddAuthentication(options =>
@@ -64,20 +61,34 @@ public class Program
                     };
             });
 
-        // 5. Register Controllers
-        builder.Services
-     .AddControllers()
-     .AddJsonOptions(options =>
-     {
-         options.JsonSerializerOptions.Converters.Add(
-             new JsonStringEnumConverter());
-     });
+            //add policies for account switching logic
+            builder.Services.AddAuthorization(options =>
+            {
+                options.AddPolicy("PatientOnly", p =>
+                    p.RequireClaim("AccountType", "Patient"));
+
+                options.AddPolicy("PersonalAccountOnly", p =>
+                {
+                    p.RequireClaim("AccountType", "Patient");
+                    p.RequireAssertion(ctx =>
+                        !ctx.User.HasClaim(c => c.Type == "actor_id"));
+                });
+            });
+
+            // 5. Register Controllers
+            builder.Services
+         .AddControllers()
+         .AddJsonOptions(options =>
+         {
+             options.JsonSerializerOptions.Converters.Add(
+                 new JsonStringEnumConverter());
+         });
 
         // 6. Swagger
         builder.Services.AddEndpointsApiExplorer();
         //builder.Services.AddSwaggerGen();
 
-        //Add Authentication in swagger
+        //Add Authentication capability in swagger
         builder.Services.AddSwaggerGen(options =>
         {
             options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
@@ -105,6 +116,11 @@ public class Program
         }
     });
         });
+
+        builder.Services.AddScoped<IDependentService, DependentService>();
+        builder.Services.AddScoped<IKinshipVerificationService, KinshipVerificationService>();
+        builder.Services.AddScoped<ITokenService, TokenService>();
+        builder.Services.AddScoped<IAccountSwitchingService, AccountSwitchingService>();
 
         // builder.Services.AddHttpClient<IOtpSmsSender, SmsMisrOtpSmsSender>();
         builder.Services.AddScoped<IOtpSmsSender, ConsoleOtpSmsSender>();
