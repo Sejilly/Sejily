@@ -1,0 +1,80 @@
+import 'package:flutter/material.dart';
+import 'package:mobile/pages/auth/sign_in/card.dart';
+import 'package:mobile/widgets/texttfild.dart';
+
+class SignIn extends StatefulWidget {
+  const SignIn({super.key});
+
+  @override
+  State<SignIn> createState() => _SignInState();
+}
+
+class _SignInState extends State<SignIn> {
+  late GlobalKey<FormState>_formkey;
+  late List<TextEditingController> _controller;
+  bool isSubmitted=false;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _formkey=GlobalKey<FormState>();
+    _controller=List.generate(2, (_)=>TextEditingController());
+  }
+  @override
+  void dispose() {
+   for(var x in _controller){
+    x.dispose();
+   }
+    super.dispose();
+    
+  }
+ 
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+                resizeToAvoidBottomInset: true,
+                backgroundColor: const Color(0xffF8FAFC),
+          body: 
+          SafeArea(
+            child:Cardd(title: "تسجيل الدخول", subtitle: "أهلاً بعودتك، يرجى إدخال بيانات حسابك",
+             wedget1: Texttfild(
+                                isSubmitted: isSubmitted,
+                                control:_controller[0], 
+                                lable: "الرقم القومي", 
+                                hint: "الرقم القومي",
+                                validator: (value) {
+                                  if(value==null||value.trim().isEmpty){
+                                    return "برجاء إدخال الرقم القومي";
+                                  }
+                                  else if( value.length <14){
+                                  return "الرقم القومي غيرمكتمل!";}
+                                  else if(value.length>14)
+                                  return "الرقم القومي غير صحيح";
+                                  return null;
+                                },),
+                                 wedget2: Texttfild(
+                                  isSubmitted: isSubmitted,
+                                  control: _controller[1],
+                                  lable: "كلمة المرور", 
+                                  hint: "••••••••••••••••",
+                                  lastpadding: false,
+                                  validator: (value) {
+                                    if(value==null||value.trim().isEmpty){
+                                      return "برجاء إدخال كلمة المرور ";
+                                    }
+                                    else{ 
+                                    if( value.length <8){
+                                    return "يجب أن تحتوى على 8 رموز على الأقل.";}
+                                    if(!value.contains(RegExp(r'[a-zA-Z]')))
+                                    {return "يجب أن تحتوي على حروف.";}
+                                    if(!value.contains(RegExp(r'[0-9]'))){
+                                      return "يجب أن تحتوي على أرقام.";
+                                    }
+                       
+                                    return null;}
+                                  },
+                                  ispassword: true,), formkey: _formkey,issignpage: true,onPressed: () {
+                                    
+                                  },)));
+  }
+}
