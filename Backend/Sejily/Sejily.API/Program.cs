@@ -67,6 +67,9 @@ public class Program
                 options.AddPolicy("PatientOnly", p =>
                     p.RequireClaim("AccountType", "Patient"));
 
+                options.AddPolicy("DoctorOnly", p =>
+                    p.RequireClaim("AccountType", "Doctor"));
+
                 options.AddPolicy("PersonalAccountOnly", p =>
                 {
                     p.RequireClaim("AccountType", "Patient");
@@ -121,6 +124,7 @@ public class Program
         builder.Services.AddScoped<IKinshipVerificationService, KinshipVerificationService>();
         builder.Services.AddScoped<ITokenService, TokenService>();
         builder.Services.AddScoped<IAccountSwitchingService, AccountSwitchingService>();
+        builder.Services.AddScoped<IDoctorWorkplaceService, DoctorWorkplaceService>();
 
         // builder.Services.AddHttpClient<IOtpSmsSender, SmsMisrOtpSmsSender>();
         builder.Services.AddScoped<IOtpSmsSender, ConsoleOtpSmsSender>();

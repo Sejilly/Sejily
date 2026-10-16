@@ -1,6 +1,5 @@
 ﻿using Sejily.API.Models.Enums;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations;
 namespace Sejily.API.DTOs.Auth;
 
 public class RegisterPatientRequest
