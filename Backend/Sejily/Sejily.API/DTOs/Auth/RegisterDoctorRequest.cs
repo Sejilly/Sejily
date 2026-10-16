@@ -1,6 +1,5 @@
 ﻿using Sejily.API.Models.Enums;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations;
 namespace Sejily.API.DTOs.Auth;
 
 public class RegisterDoctorRequest
@@ -9,7 +8,7 @@ public class RegisterDoctorRequest
     public string FullName { get; set; } = null!;
     public string Address { get; set; } = null!;
     public DateTime DateOfBirth { get; set; }
-   // public BloodType BloodType { get; set; }
+    // public BloodType BloodType { get; set; }
     public string PhoneNumber { get; set; } = null!;
     [Required]
     [StringLength(100, MinimumLength = 8)]
@@ -21,5 +20,10 @@ public class RegisterDoctorRequest
     public string SyndicateCardNumber { get; set; } = null!;
     public string MedicalLicenseNumber { get; set; } = null!;
     public string Specialization { get; set; } = null!;
+
+
+    [Required]
+    [MinLength(1, ErrorMessage = "At least one workplace is required.")]
+    public ICollection<MedicalWorkPlace> WorkPlaces { get; set; } = null!;
 
 }

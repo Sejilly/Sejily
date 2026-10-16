@@ -1,4 +1,6 @@
-﻿namespace Sejily.API.Models.Entities;
+﻿using Sejily.API.Models.Enums;
+
+namespace Sejily.API.Models.Entities;
 
 public class Workplace
 {
@@ -6,7 +8,7 @@ public class Workplace
 
     public string Name { get; set; } = null!;
 
-    public string Type { get; set; } = null!;
+    public MedicalWorkplaceType Type { get; set; }
 
     public string Address { get; set; } = null!;
 

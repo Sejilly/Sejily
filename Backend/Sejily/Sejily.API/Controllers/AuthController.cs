@@ -23,6 +23,7 @@ public class AuthController : ControllerBase
     private readonly SejilyDbContext _context;
     private readonly IConfiguration _configuration;
     private readonly IOtpSmsSender _otpSmsSender;
+    private readonly IDoctorWorkplaceService _doctorWorkplaceService;
 
     private const int OtpLifetimeMinutes = 5;
     private const int OtpResendCooldownSeconds = 60;
@@ -33,12 +34,14 @@ public class AuthController : ControllerBase
         UserManager<User> userManager,
         SejilyDbContext context,
         IConfiguration configuration,
-        IOtpSmsSender otpSmsSender)
+        IOtpSmsSender otpSmsSender,
+        IDoctorWorkplaceService doctorWorkplaceService)
     {
         _userManager = userManager;
         _context = context;
         _configuration = configuration;
         _otpSmsSender = otpSmsSender;
+        _doctorWorkplaceService = doctorWorkplaceService;
     }
 
     // =====================================
@@ -144,10 +147,23 @@ public class AuthController : ControllerBase
         _context.Doctors.Add(doctor);
         await _context.SaveChangesAsync();
 
+        var workplaces = await _doctorWorkplaceService.AddWorkplacesAsync(
+            doctor.UserId,
+            request.WorkPlaces);
+
+
         return Ok(new
         {
             message = "Doctor registered successfully.",
-            userId = user.Id
+            userId = user.Id,
+            doctor = new
+            {
+                doctor.SyndicateCardNumber,
+                doctor.MedicalLicenseNumber,
+                doctor.Specialization,
+                doctor.IsVerified
+            },
+            workplaces
         });
     }
 
