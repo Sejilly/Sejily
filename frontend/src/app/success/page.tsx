@@ -17,7 +17,7 @@ function success() {
                 shadow-[0px_0px_10px_rgba(56,161,105,0.15)] sm:gap-11 sm:p-8">
                 <div className="flex w-full flex-col items-center gap-6">
                     <Image
-                        src="/success.svg"
+                        src="/Sejily/success.svg"
                         alt="success-icon"
                         width={132}
                         height={132}

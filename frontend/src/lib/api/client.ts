@@ -8,8 +8,9 @@ import {
   MSG_UNAUTHORIZED,
 } from "./messages";
 
-/** Browser calls go to our own Next.js proxy (see app/api/proxy), never straight to ngrok. */
-const PROXY_BASE = "/api/proxy";
+const API_BASE = (
+  process.env.NEXT_PUBLIC_API_BASE_URL ?? ""
+).replace(/\/+$/, "");
 
 export class ApiError extends Error {
   /** HTTP status, or 0 when the request never reached the server. */
@@ -127,6 +128,12 @@ export async function request<T>(url: string, { method = "GET", body, signal }: 
 }
 
 /** Call a backend route, e.g. apiFetch("/api/Auth/register/doctor", { method: "POST", body }). */
-export function apiFetch<T>(path: string, options?: RequestOptions): Promise<T> {
-  return request<T>(`${PROXY_BASE}${path.startsWith("/") ? path : `/${path}`}`, options);
+export function apiFetch<T>(
+  path: string,
+  options?: RequestOptions
+): Promise<T> {
+  return request<T>(
+    `${API_BASE}${path.startsWith("/") ? path : `/${path}`}`,
+    options
+  );
 }

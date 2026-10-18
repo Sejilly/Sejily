@@ -9,7 +9,7 @@ export default function ForgotPasswordPage() {
         <AuthPageShell header={<ForgotPasswordHeader />}>
             <AuthCard>
                 <AuthIntro
-                    src="/password.svg"
+                    src="/Sejily/password.svg"
                     alt="نسيت كلمة المرور"
                     title="نسيت كلمة المرور ؟"
                     description="أدخل بياناتك المسجلة للتحقق من هويتك واستعادة الحساب."

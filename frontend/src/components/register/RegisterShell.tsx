@@ -17,7 +17,7 @@ export function RegisterShell({ children }: { children: React.ReactNode }) {
   return (
     <div className="grid min-h-dvh lg:grid-cols-[minmax(300px,31%)_1fr]">
       <aside className="relative z-10 bg-white shadow-[4px_0_25px_0_#0000000D] px-5 py-6 sm:px-10 lg:px-20 lg:pl-6 lg:pr-22">
-        <Image src="/logo.svg" alt="سجلّي" width={120} height={40} priority className="h-9 w-auto" />
+        <Image src="/Sejily/logo.svg" alt="سجلّي" width={120} height={40} priority className="h-9 w-auto" />
         <h1 className="mt-6 text-xl font-bold text-ink lg:mt-12 lg:text-2xl">إنشاء حساب جديد</h1>
         <p className="mt-2 text-base text-ink">يرجى ملء البيانات التالية بدقة لإنشاء حسابك.</p>
         <div className="mt-6 lg:mt-10">
