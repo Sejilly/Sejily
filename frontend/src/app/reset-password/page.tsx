@@ -10,7 +10,7 @@ export default function ResetPasswordPage() {
         <AuthPageShell header={<BackHeader href={ROUTES.otp} />}>
             <AuthCard>
                 <AuthIntro
-                    src="/reset.svg"
+                    src="/Sejily/reset.svg"
                     alt="إعادة تعيين كلمة المرور"
                     title="إعادة تعيين كلمة المرور"
                     description="أنشئ كلمة مرور قوية وجديدة لحسابك."

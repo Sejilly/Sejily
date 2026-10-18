@@ -122,7 +122,7 @@ setFormError(failureMessage(result.reason));
     return (
         <AuthCard>
             <AuthIntro
-                src="/otp.svg"
+                src="/Sejily/otp.svg"
                 alt="رمز التحقق"
                 title="إدخال رمز التحقق"
                 description={

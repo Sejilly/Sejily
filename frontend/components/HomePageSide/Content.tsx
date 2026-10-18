@@ -17,7 +17,7 @@ function Content() {
             </div>
             <div className="relative hidden aspect-552/368 w-full lg:aspect-auto lg:flex lg:min-h-75 lg:flex-1">
                 <Image
-                    src="/home.svg"
+                    src="/Sejily/home.svg"
                     alt="لوحة إدارة سجلات المرضى"
                     fill
                     priority
