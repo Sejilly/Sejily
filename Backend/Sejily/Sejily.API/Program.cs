@@ -129,6 +129,20 @@ public class Program
         // builder.Services.AddHttpClient<IOtpSmsSender, SmsMisrOtpSmsSender>();
         builder.Services.AddScoped<IOtpSmsSender, ConsoleOtpSmsSender>();
         // 7. Build the application
+
+
+        builder.Services.AddCors(options =>
+        {
+            options.AddPolicy("FrontendPolicy", policy =>
+            {
+                policy
+                    .WithOrigins("http://localhost:3000")
+                    .AllowAnyHeader()
+                    .AllowAnyMethod();
+            });
+        });
+
+
         var app = builder.Build();
 
 
@@ -140,6 +154,10 @@ public class Program
         }
 
         app.UseHttpsRedirection();
+        
+        app.UseRouting();
+
+        app.UseCors("FrontendPolicy");
 
         app.UseAuthentication();
 

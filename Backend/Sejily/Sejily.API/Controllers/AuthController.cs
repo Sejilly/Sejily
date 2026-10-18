@@ -1,6 +1,7 @@
 ﻿
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Sejily.API.Data;
@@ -104,7 +105,7 @@ public class AuthController : ControllerBase
 
     [HttpPost("register/doctor")]
     public async Task<IActionResult> RegisterDoctor(
-        RegisterDoctorRequest request)
+     RegisterDoctorRequest request)
     {
         var existingUser = await _context.Users.AnyAsync(u =>
             u.NationalID == request.NationalID &&
@@ -112,59 +113,158 @@ public class AuthController : ControllerBase
 
         if (existingUser)
         {
-            return BadRequest(
-                "A Doctor account with this National ID already exists.");
-        }
-
-        var user = new User
-        {
-            UserName = $"{request.NationalID}_Doctor",
-            NationalID = request.NationalID,
-            AccountType = AccountType.Doctor,
-            FullName = request.FullName,
-            Address = request.Address,
-            DateOfBirth = request.DateOfBirth,
-            PhoneNumber = request.PhoneNumber
-        };
-
-        var result = await _userManager.CreateAsync(
-            user, request.Password);
-
-        if (!result.Succeeded)
-        {
-            return BadRequest(result.Errors);
-        }
-
-        var doctor = new Doctor
-        {
-            UserId = user.Id,
-            SyndicateCardNumber = request.SyndicateCardNumber,
-            MedicalLicenseNumber = request.MedicalLicenseNumber,
-            Specialization = request.Specialization,
-            IsVerified = false
-        };
-
-        _context.Doctors.Add(doctor);
-        await _context.SaveChangesAsync();
-
-        var workplaces = await _doctorWorkplaceService.AddWorkplacesAsync(
-            doctor.UserId,
-            request.WorkPlaces);
-
-
-        return Ok(new
-        {
-            message = "Doctor registered successfully.",
-            userId = user.Id,
-            doctor = new
+            return Conflict(new
             {
-                doctor.SyndicateCardNumber,
-                doctor.MedicalLicenseNumber,
-                doctor.Specialization,
-                doctor.IsVerified
-            },
-            workplaces
-        });
+                field = "nationalID",
+                message = "A Doctor account with this National ID already exists."
+            });
+        }
+
+        var existingMedicalLicense = await _context.Doctors
+            .AnyAsync(d =>
+                d.MedicalLicenseNumber == request.MedicalLicenseNumber);
+
+        if (existingMedicalLicense)
+        {
+            return Conflict(new
+            {
+                field = "medicalLicenseNumber",
+                message = "This medical license number is already registered."
+            });
+        }
+
+        var existingSyndicateCard = await _context.Doctors
+            .AnyAsync(d =>
+                d.SyndicateCardNumber == request.SyndicateCardNumber);
+
+        if (existingSyndicateCard)
+        {
+            return Conflict(new
+            {
+                field = "syndicateCardNumber",
+                message = "This syndicate card number is already registered."
+            });
+        }
+
+        await using var transaction =
+            await _context.Database.BeginTransactionAsync();
+
+        try
+        {
+            var user = new User
+            {
+                UserName = $"{request.NationalID}_Doctor",
+                NationalID = request.NationalID,
+                AccountType = AccountType.Doctor,
+                FullName = request.FullName,
+                Address = request.Address,
+                DateOfBirth = request.DateOfBirth,
+                PhoneNumber = request.PhoneNumber
+            };
+
+            var result = await _userManager.CreateAsync(
+                user, request.Password);
+
+            if (!result.Succeeded)
+            {
+                await transaction.RollbackAsync();
+
+                return BadRequest(new
+                {
+                    errors = result.Errors
+                        .Select(e => e.Description)
+                });
+            }
+
+            var doctor = new Doctor
+            {
+                UserId = user.Id,
+                SyndicateCardNumber = request.SyndicateCardNumber,
+                MedicalLicenseNumber = request.MedicalLicenseNumber,
+                Specialization = request.Specialization,
+                IsVerified = false
+            };
+
+            _context.Doctors.Add(doctor);
+            await _context.SaveChangesAsync();
+
+            var workplaces = await _doctorWorkplaceService.AddWorkplacesAsync(
+                doctor.UserId,
+                request.WorkPlaces);
+
+            await transaction.CommitAsync();
+
+            return Ok(new
+            {
+                message = "Doctor registered successfully.",
+                userId = user.Id,
+                doctor = new
+                {
+                    doctor.SyndicateCardNumber,
+                    doctor.MedicalLicenseNumber,
+                    doctor.Specialization,
+                    doctor.IsVerified
+                },
+                workplaces
+            });
+        }
+        catch (DbUpdateException ex)
+        {
+            await transaction.RollbackAsync();
+
+            var sqlException = ex.GetBaseException() as SqlException;
+
+            if (sqlException != null &&
+                sqlException.Number is 2601 or 2627)
+            {
+                var errorMessage = sqlException.Message;
+
+                if (errorMessage.Contains(
+                    "MedicalLicenseNumber",
+                    StringComparison.OrdinalIgnoreCase))
+                {
+                    return Conflict(new
+                    {
+                        field = "medicalLicenseNumber",
+                        message = "This medical license number is already registered."
+                    });
+                }
+
+                if (errorMessage.Contains(
+                    "SyndicateCardNumber",
+                    StringComparison.OrdinalIgnoreCase))
+                {
+                    return Conflict(new
+                    {
+                        field = "syndicateCardNumber",
+                        message = "This syndicate card number is already registered."
+                    });
+                }
+
+                if (errorMessage.Contains(
+                    "NationalID",
+                    StringComparison.OrdinalIgnoreCase))
+                {
+                    return Conflict(new
+                    {
+                        field = "nationalID",
+                        message = "A Doctor account with this National ID already exists."
+                    });
+                }
+
+                return Conflict(new
+                {
+                    message = "One of the unique values is already registered."
+                });
+            }
+
+            throw;
+        }
+        catch
+        {
+            await transaction.RollbackAsync();
+            throw;
+        }
     }
 
     // =====================================
