@@ -2,9 +2,10 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using Sejily.API.Data;
-using Sejily.API.Services;
 using Sejily.API.Models.Entities;
+using Sejily.API.Services;
 using System.Text;
 using System.Text.Json.Serialization;
 namespace Sejily.API;
@@ -26,9 +27,6 @@ public class Program
             .AddIdentity<User, IdentityRole<int>>()
             .AddEntityFrameworkStores<SejilyDbContext>()
             .AddDefaultTokenProviders();
-
-        builder.Services.AddScoped<IDependentService, DependentService>();
-        builder.Services.AddScoped<IKinshipVerificationService, KinshipVerificationService>();
 
         // 4. Configure JWT Authentication
         builder.Services
@@ -63,20 +61,73 @@ public class Program
                     };
             });
 
-        // 5. Register Controllers
-        builder.Services
-     .AddControllers()
-     .AddJsonOptions(options =>
-     {
-         options.JsonSerializerOptions.Converters.Add(
-             new JsonStringEnumConverter());
-     });
+            //add policies for account switching logic
+            builder.Services.AddAuthorization(options =>
+            {
+                options.AddPolicy("PatientOnly", p =>
+                    p.RequireClaim("AccountType", "Patient"));
+
+                options.AddPolicy("DoctorOnly", p =>
+                    p.RequireClaim("AccountType", "Doctor"));
+
+                options.AddPolicy("PersonalAccountOnly", p =>
+                {
+                    p.RequireClaim("AccountType", "Patient");
+                    p.RequireAssertion(ctx =>
+                        !ctx.User.HasClaim(c => c.Type == "actor_id"));
+                });
+            });
+
+            // 5. Register Controllers
+            builder.Services
+         .AddControllers()
+         .AddJsonOptions(options =>
+         {
+             options.JsonSerializerOptions.Converters.Add(
+                 new JsonStringEnumConverter());
+         });
 
         // 6. Swagger
         builder.Services.AddEndpointsApiExplorer();
-        builder.Services.AddSwaggerGen();
+        //builder.Services.AddSwaggerGen();
 
+        //Add Authentication capability in swagger
+        builder.Services.AddSwaggerGen(options =>
+        {
+            options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+            {
+                Name = "Authorization",
+                Type = SecuritySchemeType.Http,
+                Scheme = "bearer",
+                BearerFormat = "JWT",
+                In = ParameterLocation.Header,
+                Description = "Paste the JWT only (without the word Bearer)."
+            });
 
+            options.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            Array.Empty<string>()
+        }
+    });
+        });
+
+        builder.Services.AddScoped<IDependentService, DependentService>();
+        builder.Services.AddScoped<IKinshipVerificationService, KinshipVerificationService>();
+        builder.Services.AddScoped<ITokenService, TokenService>();
+        builder.Services.AddScoped<IAccountSwitchingService, AccountSwitchingService>();
+        builder.Services.AddScoped<IDoctorWorkplaceService, DoctorWorkplaceService>();
+
+        // builder.Services.AddHttpClient<IOtpSmsSender, SmsMisrOtpSmsSender>();
+        builder.Services.AddScoped<IOtpSmsSender, ConsoleOtpSmsSender>();
         // 7. Build the application
         var app = builder.Build();
 

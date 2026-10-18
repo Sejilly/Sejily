@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Sejily.API.DTOs.Dependents;
-using Sejily.API.Models.Entities;
+using Sejily.API.Models.Enums;
 using Sejily.API.Services;
 using System.Security.Claims;
 
@@ -11,7 +11,7 @@ namespace Sejily.API.Controllers;
 // [Authorize(Policy = "PatientOnly")].
 [ApiController]
 [Route("api/[controller]")]
-[Authorize]
+[Authorize(Policy = "PersonalAccountOnly")]
 public class DependentsController : ControllerBase
 {
     private readonly IDependentService _dependentService;

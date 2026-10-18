@@ -10,7 +10,7 @@ function Logo() {
                 سِجِلّي
             </h2>
             <Image
-                src="/logo.svg"
+                src="/logo-icon.svg"
                 alt="شعار سجلّي"
                 width={80}
                 height={80}

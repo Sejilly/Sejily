@@ -21,13 +21,13 @@ public class DependentService : IDependentService
     }
 
     // =========================
-    // F1.3 - Add a dependent
+    // Add a dependent
     // =========================
 
     public async Task<AddDependentResult> AddDependentAsync(
         int guardianUserId, AddDependentRequest request)
     {
-        // 1) Dependency on F1.1: the guardian must already be a registered patient
+        // the guardian must already be a registered patient
         var guardianIsPatient = await _context.Patients
             .AnyAsync(p => p.UserId == guardianUserId);
 
@@ -38,16 +38,18 @@ public class DependentService : IDependentService
                 Errors: new[] { "Only a registered patient can add a dependent." });
         }
 
-        // 2) Duplicates -> a clean 409 instead of a database error
-        if (await _userManager.FindByNameAsync(BuildUserName(request.NationalID)) != null)
+        // 2) The depenfent must not be registered before (a Duplicate)
+        if (await _context.Users.AnyAsync(u =>
+                u.NationalID == request.NationalID &&
+                u.AccountType == AccountType.Patient))
         {
             return new AddDependentResult(
                 AddDependentStatus.Conflict,
                 Errors: new[] { "National ID already exists." });
         }
 
-        if (await _context.Patients.AnyAsync(
-                p => p.HealthCardNumber == request.HealthCardNumber))
+        if (!string.IsNullOrWhiteSpace(request.HealthCardNumber) &&
+                await _context.Patients.AnyAsync(p => p.HealthCardNumber == request.HealthCardNumber))
         {
             return new AddDependentResult(
                 AddDependentStatus.Conflict,
@@ -55,7 +57,6 @@ public class DependentService : IDependentService
         }
 
         // 3) All-or-nothing: User + Patient + GuardianPatient are saved together.
-        //    UserManager.CreateAsync uses the same DbContext, so it joins this transaction.
         await using var transaction = await _context.Database.BeginTransactionAsync();
 
         try
@@ -65,10 +66,10 @@ public class DependentService : IDependentService
             {
                 UserName = BuildUserName(request.NationalID),
                 NationalID = request.NationalID,
+                AccountType = AccountType.Patient,
                 FullName = request.FullName,
                 Address = request.Address,
                 DateOfBirth = request.DateOfBirth,
-                BloodType = request.BloodType,
                 PhoneNumber = request.PhoneNumber
             };
 
@@ -84,6 +85,7 @@ public class DependentService : IDependentService
             _context.Patients.Add(new Patient
             {
                 UserId = user.Id,
+                BloodType = request.BloodType,
                 HealthCardNumber = request.HealthCardNumber
             });
 
@@ -111,7 +113,7 @@ public class DependentService : IDependentService
     }
 
     // ======================================
-    // F1.3 - Dependents shown in the guardian's account
+    // Dependents shown in the guardian's account
     // ======================================
 
     public async Task<List<DependentResponse>> GetDependentsAsync(int guardianUserId)
@@ -131,7 +133,5 @@ public class DependentService : IDependentService
     }
 
     // The single place that decides the Identity UserName of a patient account.
-    // F1.1 currently uses the National ID directly. When the separate
-    // doctor/patient accounts change lands, only this method needs to change.
-    private static string BuildUserName(string nationalId) => nationalId;
+    private static string BuildUserName(string nationalId) => $"{nationalId}_Patient";
 }

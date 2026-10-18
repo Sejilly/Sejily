@@ -303,20 +303,72 @@ namespace Sejily.API.Migrations
                     b.ToTable("Medications");
                 });
 
+            modelBuilder.Entity("Sejily.API.Models.Entities.PasswordResetOtp", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("ExpiresAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("FailedAttempts")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("LastSentAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("OtpConsumed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("OtpHash")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("nvarchar(64)");
+
+                    b.Property<Guid?>("RequestId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("ResetTokenExpiresAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ResetTokenHash")
+                        .HasMaxLength(64)
+                        .HasColumnType("nvarchar(64)");
+
+                    b.Property<bool>("ResetUsed")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("VerifiedAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("PasswordResetOtps");
+                });
+
             modelBuilder.Entity("Sejily.API.Models.Entities.Patient", b =>
                 {
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
+                    b.Property<int>("BloodType")
+                        .HasColumnType("int");
+
                     b.Property<string>("HealthCardNumber")
-                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
                     b.HasKey("UserId");
 
                     b.HasIndex("HealthCardNumber")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[HealthCardNumber] IS NOT NULL");
 
                     b.ToTable("Patients");
                 });
@@ -377,13 +429,13 @@ namespace Sejily.API.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
+                    b.Property<int>("AccountType")
+                        .HasColumnType("int");
+
                     b.Property<string>("Address")
                         .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
-
-                    b.Property<int>("BloodType")
-                        .HasColumnType("int");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
@@ -444,9 +496,6 @@ namespace Sejily.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("NationalID")
-                        .IsUnique();
-
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
 
@@ -454,6 +503,9 @@ namespace Sejily.API.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
+
+                    b.HasIndex("NationalID", "AccountType")
+                        .IsUnique();
 
                     b.ToTable("AspNetUsers", (string)null);
                 });
@@ -547,7 +599,7 @@ namespace Sejily.API.Migrations
                     b.HasOne("Sejily.API.Models.Entities.User", "User")
                         .WithOne("Doctor")
                         .HasForeignKey("Sejily.API.Models.Entities.Doctor", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("User");
