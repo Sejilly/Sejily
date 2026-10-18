@@ -153,6 +153,12 @@ public class Program
 
         var app = builder.Build();
 
+        using (var scope = app.Services.CreateScope())
+        {
+            var db = scope.ServiceProvider.GetRequiredService<SejilyDbContext>();
+            db.Database.Migrate();
+        }
+
 
         // 8. Configure HTTP request pipeline
         if (app.Environment.IsDevelopment())
@@ -165,7 +171,7 @@ public class Program
         
         app.UseRouting();
 
-        app.UseCors("FrontendPolicy");
+        app.UseCors("Frontend");
 
         app.UseAuthentication();
 
