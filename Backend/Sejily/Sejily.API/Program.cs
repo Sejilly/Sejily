@@ -142,6 +142,14 @@ public class Program
             });
         });
 
+        builder.Services.AddCors(options =>
+        {
+            options.AddPolicy("Frontend", policy =>
+                policy.WithOrigins(
+                        "https://sejilly.github.io")
+                      .WithHeaders("Content-Type", "Authorization")
+                      .WithMethods("GET", "POST", "PUT", "PATCH", "DELETE"));
+        });
 
         var app = builder.Build();
 
