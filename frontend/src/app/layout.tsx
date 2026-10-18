@@ -1,19 +1,8 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Vazirmatn } from "next/font/google";
+import { Vazirmatn } from "next/font/google";
 import "./globals.css";
 import { RegisterProvider } from "@/features/register/RegisterContext";
-import { RegisterShell } from "@/components/register/RegisterShell";
 import "react-datepicker/dist/react-datepicker.css";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 const font = Vazirmatn({
   subsets: ["arabic", "latin"],
@@ -29,9 +18,9 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="ar" dir="rtl" className={font.variable}>
-      <body className="font-sans antialiased">
-        <RegisterProvider> {children}</RegisterProvider>
+    <html lang="ar" dir="rtl" className={`${font.variable} h-full antialiased`}>
+      <body className="min-h-full flex flex-col font-sans">
+        <RegisterProvider>{children}</RegisterProvider>
       </body>
     </html>
   );
