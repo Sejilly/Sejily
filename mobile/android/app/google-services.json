@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "383330079477",
+    "project_id": "sejilly",
+    "storage_bucket": "sejilly.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:383330079477:android:ea73fd0eb783eca2236bbc",
+        "android_client_info": {
+          "package_name": "com.sejilly.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAQTPJPqpqRuBdaJkioyRx6l59QyIcsgQ0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

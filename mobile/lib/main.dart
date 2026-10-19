@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mobile/auth/cubitstates.dart/cubite.dart';
 import 'package:mobile/splash.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
@@ -11,7 +13,8 @@ const MyApp({super.key});
 
 @override
 Widget build(BuildContext context) {
-  return MaterialApp(
+  return BlocProvider(create: (_)=>Cubiteauth(),
+    child:  MaterialApp(
     debugShowCheckedModeBanner: false,
     title: 'Sejily',
     theme: ThemeData(
@@ -45,7 +48,8 @@ Widget build(BuildContext context) {
        child: child!,
     );
     },
-    home: const Splash()
+    
+    home:  const Splash())
   );
 }
 }

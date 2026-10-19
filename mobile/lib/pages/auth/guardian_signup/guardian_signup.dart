@@ -16,9 +16,10 @@ class GuardianSignup extends StatefulWidget {
 }
 
 class _GuardianSignupState extends State<GuardianSignup> {
+  late List<List<String>?> selectedItemsLists;
    bool isSubmitted=false;
   int currentindex=0;
-  List<Widget> get steps=>[Step1(controllertext: controllertext,isSubmitted: isSubmitted,),Step2Guargian(isVerified: isVerified,onselect: onselect,isloading: isloading,controllertext: controllertext,),Step3(isSubmitted:isSubmitted ,controllertext: controllertext)];
+  List<Widget> get steps=>[Step1(controllertext: controllertext,isSubmitted: isSubmitted,),Step2Guargian(isVerified: isVerified,onselect: onselect,isloading: isloading,controllertext: controllertext,),Step3(selectedItemsLists: selectedItemsLists,isSubmitted:isSubmitted ,controllertext: controllertext)];
   late List<TextEditingController> controllertext;
   PageController sign=PageController();
   List arr=["البيانات","الوصاية","الصحية"];
@@ -28,6 +29,7 @@ class _GuardianSignupState extends State<GuardianSignup> {
   Future<void> onselect()async{
     setState(() {
       isloading=true;
+      isVerified=false;
     });
     await Future.delayed(Duration(seconds: 2));
     setState(() {
@@ -38,6 +40,7 @@ class _GuardianSignupState extends State<GuardianSignup> {
   @override
   void initState() {
     // TODO: implement initState
+    selectedItemsLists=List.generate(3, (_)=>null);
     super.initState();
     controllertext=List.generate(13, (_)=>TextEditingController());
     _formkey=List.generate(3, (_)=> GlobalKey<FormState>()) ;

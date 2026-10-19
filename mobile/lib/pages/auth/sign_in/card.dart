@@ -12,7 +12,9 @@ class Cardd extends StatefulWidget {
   final Widget wedget2;
   final bool issignpage;
   final dynamic Function()? onPressed;
-  const Cardd({required this.onPressed,super.key, required this.title, required this.subtitle, required this.wedget1, required this.wedget2, required this.formkey, this.issignpage=false});
+  final bool haserror;
+  final String error;
+  const Cardd({required this.error,required this.haserror,required this.onPressed,super.key, required this.title, required this.subtitle, required this.wedget1, required this.wedget2, required this.formkey, this.issignpage=false});
 
  
 
@@ -68,6 +70,27 @@ class _CarddState extends State<Cardd> {
                                                   offset: Offset(0, -1) )]),
                                                   recognizer: TapGestureRecognizer()..onTap=(){Navigator.push(context, MaterialPageRoute(builder: (_)=> RestorePassword()));})):SizedBox.shrink(),
                                                   SizedBox(height: 15,),
+                                                  if (widget.haserror) Container(
+                                                    width: double.infinity,
+                                                   
+                                                    decoration: BoxDecoration(
+                                                      color: Color(0xffDC2626).withOpacity(0.05),
+                                                      borderRadius: BorderRadius.circular(8),
+                                                      border: Border.all(color: Color(0xffDC2626).withOpacity(0.5))
+                                                    ),
+                                                    child:Padding(
+                                                      padding: const EdgeInsets.only(right: 8,left: 16,top: 12,bottom: 12),
+                                                      child: Row(children: [
+                                                        SvgPicture.asset("assets/images/icons/error-circle.svg"),SizedBox(width: 8,),
+                                                        Flexible(
+                                                          child: Text.rich(TextSpan(text:  widget.error,
+                                                          style: TextStyle(color: Color(0xffDC2626)))),
+                                                        )
+
+                                                      ],),
+                                                    ) ,
+                                                  ) ,
+                                                  if (widget.haserror) const SizedBox(height: 32,) ,
                                                    Buttonn(width: double.infinity, text: 'التالي', onPressed:widget.onPressed,)
                                          ],
                                        ),

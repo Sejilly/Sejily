@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/function.dart';
-import 'package:mobile/widgets/texttfild.dart';
+import 'package:mobile/widgets/field/texttfild.dart';
 
 
 class Step1 extends StatelessWidget {

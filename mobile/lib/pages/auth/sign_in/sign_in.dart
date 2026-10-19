@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mobile/auth/cubitstates.dart/cubite.dart';
+import 'package:mobile/auth/cubitstates.dart/states.dart';
 import 'package:mobile/pages/auth/sign_in/card.dart';
-import 'package:mobile/widgets/texttfild.dart';
+import 'package:mobile/widgets/field/texttfild.dart';
 
 class SignIn extends StatefulWidget {
   const SignIn({super.key});
@@ -12,6 +15,7 @@ class SignIn extends StatefulWidget {
 class _SignInState extends State<SignIn> {
   late GlobalKey<FormState>_formkey;
   late List<TextEditingController> _controller;
+  
   bool isSubmitted=false;
   @override
   void initState() {
@@ -31,17 +35,31 @@ class _SignInState extends State<SignIn> {
  
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+   return  BlocListener<Cubiteauth, Stateauth>(
+  listener: (context, state) {
+    if (state is Loginsuccess) {
+      print('sucsseslogin');
+      // هنا تضعين الانتقال للشاشة الرئيسية مثلاً:
+      // Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => HomeScreen()));
+    }
+  },
+   child:  BlocBuilder<Cubiteauth,Stateauth>(builder: (context,State){
+       var cubit=BlocProvider.of<Cubiteauth>(context);
+      return Scaffold(
                 resizeToAvoidBottomInset: true,
                 backgroundColor: const Color(0xffF8FAFC),
           body: 
           SafeArea(
-            child:Cardd(title: "تسجيل الدخول", subtitle: "أهلاً بعودتك، يرجى إدخال بيانات حسابك",
+            child:Cardd(
+              error: (cubit.state is Loginsuccess)?'صحح':(cubit.state is Loginwrongpassorid)?'الرقم القومي أو كلمة المرور غير صحيحة، يرجى التحقق من البيانات المدخلة.':
+              (cubit.state is Loginerror )?'تعذر تسجيل الدخول حالياً، يرجى التحقق من اتصال الإنترنت والمحاولة لاحقاً.':'',
+              haserror: cubit.state is Loginsuccess||(cubit.state is Loginwrongpassorid)||(cubit.state is Loginerror),title: "تسجيل الدخول", subtitle: "أهلاً بعودتك، يرجى إدخال بيانات حسابك",
              wedget1: Texttfild(
                                 isSubmitted: isSubmitted,
                                 control:_controller[0], 
                                 lable: "الرقم القومي", 
                                 hint: "الرقم القومي",
+                               
                                 validator: (value) {
                                   if(value==null||value.trim().isEmpty){
                                     return "برجاء إدخال الرقم القومي";
@@ -74,7 +92,11 @@ class _SignInState extends State<SignIn> {
                                     return null;}
                                   },
                                   ispassword: true,), formkey: _formkey,issignpage: true,onPressed: () {
+                                  isSubmitted=true;
+                                  if(_formkey.currentState!.validate()){
+                                    cubit.login(id: _controller[0].text.trim(), password: _controller[1].text.trim()); 
+                                                              }
                                     
-                                  },)));
+                                  },)));}));
   }
 }
