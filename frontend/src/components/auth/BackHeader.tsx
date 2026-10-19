@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { IoArrowForwardSharp } from "react-icons/io5";
-import Logo from "../ui/Logo";
+import Logo from "@/components/auth-ui/Logo";
 
 export default function BackHeader({ href }: { href: string }) {
     return (

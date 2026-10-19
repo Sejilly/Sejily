@@ -1,8 +1,8 @@
-import AuthPageShell from "../../../components/auth/AuthPageShell";
-import AuthCard from "../../../components/auth/AuthCard";
-import AuthIntro from "../../../components/auth/AuthIntro";
-import ForgotPasswordHeader from "../../../components/forgot-password/ForgotPasswordHeader";
-import ForgotPasswordForm from "../../../components/forgot-password/ForgotPasswordForm";
+import AuthPageShell from "@/components/auth/AuthPageShell";
+import AuthCard from "@/components/auth/AuthCard";
+import AuthIntro from "@/components/auth/AuthIntro";
+import ForgotPasswordHeader from "@/components/forgot-password/ForgotPasswordHeader";
+import ForgotPasswordForm from "@/components/forgot-password/ForgotPasswordForm";
 
 export default function ForgotPasswordPage() {
     return (

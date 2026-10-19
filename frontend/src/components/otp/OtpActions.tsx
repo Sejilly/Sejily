@@ -1,6 +1,6 @@
-import { Button } from "../ui/Button";
-import FormAlert from "../ui/FormAlert";
-import SubmitButton from "../ui/SubmitButton";
+import { Button } from "@/components/auth-ui/Button";
+import FormAlert from "@/components/auth-ui/FormAlert";
+import SubmitButton from "@/components/auth-ui/SubmitButton";
 
 type Props = {
     time: string;

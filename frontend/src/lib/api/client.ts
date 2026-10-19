@@ -13,13 +13,9 @@ const API_BASE = (
 ).replace(/\/+$/, "");
 
 export class ApiError extends Error {
-  /** HTTP status, or 0 when the request never reached the server. */
   readonly status: number;
-  /** Parsed body (object / array / string) or null. */
   readonly body: unknown;
-  /** Ready-to-display Arabic messages (never empty). */
   readonly messages: string[];
-  /** Untranslated server messages/codes (for matching, e.g. duplicate account). */
   readonly raw: string[];
 
   constructor(status: number, body: unknown, messages: string[], raw: string[]) {
@@ -32,7 +28,6 @@ export class ApiError extends Error {
   }
 }
 
-/** The API answers with JSON, plain strings, or an empty body — parse defensively. */
 async function readBody(res: Response): Promise<unknown> {
   const text = await res.text();
   if (!text) return null;
@@ -43,15 +38,6 @@ async function readBody(res: Response): Promise<unknown> {
   }
 }
 
-/**
- * Handles every error shape from the guide:
- *  - plain string                       "A Doctor account with this National ID already exists."
- *  - Identity array                     [{ code, description }]
- *  - { message }                        e.g. 429 / 503 / reset failures
- *  - { message, errors: string[] }      reset-password failure
- *  - { errors: string[] }               dependents / switching
- *  - ProblemDetails { errors: { Field: string[] } }   model-validation 400
- */
 function extract(body: unknown): { messages: string[]; raw: string[] } {
   const messages: string[] = [];
   const raw: string[] = [];
@@ -63,7 +49,6 @@ function extract(body: unknown): { messages: string[]; raw: string[] } {
   };
 
   if (typeof body === "string") {
-    // An HTML page (e.g. ngrok interstitial / 404) is not a useful message.
     if (!/^\s*</.test(body)) push(body);
   } else if (Array.isArray(body)) {
     for (const item of body) {
@@ -97,7 +82,6 @@ function fallbackFor(status: number): string {
 async function toError(res: Response): Promise<ApiError> {
   const body = await readBody(res);
   const { messages, raw } = extract(body);
-  // 5xx / empty bodies: use a friendly generic message rather than server internals.
   const list = res.status >= 500 || !messages.length ? [fallbackFor(res.status)] : messages;
   return new ApiError(res.status, body, list, raw);
 }
@@ -108,7 +92,6 @@ export interface RequestOptions {
   signal?: AbortSignal;
 }
 
-/** Low-level request: returns parsed JSON (or null) on 2xx, throws ApiError otherwise. */
 export async function request<T>(url: string, { method = "GET", body, signal }: RequestOptions = {}): Promise<T> {
   let res: Response;
   try {
@@ -127,7 +110,6 @@ export async function request<T>(url: string, { method = "GET", body, signal }: 
   return (await readBody(res)) as T;
 }
 
-/** Call a backend route, e.g. apiFetch("/api/Auth/register/doctor", { method: "POST", body }). */
 export function apiFetch<T>(
   path: string,
   options?: RequestOptions

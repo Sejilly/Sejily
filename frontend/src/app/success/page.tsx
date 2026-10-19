@@ -1,7 +1,7 @@
 import Image from "next/image";
-import Background from "../../../components/ui/Background";
-import Logo from "../../../components/ui/Logo";
-import { ButtonLink } from "../../../components/ui/Button";
+import Background from "@/components/auth-ui/Background";
+import Logo from "@/components/auth-ui/Logo";
+import { ButtonLink } from "@/components/auth-ui/Button";
 
 function success() {
     return (

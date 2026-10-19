@@ -1,4 +1,4 @@
-import Logo from "../ui/Logo";
+import Logo from "@/components/auth-ui/Logo";
 import Content from "./Content";
 
 function Aside() {

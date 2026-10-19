@@ -1,33 +1,43 @@
 
-import { api, toApiFailure } from "./api";
+import { apiFetch, ApiError } from "./api/client";
 
-type NetworkStatus = number | null;
+const ACCOUNT_TYPE = "Doctor";
 
-function isNetworkFailure(status: NetworkStatus): boolean {
-  return status === null || status === 502;
+type Failure<R extends string> = {
+  ok: false;
+  reason: R;
+};
+
+function statusOf(err: unknown): number | null {
+  return err instanceof ApiError ? err.status : null;
 }
-
-// -------------------- Login --------------------
 
 export type LoginResult =
   | { ok: true }
-  | {
-      ok: false;
-      reason: "invalid_credentials" | "too_many" | "server" | "network";
-    };
+  | Failure<"invalid_credentials" | "too_many" | "server" | "network">;
 
 export async function login(
   nationalId: string,
   password: string
 ): Promise<LoginResult> {
   try {
-    await api.post("/auth/login", { nationalId, password });
+    const data = await apiFetch<{ token: string }>(
+      "/api/Auth/login/doctor",
+      {
+        method: "POST",
+        body: { nationalID: nationalId, password },
+      }
+    );
+
+    if (data?.token) {
+      sessionStorage.setItem("sejily_token", data.token);
+    }
 
     return { ok: true };
   } catch (err: unknown) {
-    const { status } = toApiFailure(err);
+    const status = statusOf(err);
 
-    if (isNetworkFailure(status)) {
+    if (status === 0) {
       return { ok: false, reason: "network" };
     }
 
@@ -43,38 +53,36 @@ export async function login(
   }
 }
 
-// -------------------- Password Reset Request --------------------
-
 export type ResetRequestResult =
   | { ok: true; requestId: string }
-  | { ok: false; reason: "too_many" | "server" | "network" };
+  | Failure<"too_many" | "server" | "network">;
 
 export async function requestPasswordReset(
   nationalId: string,
   phone: string
 ): Promise<ResetRequestResult> {
   try {
-    const { data } = await api.post<{ requestId?: unknown }>(
-      "/auth/forgot-password",
-      { nationalId, phone }
+    const data = await apiFetch<{ requestId?: string }>(
+      "/api/Auth/forgot-password",
+      {
+        method: "POST",
+        body: {
+          nationalID: nationalId,
+          phoneNumber: phone,
+          accountType: ACCOUNT_TYPE,
+        },
+      }
     );
 
-    // تأكد أن الـ Backend رجّع requestId صالحًا.
-    if (
-      typeof data?.requestId !== "string" ||
-      data.requestId.trim().length === 0
-    ) {
+    if (!data?.requestId) {
       return { ok: false, reason: "server" };
     }
 
-    return {
-      ok: true,
-      requestId: data.requestId,
-    };
+    return { ok: true, requestId: data.requestId };
   } catch (err: unknown) {
-    const { status } = toApiFailure(err);
+    const status = statusOf(err);
 
-    if (isNetworkFailure(status)) {
+    if (status === 0) {
       return { ok: false, reason: "network" };
     }
 
@@ -86,24 +94,25 @@ export async function requestPasswordReset(
   }
 }
 
-// -------------------- Verify OTP --------------------
-
 export type VerifyOtpResult =
   | { ok: true }
-  | { ok: false; reason: "invalid" | "server" | "network" };
+  | Failure<"invalid" | "server" | "network">;
 
 export async function verifyOtp(
   requestId: string,
   code: string
 ): Promise<VerifyOtpResult> {
   try {
-    await api.post("/auth/verify-otp", { requestId, code });
+    await apiFetch("/api/Auth/verify-otp", {
+      method: "POST",
+      body: { requestId, otp: code },
+    });
 
     return { ok: true };
   } catch (err: unknown) {
-    const { status } = toApiFailure(err);
+    const status = statusOf(err);
 
-    if (isNetworkFailure(status)) {
+    if (status === 0) {
       return { ok: false, reason: "network" };
     }
 
@@ -115,26 +124,24 @@ export async function verifyOtp(
   }
 }
 
-// -------------------- Resend OTP --------------------
-
 export type ResendOtpResult =
   | { ok: true }
-  | {
-      ok: false;
-      reason: "too_many" | "restart" | "server" | "network";
-    };
+  | Failure<"too_many" | "restart" | "server" | "network">;
 
 export async function resendOtp(
   requestId: string
 ): Promise<ResendOtpResult> {
   try {
-    await api.post("/auth/resend-otp", { requestId });
+    await apiFetch("/api/Auth/resend-otp", {
+      method: "POST",
+      body: { requestId },
+    });
 
     return { ok: true };
   } catch (err: unknown) {
-    const { status } = toApiFailure(err);
+    const status = statusOf(err);
 
-    if (isNetworkFailure(status)) {
+    if (status === 0) {
       return { ok: false, reason: "network" };
     }
 
@@ -142,9 +149,6 @@ export async function resendOtp(
       return { ok: false, reason: "too_many" };
     }
 
-    // وفقًا لعقد الـ Backend:
-    // 400: الطلب منتهي أو مستخدم.
-    // 503: فشل الإرسال وتم حذف الطلب.
     if (status === 400 || status === 503) {
       return { ok: false, reason: "restart" };
     }
@@ -153,33 +157,36 @@ export async function resendOtp(
   }
 }
 
-// -------------------- Reset Password --------------------
-
 export type ResetPasswordResult =
   | { ok: true }
-  | { ok: false; reason: "expired" | "weak" | "server" | "network" };
+  | Failure<"expired" | "weak" | "server" | "network">;
 
 export async function resetPassword(
   requestId: string,
   password: string
 ): Promise<ResetPasswordResult> {
   try {
-    await api.post("/auth/reset-password", { requestId, password });
+    await apiFetch("/api/Auth/reset-password", {
+      method: "POST",
+      body: {
+        requestId,
+        newPassword: password,
+        confirmPassword: password,
+      },
+    });
 
     return { ok: true };
   } catch (err: unknown) {
-    const { status } = toApiFailure(err);
+    const status = statusOf(err);
 
-    if (isNetworkFailure(status)) {
+    if (status === 0) {
       return { ok: false, reason: "network" };
     }
 
-    // نفترض أن الـ Backend يستخدم 410 لانتهاء صلاحية الطلب.
     if (status === 410) {
       return { ok: false, reason: "expired" };
     }
 
-    // نفترض أن 400 و422 يُستخدمان لرفض كلمة المرور.
     if (status === 400 || status === 422) {
       return { ok: false, reason: "weak" };
     }

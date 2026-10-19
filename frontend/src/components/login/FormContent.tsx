@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import FormButtons from "./FormButtons";
 import FormInputs from "./FormInputs";
-import FormAlert from "../ui/FormAlert";
+import FormAlert from "@/components/auth-ui/FormAlert";
 import { useFormFields } from "../../lib/useFormFields";
 import { login } from "../../lib/auth";
 import {

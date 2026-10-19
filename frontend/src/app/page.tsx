@@ -1,6 +1,6 @@
-import Background from "../../components/ui/Background";
-import LoginForm from "../../components/login/LoginForm";
-import Aside from "../../components/HomePageSide/Aside";
+import Background from "@/components/auth-ui/Background";
+import LoginForm from "@/components/login/LoginForm";
+import Aside from "@/components/HomePageSide/Aside";
 
 export default function Home() {
   return (
