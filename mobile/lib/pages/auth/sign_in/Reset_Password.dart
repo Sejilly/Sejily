@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mobile/auth/cubitstates.dart/cubite.dart';
+import 'package:mobile/auth/cubitstates.dart/states.dart';
 import 'package:mobile/pages/auth/sign_in/card.dart';
+import 'package:mobile/pages/auth/sign_in/sign_in.dart';
 import 'package:mobile/widgets/rule/passwordrule.dart';
-import 'package:mobile/widgets/texttfild.dart';
+import 'package:mobile/widgets/field/texttfild.dart';
 
 class Reset_Password extends StatefulWidget {
   const Reset_Password({super.key});
@@ -32,11 +36,25 @@ class _SignInState extends State<Reset_Password> {
   bool fouc=false;
   @override
   Widget build(BuildContext context) {
+     return  BlocListener<Cubiteauth, Stateauth>(
+  listener: (context, stateS) {
+    if (stateS is Resetpasssuccess) {
+      print('sucsseslogin');
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (_)=>SignIn()));
+    }
+     
+  },
+   child:  BlocBuilder<Cubiteauth,Stateauth>(builder: (context,State){
+    
+       var cubit=BlocProvider.of<Cubiteauth>(context);
     return Scaffold(
                 backgroundColor: const Color(0xffF8FAFC),
           body: 
           SafeArea(
-            child: Cardd(title: "إعادة تعيين كلمة المرور", subtitle: "أنشئ كلمة مرور قوية وجديدة لحسابك.", 
+            child: Cardd(haserror: cubit.state is Resetpasserror|| cubit.state is Resetpassexpired,error: 
+           cubit.state is Resetpassexpired? 'انتهت صلاحية طلب إعادة تعيين كلمة المرور، يرجى البدء من جديد':
+           cubit.state is Resetpasserror?'حدث خطأ ما أثناء إعادة تعيين كلمة المرور، يرجى المحاولة مرة أخرى':''
+           ,title: "إعادة تعيين كلمة المرور", subtitle: "أنشئ كلمة مرور قوية وجديدة لحسابك.", 
             wedget1:Texttfild(
                   isSubmitted: isSubmitted,
                   control: _controller[0],
@@ -87,98 +105,12 @@ class _SignInState extends State<Reset_Password> {
                   ,fouc?
                   Passwordrule(passcontroller: _controller[1]):SizedBox.shrink()
           ,],
-                  ), formkey: _formkey,onPressed: (){},)
-            /**Padding(
-              padding: const EdgeInsets.symmetric(horizontal:24,vertical: 16),
-              child: Stack(
-                children: [
-                  SingleChildScrollView(
-                    child: Container(
-                     
-                     decoration: BoxDecoration(color: const Color(0xffffffff),borderRadius: BorderRadius.circular(12)),
-                     child: Padding(
-                       padding: const EdgeInsets.symmetric(vertical: 16),
-                       child: Column(
-                        children: [
-                        const Text("إستعادة كلمة المرور",style: TextStyle(color: Color(0xff0B192C),fontSize: 18,fontWeight: FontWeight.w600),),
-                        const SizedBox(height: 4,),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 58),
-                          child: Text.rich(textAlign: TextAlign.center,TextSpan(text:"أدخل بياناتك المسجلة للتحقق من هويتك واستعادة الحساب.",style:TextStyle(color: Color(0xff475569),fontSize: 12)  )),
-                        ),
-                        const SizedBox(height: 32,),
-                         Form(
-                          key:_formkey,
-                           child: Column(
-                             children: [
-                               Texttfild(
-                                isSubmitted: isSubmitted,
-                                control:_controller[0], 
-                                lable: "الرقم القومي", 
-                                hint: "الرقم القومي",
-                                validator: (value) {
-                                  if(value==null||value.trim().isEmpty){
-                                    return "برجاء إدخال الرقم القومي";
-                                  }
-                                  else if( value.length <14){
-                                  return "الرقم القومي غيرمكتمل!";}
-                                  else if(value.length>14)
-                                  return "الرقم القومي غير صحيح";
-                                  return null;
-                                },),
-                                Texttfild(
-                                  isSubmitted: isSubmitted,
-                                    control: _controller[1],
-                                    lable: "رقم الهاتف المحمول", 
-                                    hint: "01X  XXXX  XXXX",
-                                    validator: (value) {
-                                      if(value==null||value.trim().isEmpty){
-                                        return "برجاء إدخال رقم الهاتف";
-                                      }
-                                      else if(value.length!=11){
-                                        return "رقم الهاتف غير صحيح";
-                                      }
-                                      return null;
-                                    },
-                                      icon:"assets/images/icons/carbon_phone-incoming.svg",
-                                      isicon: true,),
-                                   Padding(
-                                     padding: const EdgeInsets.symmetric(horizontal: 16),
-                                     child: SizedBox(
-                                      width: double.infinity,
-                                       child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.end,
-                                         children: [
-                                            SizedBox(height: 15,),
-                                            Buttonn(width: double.infinity, text: 'التالي', onPressed: () {  },)
-                                         ],
-                                       ),
-                                     ),
-                                   )
-                             ],
-                           ),
-                            
-                         ),
-                       
-                               
-                       
-                        ],
-                       ),
-                     ),
-                    
-                    
-                                  
-                      
-                    ),
-                    
-                ),
-                    Positioned(
-                       top: 4,
-                        right: 4,
-                       child:IconButton(onPressed: (){
-                        Navigator.pop(context);
-                       }, icon: SvgPicture.asset("assets/images/icons/eva_arrow-back-outline.svg")))
-])),**/
-          ));
+                  ), formkey: _formkey,onPressed: (){
+                    if(_formkey.currentState!.validate()){
+                      cubit.resetpassword(password: _controller[0].text.trim(), confirmPassword: _controller[1].text.trim());
+                    }
+                  },)
+            
+          ));}));
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class Texttfild extends StatefulWidget {
@@ -15,7 +16,13 @@ class Texttfild extends StatefulWidget {
   final ispassword;
   final bool isSubmitted;
   final bool lastpadding;
-  const Texttfild({this.lastpadding=true, required this.isSubmitted,this.haserror,this.ispassword=false,this.curser=true,this.icon,this.isicon=false,required this.control, super.key, required this.lable,required this.hint,this.validator,this.ontap,this.readonly=false});
+  final bool number;
+  final int? maxlength;
+  final bool phone;
+  final bool optional;
+  final bool odd;
+  final bool enable;
+  const Texttfild({this.enable=true,this.optional=false,this.odd=false,this.phone=false,this.maxlength,this.number=false,this.lastpadding=true, required this.isSubmitted,this.haserror,this.ispassword=false,this.curser=true,this.icon,this.isicon=false,required this.control, super.key, required this.lable,required this.hint,this.validator,this.ontap,this.readonly=false});
 
   @override
   State<Texttfild> createState() => _TexttfildState();
@@ -75,7 +82,8 @@ class _TexttfildState extends State<Texttfild> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(widget.lable,style: const TextStyle(fontSize: 14,color: Color(0xff0B192C)),),
+          Text.rich(TextSpan(text:  widget.lable,style: TextStyle(color: Color(0xff0B192C)),
+          children: widget.optional?[TextSpan(text:widget.odd? ' (إن وُجد)':' (إن وُجدت)',style: TextStyle(color: Color(0XFF94A3B8)))]:[]),),
               const SizedBox(height: 4,),
               SizedBox(
                 height: 50,
@@ -97,7 +105,11 @@ class _TexttfildState extends State<Texttfild> {
                     onTap: widget.ontap,
                     readOnly: widget.readonly,
                     validator: widget.validator,
+                    maxLength: widget.maxlength,
+                    keyboardType: widget.number?TextInputType.number:widget.phone?TextInputType.phone:null,
+                    inputFormatters:  widget.phone||widget.number?[FilteringTextInputFormatter.digitsOnly,LengthLimitingTextInputFormatter(widget.maxlength)]:[],
                     decoration:InputDecoration(
+                    counterText: "",
                     constraints: BoxConstraints(
                       maxHeight: 50,
                       minHeight: 50
@@ -136,7 +148,7 @@ class _TexttfildState extends State<Texttfild> {
                     ),
                     hintText: widget.hint,
                     errorStyle: TextStyle(height: 0,fontSize: 0),
-                    hintStyle: const TextStyle(fontSize: 14, color:  Color(0xff475569),fontWeight: FontWeight.w400),),
+                    hintStyle: const TextStyle(fontSize: 14, color:  Color(0xff94A3B8),fontWeight: FontWeight.w400),),
                     showCursor: widget.curser,
                     cursorColor: const Color(0xff2B6CB0),
                     focusNode: foucs,

@@ -33,7 +33,7 @@ class _BarAuthState extends State<BarAuth> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-                  padding: const EdgeInsets.only(top: 16, bottom: 24,right: 16,left: 16),
+                  padding: const EdgeInsets.only(top: 24, bottom: 24,right: 16,left: 16),
                   child: Column(
                     children: [
                       Text(widget.title,style: const TextStyle(color: Color(0xff0B192C),fontSize: 18,fontWeight: FontWeight.w600),),

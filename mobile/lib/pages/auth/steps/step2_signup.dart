@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/widgets/rule/passwordrule.dart';
-import 'package:mobile/widgets/texttfild.dart';
+import 'package:mobile/widgets/field/texttfild.dart';
 
 
 class Step2 extends StatefulWidget {
@@ -38,6 +38,7 @@ class _Step2State extends State<Step2> {
               ),
         Texttfild(
           isSubmitted: widget.isSubmitted,
+          optional: true,
           control: widget.controllertext[5],
           lable:"رقم البطاقة الصحية (إن وُجدت)" ,
           hint:"رقم البطاقة الصحية" ,

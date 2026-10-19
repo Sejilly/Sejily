@@ -16,9 +16,10 @@ class SignUpProcess extends StatefulWidget {
 }
 
 class _SignUpProcess_1State extends State<SignUpProcess> {
+   late List<List<String>?> selectedItemsLists;
   bool isSubmitted=false;
   int currentindex=0;
-  List<Widget> get steps=>[Step1(controllertext: controllertext,isSubmitted: isSubmitted,),Step2(isSubmitted: isSubmitted,controllertext: controllertext),Step3(isSubmitted:isSubmitted ,controllertext: controllertext)];
+  List<Widget> get steps=>[Step1(controllertext: controllertext,isSubmitted: isSubmitted,),Step2(isSubmitted: isSubmitted,controllertext: controllertext),Step3(selectedItemsLists: selectedItemsLists,isSubmitted:isSubmitted ,controllertext: controllertext)];
   late List<TextEditingController> controllertext;
   PageController sign=PageController();
   List arr=["البيانات","الأمان","الصحية"];
@@ -27,6 +28,7 @@ class _SignUpProcess_1State extends State<SignUpProcess> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    selectedItemsLists=List.generate(3, (_)=>null);
     controllertext=List.generate(13, (_)=>TextEditingController());
     _formkey=List.generate(3, (_)=> GlobalKey<FormState>()) ;
   }
