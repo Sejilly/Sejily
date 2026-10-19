@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
 
 export default function RegisterIndex() {
-  redirect("/register/account");
+  redirect("/register/personal");
 }
