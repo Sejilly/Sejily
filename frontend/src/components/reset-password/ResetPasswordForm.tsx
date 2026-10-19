@@ -2,9 +2,9 @@
 
 import { useEffect, useState, type SyntheticEvent } from "react";
 import { useRouter } from "next/navigation";
-import PasswordField from "../ui/PasswordField";
-import FormAlert from "../ui/FormAlert";
-import SubmitButton from "../ui/SubmitButton";
+import PasswordField from "@/components/auth-ui/PasswordField";
+import FormAlert from "@/components/auth-ui/FormAlert";
+import SubmitButton from "@/components/auth-ui/SubmitButton";
 import { useFormFields } from "../../lib/useFormFields";
 import { resetPassword } from "../../lib/auth";
 import {

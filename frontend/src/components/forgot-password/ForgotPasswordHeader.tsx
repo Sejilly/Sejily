@@ -1,5 +1,5 @@
 import Link from "next/link";
-import Logo from "../ui/Logo";
+import Logo from "@/components/auth-ui/Logo";
 import { ROUTES } from "../../lib/routes";
 
 export default function ForgotPasswordHeader() {

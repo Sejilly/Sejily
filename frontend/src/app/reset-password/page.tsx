@@ -1,9 +1,9 @@
-import AuthPageShell from "../../../components/auth/AuthPageShell";
-import AuthCard from "../../../components/auth/AuthCard";
-import AuthIntro from "../../../components/auth/AuthIntro";
-import BackHeader from "../../../components/auth/BackHeader";
-import ResetPasswordForm from "../../../components/reset-password/ResetPasswordForm";
-import { ROUTES } from "../../../lib/routes";
+import AuthPageShell from "@/components/auth/AuthPageShell";
+import AuthCard from "@/components/auth/AuthCard";
+import AuthIntro from "@/components/auth/AuthIntro";
+import BackHeader from "@/components/auth/BackHeader";
+import ResetPasswordForm from "@/components/reset-password/ResetPasswordForm";
+import { ROUTES } from "@/lib/routes";
 
 export default function ResetPasswordPage() {
     return (

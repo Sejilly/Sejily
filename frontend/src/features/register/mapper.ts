@@ -1,11 +1,6 @@
 import type { RegisterDoctorRequest } from "@/lib/api/types";
 import type { RegisterData } from "./types";
 
-/**
- * Converts the multi-step form state into the body of POST /api/Auth/register/doctor.
- *  - `email` is not part of the API contract, so it is intentionally not sent.
- *  - `bloodType` is not sent (the guide's doctor example does not include it).
- */
 export function toRegisterDoctorRequest(d: RegisterData): RegisterDoctorRequest {
   return {
     nationalID: d.personal.nationalId.trim(),
@@ -27,7 +22,6 @@ export function toRegisterDoctorRequest(d: RegisterData): RegisterDoctorRequest 
   };
 }
 
-/** True when the earlier steps were skipped (e.g. the user opened /register/account directly). */
 export function isRegistrationIncomplete(d: RegisterData): boolean {
   return (
     !d.personal.nationalId ||

@@ -1,5 +1,5 @@
-import TextField from "../ui/TextField";
-import PhoneField from "../ui/PhoneField";
+import TextField from "@/components/auth-ui/TextField";
+import PhoneField from "@/components/auth-ui/PhoneField";
 import { toEnglishDigits } from "../../lib/validators";
 
 export type ForgotField = "nationalId" | "phone";
