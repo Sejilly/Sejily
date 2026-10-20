@@ -65,7 +65,7 @@ function FormContent() {
         <form
             onSubmit={handleSubmit}
             noValidate
-            className="flex w-full flex-col items-start justify-center gap-10"
+            className="flex w-full flex-col items-start justify-center gap-10 "
         >
             <div className="flex w-full flex-col items-start gap-5">
                 <FormInputs
@@ -76,7 +76,7 @@ function FormContent() {
                     passwordAction={
                         <Link
                             href={ROUTES.forgotPassword}
-                            className="text-xs leading-4.5 font-normal text-[#2B6CB0] underline"
+                            className="text-xs leading-4.5 font-normal text-brand-blue underline"
                         >
                             نسيت كلمة المرور؟
                         </Link>

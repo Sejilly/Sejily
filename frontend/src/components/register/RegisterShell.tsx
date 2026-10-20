@@ -28,7 +28,7 @@ export function RegisterShell({ children }: { children: React.ReactNode }) {
       <div className="flex flex-col bg-surface px-5 py-6 sm:px-10 lg:px-12 lg:py-10">
         <p className="self-end text-sm text-ink/70 pl-8">
           لديك حساب بالفعل؟{" "}
-          <Link href="/login" className="font-semibold text-brand-blue hover:underline">
+          <Link href="/" className="font-semibold text-brand-blue hover:underline">
             تسجيل الدخول
           </Link>
         </p>
