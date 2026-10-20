@@ -1,6 +1,7 @@
 import { ButtonLink } from "@/components/auth-ui/Button";
 import SubmitButton from "@/components/auth-ui/SubmitButton";
 import TextDivider from "@/components/auth-ui/TextDivider";
+import { ROUTES } from "@/lib/routes";
 
 function FormButtons({ loading = false }: { loading?: boolean }) {
     return (
@@ -9,7 +10,7 @@ function FormButtons({ loading = false }: { loading?: boolean }) {
                 سجل الدخول
             </SubmitButton>
             <TextDivider>لا تملك حساب بعد ؟</TextDivider>
-            <ButtonLink href="/register">إنشاء حساب جديد</ButtonLink>
+            <ButtonLink href={ROUTES.register}>إنشاء حساب جديد</ButtonLink>
         </div>
     );
 }
