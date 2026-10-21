@@ -30,7 +30,7 @@ type Props = InputHTMLAttributes<HTMLInputElement> & {
 
 export const shellClass = (invalid?: boolean, disabled?: boolean, success?: boolean,) =>
   cn(
-    "relative flex h-12 items-center rounded-lg border bg-white transition-colors",
+    "relative flex h-12 items-center rounded-lg border bg-white transition-colors overflow-hidden",
     "focus-within:border-brand-blue focus-within:ring-2 focus-within:ring-brand-blue/20",
     success
       ? "border-emerald-600 border ring-emerald-600/20"

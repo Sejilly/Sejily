@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { PhoneIcon } from "@/components/icons";
+import { SmallCheckIcon,CheckIcon, PhoneIcon, BeError } from "@/components/icons";
 import { BackLink, Button } from "@/components/ui/Button";
 import { Field } from "@/components/ui/Field";
 import { PasswordInput } from "@/components/ui/PasswordInput";
@@ -12,27 +12,38 @@ import { FormHeader } from "@/components/register/FormHeader";
 import { VERIFYING_HREF } from "@/features/register/constants";
 import { useRegister } from "@/features/register/RegisterContext";
 import { useForm } from "@/features/register/UseForm";
-import { validateAccount } from "@/features/register/validation";
+import { validateAccount,getPasswordRequirements} from "@/features/register/validation";
 import { RegisterShell } from "@/components/register/RegisterShell";
 import { registerDoctor } from "@/lib/api/auth";
 import { ApiError } from "@/lib/api/client";
-import { DUPLICATE_ACCOUNT_RE, MSG_GENERIC } from "@/lib/api/messages";
+import { MSG_GENERIC } from "@/lib/api/messages";
 import { isRegistrationIncomplete, toRegisterDoctorRequest } from "@/features/register/mapper";
 
 export default function AccountPage() {
   const router = useRouter();
-  const { data, update } = useRegister();
-  const { errors, bind, handleSubmit } = useForm(data.account, validateAccount);
+const {
+  data,
+  update,
+  duplicateField,
+  setDuplicateField,
+} = useRegister();
+ const { values, errors, bind, handleSubmit } = useForm(
+  data.account,
+  validateAccount,
+);
+
+const passwordRequirements = getPasswordRequirements(values.password);
 ///
   const [submitting, setSubmitting] = useState(false);
-  const [serverErrors, setServerErrors] = useState<string[]>([]);
-  const [duplicate, setDuplicate] = useState(false);
+
+const [serverErrors, setServerErrors] = useState<string[]>([]);
+
 
    const onValid = async (account: typeof data.account) => {
     if (submitting) return;
     update("account", account);
-    setServerErrors([]);
-    setDuplicate(false);
+setServerErrors([]);
+setDuplicateField(null);
 
     const next = { ...data, account };
     if (isRegistrationIncomplete(next)) {
@@ -47,14 +58,35 @@ export default function AccountPage() {
       update("account", { ...account, password: "", confirmPassword: "" });
       router.push(VERIFYING_HREF);
     } catch (e) {
-      if (e instanceof ApiError) {
-        setServerErrors(e.messages);
-        setDuplicate((e.status === 400 || e.status === 409) && e.raw.some((m) => DUPLICATE_ACCOUNT_RE.test(m)));
-      } else {
-        setServerErrors([MSG_GENERIC]);
-      }
-      setSubmitting(false);
+  if (e instanceof ApiError) {
+    const body = e.body as {
+      field?: string;
+      message?: string;
+    } | null;
+
+    const field = body?.field;
+
+    if (
+      (e.status === 400 || e.status === 409) &&
+      (
+        field === "nationalID" ||
+        field === "syndicateCardNumber" ||
+        field === "medicalLicenseNumber"
+      )
+    ) {
+      setDuplicateField(field);
+      setServerErrors([]);
+    } else {
+      setServerErrors(e.messages);
+      setDuplicateField(null);
     }
+  } else {
+    setServerErrors([MSG_GENERIC]);
+    setDuplicateField(null);
+  }
+
+  setSubmitting(false);
+}
   };
 
 
@@ -88,31 +120,85 @@ export default function AccountPage() {
         <Field id="email" label="البريد الإلكتروني" optional error={errors.email}>
           <TextInput id="email" type="email" dir="ltr" className="text-right" placeholder="أدخل البريد الإلكتروني" {...bind("email")} />
         </Field>
-        <Field id="password" label="تعيين كلمة المرور" error={errors.password}>
-          <PasswordInput id="password" autoComplete="new-password" placeholder="••••••••" {...bind("password")} />
-        </Field>
+
+<Field id="password" label="تعيين كلمة المرور" error={errors.password}>
+  <PasswordInput
+    id="password"
+    autoComplete="new-password"
+    placeholder="••••••••"
+    {...bind("password")}
+  />
+
+  <ul dir="rtl" className="mt-3 space-y-2">
+    {passwordRequirements.map((requirement) => (
+      <li
+        key={requirement.id}
+        className={`flex items-center gap-2 text-xs transition-colors ${
+          requirement.passed ? "text-success" : "text-disabled"
+        }`}
+      >
+        <span
+          aria-hidden="true"
+        >
+          {requirement.passed ? <SmallCheckIcon className="text-success" /> : <SmallCheckIcon className="text-disabled" />}
+        </span>
+
+        <span>{requirement.label}</span>
+      </li>
+    ))}
+  </ul>
+</Field>
+
         <Field id="confirmPassword" label="تأكيد كلمة المرور" error={errors.confirmPassword}>
           <PasswordInput id="confirmPassword" autoComplete="new-password" placeholder="••••••••" {...bind("confirmPassword")} />
         </Field>
         {/*new for integration */}
-        {serverErrors.length > 0 && (
-          <div role="alert" className="space-y-1 rounded-lg border border-danger/30 bg-danger/5 px-4 py-3 text-sm text-danger">
-            {serverErrors.map((m, i) => (
-              <p key={i}>{m}</p>
-            ))}
-            {duplicate && (
-              <p className="pt-1 text-ink">
-                <Link href="/register/personal" className="font-semibold text-brand-blue hover:underline">
-                  تعديل الرقم القومي
-                </Link>
-                {" · "}
-                <Link href="/login" className="font-semibold text-brand-blue hover:underline">
-                  تسجيل الدخول
-                </Link>
-              </p>
-            )}
-          </div>
-        )}
+
+{/* ///////////////////////////////////////////////////////////////// */}
+{(serverErrors.length > 0 || duplicateField) && (
+  <div
+    role="alert"
+    className="flex gap-2  rounded-lg border border-be-error/50 bg-be-error/5 px-4 py-3 text-sm text-be-error"
+  >
+   {duplicateField ? (
+      <>
+      <BeError/>
+        <p className="font-normal">
+          {duplicateField === "nationalID"
+            ? "الرقم القومي مُسجَل مسبقاً!"
+            : duplicateField === "syndicateCardNumber"
+              ? "رقم قيد النقابة مُسجَل مسبقاً!  "
+              : "رقم ترخيص مزاولة المهنة مُسجَل مسبقاً!  "}
+          <Link
+            href={
+              duplicateField === "nationalID"
+                ? "/register/personal"
+                : "/register/professional"
+            }
+            className="font-bold text-be-error-link underline"
+          >
+            اضغط لتعديله
+          </Link>
+
+          {" أو هل لديك حساب بالفعل؟ "}
+
+          <Link
+            href="/login"
+            className="font-bold text-be-error-link underline"
+          >
+            تسجيل الدخول
+          </Link>
+        </p>
+      </>
+ ) : (
+      serverErrors.map((message, index) => (
+        <p key={index}>{message}</p>
+      ))
+    )}
+  </div>
+  )}
+
+
         
         {/*}
         <div className="pt-6">
