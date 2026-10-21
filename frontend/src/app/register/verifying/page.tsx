@@ -19,7 +19,7 @@ export default function VerifyingPage() {
       setTimeout(() => setVerifiedCount(1), 1000),
       setTimeout(() => setVerifiedCount(2), 2000),
       setTimeout(() => setVerifiedCount(3), 3000),
-      setTimeout(() => router.replace("/"), 5000),
+      setTimeout(() => router.replace("/success"), 5000),
     ];
 
     return () => timers.forEach(clearTimeout);
@@ -57,7 +57,7 @@ export default function VerifyingPage() {
 
             return (
               <div key={field.id} className="[&_label]:text-disabled!">
-                <Field id={field.id} label={field.label}>
+                <Field id={field.id} label={field.label} >
                   <TextInput
                     id={field.id}
                     disabled
@@ -67,8 +67,8 @@ export default function VerifyingPage() {
                   
                     endAdornment={
                       isVerified ? (
-                        <span className="flex size-8 items-center justify-center rounded-full bg-green-600 text-white">
-                          <CheckIcon width={44} height={44}/>
+                        <span className="flex size-8 items-center justify-center rounded-full bg-success text-white">
+                          <CheckIcon width={30} height={30}/>
                         </span>
                       ) : undefined
                     }
