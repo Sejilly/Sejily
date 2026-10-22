@@ -142,7 +142,8 @@ public class Program
             });
         });
 
-
+        builder.Services.AddHostedService<
+   PatientRegistrationCleanupService>();
         var app = builder.Build();
 
 
@@ -165,8 +166,10 @@ public class Program
 
         app.MapControllers();
 
-
+        //clean the mobile requestid registration records
+       
         // 9. Run the application
+
         app.Run();
     }
 }
