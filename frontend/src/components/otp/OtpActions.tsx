@@ -17,7 +17,7 @@ export default function OtpActions({
 }: Props) {
     return (
         <div className="flex w-full flex-col items-center gap-5">
-            <p className="text-center text-xs leading-4.5 font-normal text-[#475569]">
+            <p className="text-center text-xs leading-4.5 font-normal text-secondary">
                 {expired ? (
                     "انتهت صلاحية هذا الرمز"
                 ) : (

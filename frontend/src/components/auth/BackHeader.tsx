@@ -9,7 +9,7 @@ export default function BackHeader({ href }: { href: string }) {
                 href={href}
                 dir="rtl"
                 className="flex shrink-0 items-center gap-2 text-sm leading-5.5 font-normal
-                text-[#475569] hover:text-[#0B192C]"
+                text-secondary hover:text-ink"
             >
                 <IoArrowForwardSharp aria-hidden className="text-[#334155]" />
                 رجوع

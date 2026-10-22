@@ -159,7 +159,7 @@ export async function resendOtp(
 
 export type ResetPasswordResult =
   | { ok: true }
-  | Failure<"expired" | "weak" | "server" | "network">;
+  | (Failure<"expired" | "weak" | "server" | "network"> & { messages?: string[] });
 
 export async function resetPassword(
   requestId: string,
@@ -168,29 +168,19 @@ export async function resetPassword(
   try {
     await apiFetch("/api/Auth/reset-password", {
       method: "POST",
-      body: {
-        requestId,
-        newPassword: password,
-        confirmPassword: password,
-      },
+      body: { requestId, newPassword: password, confirmPassword: password },
     });
-
     return { ok: true };
-  } catch (err: unknown) {
-    const status = statusOf(err);
-
-    if (status === 0) {
-      return { ok: false, reason: "network" };
+  } catch (err) {
+    const s = statusOf(err);
+    if (s === 0) return { ok: false, reason: "network" };
+    if (s === 400 || s === 422) {
+      return {
+        ok: false,
+        reason: "weak",
+        messages: err instanceof ApiError ? err.messages : [],
+      };
     }
-
-    if (status === 410) {
-      return { ok: false, reason: "expired" };
-    }
-
-    if (status === 400 || status === 422) {
-      return { ok: false, reason: "weak" };
-    }
-
     return { ok: false, reason: "server" };
   }
 }

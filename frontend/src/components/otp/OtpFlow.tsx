@@ -142,7 +142,7 @@ setFormError(failureMessage(result.reason));
                         disabled={verifying}
                     />
                     {codeError && (
-                        <p role="alert" className="text-center text-xs leading-4.5 text-[#B91C1C]">
+                        <p role="alert" className="text-center text-xs leading-4.5 text-danger">
                             {codeError}
                         </p>
                     )}

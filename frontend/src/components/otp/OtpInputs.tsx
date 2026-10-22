@@ -82,10 +82,10 @@ export default function OtpInputs({ digits, onChange, hasError = false, disabled
                     onPaste={handlePaste}
                     onFocus={(e) => e.target.select()}
                     className={`h-12 min-w-0 flex-1 rounded-lg border bg-white text-center text-xl font-bold
-                        text-[#0B192C] outline-none transition-[border-color,box-shadow] sm:h-16 sm:text-2xl md:h-18 ${
+                        text-ink outline-none transition-[border-color,box-shadow] sm:h-16 sm:text-2xl md:h-18 ${
                         hasError
-                            ? "border-[#B91C1C] shadow-[0_0_6px_rgba(185,28,28,0.25)]"
-                            : "border-[#CBD5E1] focus:border-[#2B6CB0] focus:shadow-[0_0_6px_rgba(43,108,176,0.25)]"
+                            ? "border-danger shadow-[0_0_6px_rgba(185,28,28,0.25)]"
+                            : "border-line focus:border-[#2B6CB0] focus:shadow-[0_0_6px_rgba(43,108,176,0.25)]"
                     }`}
                 />
             ))}

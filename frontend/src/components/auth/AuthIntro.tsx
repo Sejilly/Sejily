@@ -15,8 +15,8 @@ export default function AuthIntro({ src, alt, title, description }: Props) {
                 <Image src={src} alt={alt} fill sizes="179px" priority className="object-contain" />
             </div>
             <div className="flex w-full flex-col items-center gap-2">
-                <h1 className="text-center text-2xl leading-8 font-bold text-[#0B192C]">{title}</h1>
-                <p className="max-w-md text-center text-xs leading-4.5 font-normal text-[#475569]">
+                <h1 className="text-center text-2xl leading-8 font-bold text-ink">{title}</h1>
+                <p className="max-w-md text-center text-xs leading-4.5 font-normal text-secondary">
                     {description}
                 </p>
             </div>

@@ -4,7 +4,7 @@ export const NATIONAL_ID_REQUIRED_ERROR = "الرقم القومي مطلوب";
 
 export const PASSWORD_REQUIRED_ERROR = "كلمة المرور مطلوبة";
 export const PASSWORD_ERROR =
-  "كلمة السر يجب أن تكون على الأقل 8 خانات من حروف و أرقام";
+  "كلمة السر يجب أن تكون 8 خانات على الأقل وتحتوي على حرف كبير وحرف صغير ورقم ورمز خاص";
 export const WRONG_PASSWORD_ERROR = "الرقم القومي أو كلمة السر غير صحيحة";
 
 export const PHONE_ERROR = "برجاء إدخال رقم تليفون صحيح";
@@ -43,15 +43,17 @@ export const toEnglishDigits = (v: string) =>
 export function getPasswordRules(value: string) {
   return [
     { id: "length", label: "يجب أن تحتوى على 8 رموز على الأقل.", passed: value.length >= 8 },
-    { id: "letters", label: "يجب أن تحتوي على حروف.", passed: /\p{L}/u.test(value) },
-    { id: "digits", label: "يجب أن تحتوي على أرقام.", passed: /\p{Nd}/u.test(value) },
+    { id: "digit", label: "يجب أن تحتوي على رقم واحد على الأقل.", passed: /\d/.test(value) },
+    { id: "upper", label: "حرف إنجليزي كبير واحد على الأقل (A-Z).", passed: /[A-Z]/.test(value) },
+    { id: "lower", label: "حرف إنجليزي صغير واحد على الأقل (a-z).", passed: /[a-z]/.test(value) },
+    { id: "symbol", label: "رمز خاص واحد على الأقل (مثل !@#$%).", passed: /[^A-Za-z0-9\s]/.test(value) },
   ];
 }
 
 export const validateNationalId = (v: string) => {
   if (v.length === 0) return NATIONAL_ID_REQUIRED_ERROR;
   if (/^\d{14}$/.test(v)) return undefined;
-  if (/^\d{1,13}$/.test(v)) return NATIONAL_ID_INCOMPLETE_ERROR; // غير مكتمل
+  if (/^\d{1,13}$/.test(v)) return NATIONAL_ID_INCOMPLETE_ERROR;
   return NATIONAL_ID_ERROR;
 };
 
@@ -59,6 +61,9 @@ export const validatePassword = (v: string) => {
   if (v.length === 0) return PASSWORD_REQUIRED_ERROR;
   return getPasswordRules(v).every((r) => r.passed) ? undefined : PASSWORD_ERROR;
 };
+
+export const validateLoginPassword = (v: string) =>
+  v.length === 0 ? PASSWORD_REQUIRED_ERROR : undefined;
 
 
 const VALID_PREFIXES = ["010", "011", "012", "015"];
