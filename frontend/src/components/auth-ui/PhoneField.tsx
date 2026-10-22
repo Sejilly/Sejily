@@ -13,7 +13,7 @@ export default function PhoneField({ className = "", ...props }: PhoneFieldProps
             leading={
                 <>
                     <FiPhoneIncoming size={18} />
-                    <span className="h-6 w-[1.25px] bg-[#CBD5E1]" />
+                    <span className="h-6 w-[1.25px] bg-line" />
                 </>
             }
             className={className}

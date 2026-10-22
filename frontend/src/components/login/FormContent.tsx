@@ -11,11 +11,11 @@ import { login } from "../../lib/auth";
 import {
     GENERIC_ERROR,
     NETWORK_ERROR,
+    TOO_MANY_ERROR,
     WRONG_PASSWORD_ERROR,
+    validateLoginPassword,
     validateNationalId,
-    validatePassword,
-    TOO_MANY_ERROR
-} from "../../lib/validators";
+} from "@/lib/validators";
 import { ROUTES } from "../../lib/routes";
 
 function FormContent() {
@@ -24,10 +24,10 @@ function FormContent() {
     const [loading, setLoading] = useState(false);
 
     const { values, errors, onChange, onBlur, validateAll, focusField } = useFormFields(
-        { nationalId: "", password: "" },
-        { nationalId: validateNationalId, password: validatePassword },
-        { nationalId: "national-id", password: "password" }
-    );
+    { nationalId: "", password: "" },
+    { nationalId: validateNationalId, password: validateLoginPassword },
+    { nationalId: "national-id", password: "password" }
+);
 
     const handleChange = (field: "nationalId" | "password", value: string) => {
         setFormError("");

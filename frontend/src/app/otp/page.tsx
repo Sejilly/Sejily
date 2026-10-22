@@ -7,7 +7,7 @@ import { ROUTES } from "@/lib/routes";
 export default function OtpPage() {
     return (
         <AuthPageShell header={<BackHeader href={ROUTES.forgotPassword} />}>
-            <OtpFlow />
+                <OtpFlow />
         </AuthPageShell>
     );
 }

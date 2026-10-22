@@ -5,7 +5,7 @@ import { ButtonLink } from "@/components/auth-ui/Button";
 
 function success() {
     return (
-        <div className="relative flex h-screen items-center justify-center bg-[#F8FAFC] px-4 py-24 sm:px-8 lg:px-20">
+        <div className="relative flex h-screen items-center justify-center bg-surface px-4 py-24 sm:px-8 lg:px-20">
             <Background />
             <div
                 dir="ltr"
@@ -24,7 +24,7 @@ function success() {
                         priority
                         className="h-24 w-24 sm:h-33 sm:w-33"
                     />
-                    <div className="flex w-full flex-col gap-3 text-center text-[#0B192C] sm:gap-4">
+                    <div className="flex w-full flex-col gap-3 text-center text-ink sm:gap-4">
                         <h3 className="text-lg font-semibold leading-7 sm:text-xl">
                             ممتاز، أصبح حسابك موثقاً الآن!
                         </h3>
