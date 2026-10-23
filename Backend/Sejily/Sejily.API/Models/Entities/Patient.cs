@@ -13,15 +13,6 @@ public class Patient
     // Navigation
     public User User { get; set; } = null!;
 
-    public ICollection<PatientChronicDisease> ChronicDiseases { get; set; }
-        = new List<PatientChronicDisease>();
-
-    public ICollection<PatientAllergy> Allergies { get; set; }
-        = new List<PatientAllergy>();
-
-    public ICollection<PatientFrequentMedication> FrequentMedications { get; set; }
-        = new List<PatientFrequentMedication>();
-
     public ICollection<GuardianPatient> Guardians { get; set; }
         = new List<GuardianPatient>();
     public ICollection<GuardianPatient> Dependents { get; set; }
