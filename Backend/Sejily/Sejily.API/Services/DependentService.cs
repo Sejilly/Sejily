@@ -70,7 +70,7 @@ public class DependentService : IDependentService
                 FullName = request.FullName,
                 Address = request.Address,
                 DateOfBirth = request.DateOfBirth,
-                PhoneNumber = request.PhoneNumber
+                //PhoneNumber = request.PhoneNumber
             };
 
             var identityResult = await _userManager.CreateAsync(user);
@@ -85,7 +85,7 @@ public class DependentService : IDependentService
             _context.Patients.Add(new Patient
             {
                 UserId = user.Id,
-                BloodType = request.BloodType,
+                //BloodType = request.BloodType,
                 HealthCardNumber = request.HealthCardNumber
             });
 
