@@ -365,6 +365,7 @@ public class AuthController : ControllerBase
 
         var user = await _context.Users.FirstOrDefaultAsync(u =>
             u.NationalID == request.NationalID &&
+
             u.AccountType == request.AccountType!.Value);
 
         if (user == null ||
@@ -741,6 +742,154 @@ public class AuthController : ControllerBase
             throw;
         }
     }
+    /// <summary>
+    /// ////////////////////mobile1
+    /// </summary>
+    /// <returns></returns>
+    /// 
+
+
+
+    [HttpPost("register/patient/start")]
+    public async Task<IActionResult> StartPatientRegistration(
+        StartPatientRegistrationRequest request)
+    {
+        var existingUser = await _context.Users.AnyAsync(u =>
+            u.NationalID == request.NationalID &&
+            u.AccountType == AccountType.Patient);
+
+        if (existingUser)
+        {
+            return Conflict(new
+            {
+                message =
+                    "A Patient account with this National ID already exists."
+            });
+        }
+
+        var registrationRequestId = Guid.NewGuid();
+
+        var draft = new PatientRegistrationDraft
+        {
+            RequestId = registrationRequestId,
+            FullName = request.FullName,
+            NationalID = request.NationalID,
+            Address = request.Address,
+            DateOfBirth = request.DateOfBirth,
+            ExpiresAtUtc = DateTime.UtcNow.AddMinutes(30),
+            IsCompleted = false
+        };
+
+        _context.PatientRegistrationDrafts.Add(draft);
+        await _context.SaveChangesAsync();
+
+        return Ok(new
+        {
+            message = "Registration started successfully.",
+            requestId = registrationRequestId
+        });
+    }
+
+    //mobile registration 2
+
+    [HttpPost("register/patient/complete")]
+    public async Task<IActionResult> CompletePatientRegistration(
+        CompletePatientRegistrationRequest request)
+    {
+        if (request.RequestId == Guid.Empty)
+        {
+            return BadRequest("Invalid or expired registration request.");
+        }
+
+        var now = DateTime.UtcNow;
+
+        var draft = await _context.PatientRegistrationDrafts
+            .FirstOrDefaultAsync(x =>
+                x.RequestId == request.RequestId &&
+                !x.IsCompleted &&
+                x.ExpiresAtUtc > now);
+
+        if (draft == null)
+        {
+            return BadRequest("Invalid or expired registration request.");
+        }
+
+        var existingUser = await _context.Users.AnyAsync(u =>
+            u.NationalID == draft.NationalID &&
+            u.AccountType == AccountType.Patient);
+
+        if (existingUser)
+        {
+            return Conflict(
+                "A Patient account with this National ID already exists.");
+        }
+
+        await using var transaction =
+            await _context.Database.BeginTransactionAsync();
+
+        try
+        {
+            var user = new User
+            {
+                UserName = $"{draft.NationalID}_Patient",
+                AccountType = AccountType.Patient,
+                NationalID = draft.NationalID,
+                FullName = draft.FullName,
+                Address = draft.Address,
+                DateOfBirth = draft.DateOfBirth,
+                PhoneNumber = request.PhoneNumber
+            };
+
+            var result = await _userManager.CreateAsync(
+                user, request.Password);
+
+            if (!result.Succeeded)
+            {
+                await transaction.RollbackAsync();
+
+                return BadRequest(new
+                {
+                    message = "Patient registration failed.",
+                    errors = result.Errors.Select(e => e.Description)
+                });
+            }
+
+            var patient = new Patient
+            {
+                UserId = user.Id,
+                HealthCardNumber = request.HealthCardNumber
+            };
+
+            _context.Patients.Add(patient);
+
+            // draft.IsCompleted = true;
+            // Delete the temporary registration data.
+            _context.PatientRegistrationDrafts.Remove(draft);
+
+            await _context.SaveChangesAsync();
+            await transaction.CommitAsync();
+
+            return Ok(new
+            {
+                message = "Patient registered successfully.",
+                userId = user.Id
+            });
+        }
+        catch
+        {
+            await transaction.RollbackAsync();
+            throw;
+        }
+    }
+
+
+
+
+
+
+
+
+
 
     private static string GenerateOtp()
     {

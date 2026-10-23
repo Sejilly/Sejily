@@ -151,6 +151,8 @@ public class Program
                       .WithMethods("GET", "POST", "PUT", "PATCH", "DELETE"));
         });
 
+        builder.Services.AddHostedService<
+   PatientRegistrationCleanupService>();
         var app = builder.Build();
 
         using (var scope = app.Services.CreateScope())
@@ -179,8 +181,10 @@ public class Program
 
         app.MapControllers();
 
-
+        //clean the mobile requestid registration records
+       
         // 9. Run the application
+
         app.Run();
     }
 }
