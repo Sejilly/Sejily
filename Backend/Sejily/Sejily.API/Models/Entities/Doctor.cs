@@ -17,8 +17,7 @@ public class Doctor
     // Navigation
     public User User { get; set; } = null!;
 
-    public ICollection<DoctorWorkplace> Workplaces { get; set; }
-        = new List<DoctorWorkplace>();
+    public ICollection<DoctorWorkplace> Workplaces { get; set; } = [];
 
-    
+    public ICollection<MedicalEncounter> Encounters { get; set; } = [];
 }

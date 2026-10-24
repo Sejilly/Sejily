@@ -155,6 +155,49 @@ namespace Sejily.API.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("Sejily.API.Models.Entities.Disease", b =>
+                {
+                    b.Property<int>("DiseaseId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("DiseaseId"));
+
+                    b.Property<string>("IcdCode")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("IcdUri")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("IcdVersion")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<bool>("IsChronic")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsGenetic")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("VARCHAR(200)");
+
+                    b.Property<string>("TitleAr")
+                        .HasColumnType("NVARCHAR(200)");
+
+                    b.HasKey("DiseaseId");
+
+                    b.HasAlternateKey("IcdUri");
+
+                    b.HasIndex("IcdVersion", "IcdCode")
+                        .IsUnique();
+
+                    b.ToTable("Diseases");
+                });
+
             modelBuilder.Entity("Sejily.API.Models.Entities.Doctor", b =>
                 {
                     b.Property<int>("UserId")
@@ -210,7 +253,7 @@ namespace Sejily.API.Migrations
 
                     b.HasIndex("WorkplaceId");
 
-                    b.ToTable("DoctorWorkplaces");
+                    b.ToTable("DoctorWorkplace");
                 });
 
             modelBuilder.Entity("Sejily.API.Models.Entities.GuardianPatient", b =>
@@ -235,6 +278,101 @@ namespace Sejily.API.Migrations
                     b.HasIndex("PatientId");
 
                     b.ToTable("GuardianPatients");
+                });
+
+            modelBuilder.Entity("Sejily.API.Models.Entities.MedicalEncounter", b =>
+                {
+                    b.Property<int>("MedicalEncounterId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MedicalEncounterId"));
+
+                    b.Property<DateTime>("DateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("DoctorId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PatientId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("WorkplacesId")
+                        .HasColumnType("int");
+
+                    b.HasKey("MedicalEncounterId");
+
+                    b.HasAlternateKey("DoctorId", "DateTime");
+
+                    b.HasAlternateKey("PatientId", "DateTime");
+
+                    b.ToTable("MedicalEncounters");
+                });
+
+            modelBuilder.Entity("Sejily.API.Models.Entities.Medication", b =>
+                {
+                    b.Property<int>("MedicationId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MedicationId"));
+
+                    b.Property<string>("ActiveIngredient")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Form")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("MedicationId");
+
+                    b.HasIndex("ActiveIngredient");
+
+                    b.ToTable("Medications");
+                });
+
+            modelBuilder.Entity("Sejily.API.Models.Entities.MedicationUsage", b =>
+                {
+                    b.Property<int>("MedicationUsageId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MedicationUsageId"));
+
+                    b.Property<int>("AdministrationRoute")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Instructions")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("MealRelation")
+                        .HasColumnType("int");
+
+                    b.Property<int>("MedicalEncounterId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("MedicationId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("PatientUserId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.HasKey("MedicationUsageId");
+
+                    b.HasIndex("MedicationId");
+
+                    b.HasIndex("PatientUserId");
+
+                    b.ToTable("MedicationUsage");
                 });
 
             modelBuilder.Entity("Sejily.API.Models.Entities.PasswordResetOtp", b =>
@@ -307,6 +445,39 @@ namespace Sejily.API.Migrations
                     b.ToTable("Patients");
                 });
 
+            modelBuilder.Entity("Sejily.API.Models.Entities.PatientDisease", b =>
+                {
+                    b.Property<int>("PatientDiseaseId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PatientDiseaseId"));
+
+                    b.Property<int>("DiseaseId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("DiseaseStatus")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("MedicalEncounterId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PatientId")
+                        .HasColumnType("int");
+
+                    b.HasKey("PatientDiseaseId");
+
+                    b.HasIndex("DiseaseId");
+
+                    b.HasIndex("MedicalEncounterId");
+
+                    b.HasIndex("PatientId", "DiseaseId", "MedicalEncounterId")
+                        .IsUnique()
+                        .HasFilter("[MedicalEncounterId] IS NOT NULL");
+
+                    b.ToTable("PatientDisease");
+                });
+
             modelBuilder.Entity("Sejily.API.Models.Entities.User", b =>
                 {
                     b.Property<int>("Id")
@@ -354,7 +525,8 @@ namespace Sejily.API.Migrations
                     b.Property<string>("NationalID")
                         .IsRequired()
                         .HasMaxLength(14)
-                        .HasColumnType("nvarchar(14)");
+                        .HasColumnType("nchar(14)")
+                        .IsFixedLength();
 
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256)
@@ -531,6 +703,110 @@ namespace Sejily.API.Migrations
                     b.Navigation("Patient");
                 });
 
+            modelBuilder.Entity("Sejily.API.Models.Entities.MedicalEncounter", b =>
+                {
+                    b.HasOne("Sejily.API.Models.Entities.Doctor", null)
+                        .WithMany("Encounters")
+                        .HasForeignKey("DoctorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Sejily.API.Models.Entities.Patient", null)
+                        .WithMany("MedicalEncounters")
+                        .HasForeignKey("PatientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Sejily.API.Models.Entities.MedicationUsage", b =>
+                {
+                    b.HasOne("Sejily.API.Models.Entities.MedicalEncounter", "MedicalEncounter")
+                        .WithMany("Medications")
+                        .HasForeignKey("MedicationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Sejily.API.Models.Entities.Medication", "Medication")
+                        .WithMany()
+                        .HasForeignKey("MedicationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Sejily.API.Models.Entities.Patient", null)
+                        .WithMany("Medications")
+                        .HasForeignKey("PatientUserId");
+
+                    b.OwnsOne("Sejily.API.Models.Helpers.Dose", "Dose", b1 =>
+                        {
+                            b1.Property<int>("MedicationUsageId")
+                                .HasColumnType("int");
+
+                            b1.Property<decimal>("Amount")
+                                .HasColumnType("DECIMAL(18, 4)");
+
+                            b1.Property<int>("Unit")
+                                .HasColumnType("int");
+
+                            b1.HasKey("MedicationUsageId");
+
+                            b1.ToTable("MedicationUsage");
+
+                            b1.WithOwner()
+                                .HasForeignKey("MedicationUsageId");
+                        });
+
+                    b.OwnsOne("Sejily.API.Models.Helpers.Duration", "Duration", b1 =>
+                        {
+                            b1.Property<int>("MedicationUsageId")
+                                .HasColumnType("int");
+
+                            b1.Property<int>("Amount")
+                                .HasColumnType("int");
+
+                            b1.Property<int>("Unit")
+                                .HasColumnType("int");
+
+                            b1.HasKey("MedicationUsageId");
+
+                            b1.ToTable("MedicationUsage");
+
+                            b1.WithOwner()
+                                .HasForeignKey("MedicationUsageId");
+                        });
+
+                    b.OwnsOne("Sejily.API.Models.Helpers.Frequency", "Frequency", b1 =>
+                        {
+                            b1.Property<int>("MedicationUsageId")
+                                .HasColumnType("int");
+
+                            b1.Property<int>("Times")
+                                .HasColumnType("int");
+
+                            b1.Property<int>("Unit")
+                                .HasColumnType("int");
+
+                            b1.HasKey("MedicationUsageId");
+
+                            b1.ToTable("MedicationUsage");
+
+                            b1.WithOwner()
+                                .HasForeignKey("MedicationUsageId");
+                        });
+
+                    b.Navigation("Dose")
+                        .IsRequired();
+
+                    b.Navigation("Duration")
+                        .IsRequired();
+
+                    b.Navigation("Frequency")
+                        .IsRequired();
+
+                    b.Navigation("MedicalEncounter");
+
+                    b.Navigation("Medication");
+                });
+
             modelBuilder.Entity("Sejily.API.Models.Entities.Patient", b =>
                 {
                     b.HasOne("Sejily.API.Models.Entities.User", "User")
@@ -542,16 +818,56 @@ namespace Sejily.API.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Sejily.API.Models.Entities.PatientDisease", b =>
+                {
+                    b.HasOne("Sejily.API.Models.Entities.Disease", "Disease")
+                        .WithMany()
+                        .HasForeignKey("DiseaseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Sejily.API.Models.Entities.MedicalEncounter", "MedicalEncounter")
+                        .WithMany("Diseases")
+                        .HasForeignKey("MedicalEncounterId");
+
+                    b.HasOne("Sejily.API.Models.Entities.Patient", "Patient")
+                        .WithMany("Diseases")
+                        .HasForeignKey("PatientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Disease");
+
+                    b.Navigation("MedicalEncounter");
+
+                    b.Navigation("Patient");
+                });
+
             modelBuilder.Entity("Sejily.API.Models.Entities.Doctor", b =>
                 {
+                    b.Navigation("Encounters");
+
                     b.Navigation("Workplaces");
+                });
+
+            modelBuilder.Entity("Sejily.API.Models.Entities.MedicalEncounter", b =>
+                {
+                    b.Navigation("Diseases");
+
+                    b.Navigation("Medications");
                 });
 
             modelBuilder.Entity("Sejily.API.Models.Entities.Patient", b =>
                 {
                     b.Navigation("Dependents");
 
+                    b.Navigation("Diseases");
+
                     b.Navigation("Guardians");
+
+                    b.Navigation("MedicalEncounters");
+
+                    b.Navigation("Medications");
                 });
 
             modelBuilder.Entity("Sejily.API.Models.Entities.User", b =>
