@@ -9,7 +9,9 @@ public class PasswordResetOtpConfiguration : IEntityTypeConfiguration<PasswordRe
     public void Configure(EntityTypeBuilder<PasswordResetOtp> builder)
     {
         builder.HasKey(x => x.Id);
+        
         builder.Property(x => x.OtpHash).HasMaxLength(64).IsRequired();
+        
         builder.Property(x => x.ResetTokenHash).HasMaxLength(64);
     }
 }
