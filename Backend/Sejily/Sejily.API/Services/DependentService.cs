@@ -38,6 +38,10 @@ public class DependentService : IDependentService
                 Errors: new[] { "Only a registered patient can add a dependent." });
         }
 
+        var healthCard = string.IsNullOrWhiteSpace(request.HealthCardNumber)
+    ? null
+    : request.HealthCardNumber.Trim();
+
         // 2) The depenfent must not be registered before (a Duplicate)
         if (await _context.Users.AnyAsync(u =>
                 u.NationalID == request.NationalID &&
@@ -48,8 +52,8 @@ public class DependentService : IDependentService
                 Errors: new[] { "National ID already exists." });
         }
 
-        if (!string.IsNullOrWhiteSpace(request.HealthCardNumber) &&
-                await _context.Patients.AnyAsync(p => p.HealthCardNumber == request.HealthCardNumber))
+        if (healthCard != null &&
+        await _context.Patients.AnyAsync(p => p.HealthCardNumber == healthCard))
         {
             return new AddDependentResult(
                 AddDependentStatus.Conflict,
@@ -86,7 +90,7 @@ public class DependentService : IDependentService
             {
                 UserId = user.Id,
                 //BloodType = request.BloodType,
-                HealthCardNumber = request.HealthCardNumber
+                HealthCardNumber = healthCard
             });
 
             // Kinship is verified later (F1.4), so the link starts as Pending.
