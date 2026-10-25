@@ -61,31 +61,31 @@ public class Program
                     };
             });
 
-            //add policies for account switching logic
-            builder.Services.AddAuthorization(options =>
+        //add policies for account switching logic
+        builder.Services.AddAuthorization(options =>
+        {
+            options.AddPolicy("PatientOnly", p =>
+                p.RequireClaim("AccountType", "Patient"));
+
+            options.AddPolicy("DoctorOnly", p =>
+                p.RequireClaim("AccountType", "Doctor"));
+
+            options.AddPolicy("PersonalAccountOnly", p =>
             {
-                options.AddPolicy("PatientOnly", p =>
-                    p.RequireClaim("AccountType", "Patient"));
-
-                options.AddPolicy("DoctorOnly", p =>
-                    p.RequireClaim("AccountType", "Doctor"));
-
-                options.AddPolicy("PersonalAccountOnly", p =>
-                {
-                    p.RequireClaim("AccountType", "Patient");
-                    p.RequireAssertion(ctx =>
-                        !ctx.User.HasClaim(c => c.Type == "actor_id"));
-                });
+                p.RequireClaim("AccountType", "Patient");
+                p.RequireAssertion(ctx =>
+                    !ctx.User.HasClaim(c => c.Type == "actor_id"));
             });
+        });
 
-            // 5. Register Controllers
-            builder.Services
-         .AddControllers()
-         .AddJsonOptions(options =>
-         {
-             options.JsonSerializerOptions.Converters.Add(
-                 new JsonStringEnumConverter());
-         });
+        // 5. Register Controllers
+        builder.Services
+     .AddControllers()
+     .AddJsonOptions(options =>
+     {
+         options.JsonSerializerOptions.Converters.Add(
+             new JsonStringEnumConverter());
+     });
 
         // 6. Swagger
         builder.Services.AddEndpointsApiExplorer();
@@ -151,6 +151,8 @@ public class Program
                       .WithMethods("GET", "POST", "PUT", "PATCH", "DELETE"));
         });
 
+        builder.Services.AddHostedService<
+   PatientRegistrationCleanupService>();
         var app = builder.Build();
 
         using (var scope = app.Services.CreateScope())
@@ -161,7 +163,7 @@ public class Program
 
 
         // 8. Configure HTTP request pipeline
-        if (app.Environment.IsDevelopment())
+        if (app.Environment.IsProduction() || app.Environment.IsDevelopment())
         {
             app.UseSwagger();
             app.UseSwaggerUI();
@@ -179,8 +181,10 @@ public class Program
 
         app.MapControllers();
 
-
+        //clean the mobile requestid registration records
+       
         // 9. Run the application
+
         app.Run();
     }
 }

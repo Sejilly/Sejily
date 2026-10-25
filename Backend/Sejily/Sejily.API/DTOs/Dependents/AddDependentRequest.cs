@@ -12,8 +12,11 @@ public class AddDependentRequest
     public string FullName { get; set; } = null!;
     public string Address { get; set; } = null!;
     public DateTime DateOfBirth { get; set; }
-    public BloodType BloodType { get; set; }
-    public string PhoneNumber { get; set; } = null!;
+   
+    //public BloodType BloodType { get; set; }
+    
+    //public string PhoneNumber { get; set; } = null!;
+    
     public string? HealthCardNumber { get; set; }
     public RelationshipType Relationship { get; set; }
 }
