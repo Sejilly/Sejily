@@ -429,7 +429,7 @@ namespace Sejily.API.Migrations
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
-                    b.Property<int>("BloodType")
+                    b.Property<int?>("BloodType")
                         .HasColumnType("int");
 
                     b.Property<string>("HealthCardNumber")
