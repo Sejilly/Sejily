@@ -1,5 +1,5 @@
 using System.ComponentModel.DataAnnotations;
-using Sejily.API.DTOs.Enums;
+using Sejily.API.Models.Enums;
 
 namespace Sejily.API.DTOs.Auth;
 

@@ -13,17 +13,9 @@ public class Patient
     // Navigation
     public User User { get; set; } = null!;
 
-    public ICollection<PatientChronicDisease> ChronicDiseases { get; set; }
-        = new List<PatientChronicDisease>();
-
-    public ICollection<PatientAllergy> Allergies { get; set; }
-        = new List<PatientAllergy>();
-
-    public ICollection<PatientFrequentMedication> FrequentMedications { get; set; }
-        = new List<PatientFrequentMedication>();
-
-    public ICollection<GuardianPatient> Guardians { get; set; }
-        = new List<GuardianPatient>();
-    public ICollection<GuardianPatient> Dependents { get; set; }
-           = new List<GuardianPatient>();
+    public ICollection<GuardianPatient> Guardians { get; set; } = [];
+    public ICollection<GuardianPatient> Dependents { get; set; } = [];
+    public ICollection<PatientDisease> Diseases { get; set; } = [];
+    public ICollection<MedicalEncounter> MedicalEncounters { get; set; } = [];
+    public ICollection<MedicationUsage> Medications { get; set; } = [];
 }
