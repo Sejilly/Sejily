@@ -8,7 +8,7 @@ public class RegisterPatientRequest
     public string FullName { get; set; } = null!;
     public string Address { get; set; } = null!;
     public DateTime DateOfBirth { get; set; }
-    public BloodType BloodType { get; set; }
+    public BloodType? BloodType { get; set; }
     public string PhoneNumber { get; set; } = null!;
     [Required]
     [StringLength(100, MinimumLength = 8)]

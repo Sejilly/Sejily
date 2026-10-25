@@ -8,6 +8,6 @@ public class MedicalEncounter
     public int WorkplacesId { get; set; }
     public int PatientId { get; set; }
     public DateTime DateTime { get; set; }
-    public List<PatientDisease> Diseases { get; set; } = [];
-    public List<MedicationUsage> Medications { get; set; } = [];
+    public ICollection<PatientDisease> Diseases { get; set; } = [];
+    public ICollection<MedicationUsage> Medications { get; set; } = [];
 }
