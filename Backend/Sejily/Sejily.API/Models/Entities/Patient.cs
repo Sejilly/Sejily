@@ -8,7 +8,7 @@ public class Patient
 
     public string? HealthCardNumber { get; set; } = null!;
 
-    public BloodType BloodType { get; set; }
+    public BloodType? BloodType { get; set; }
 
     // Navigation
     public User User { get; set; } = null!;
