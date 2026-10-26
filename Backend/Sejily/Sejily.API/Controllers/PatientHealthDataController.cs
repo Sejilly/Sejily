@@ -42,14 +42,16 @@ public class PatientHealthDataController : ControllerBase
         if (unresolved.Length > 0)
             return BadRequest(new { errors = unresolved.Select(code => $"ICD code '{code}' is missing or ambiguous; provide a unique code in the catalog.") });
 
-        var medicationIds = request.MedicationIds.Distinct().ToArray();
-        var foundMedicationIds = await _db.Medications
-            .Where(m => medicationIds.Contains(m.MedicationId))
-            .Select(m => m.MedicationId)
+        var medicationIds = Normalize(request.MedicationIds);
+        var matchedMedicationIds = await _db.Medications
+            .Where(m => medicationIds.Contains(m.AtcCode))
+            .Select(m => m.AtcCode)
             .ToListAsync();
-        var unknownMedicationIds = medicationIds.Except(foundMedicationIds).ToArray();
-        if (unknownMedicationIds.Length > 0)
-            return BadRequest(new { errors = unknownMedicationIds.Select(id => $"Medication ID '{id}' was not found.") });
+        var unresolvedMedicationIds = medicationIds
+            .Where(id => matchedMedicationIds.Count(found => string.Equals(found, id, StringComparison.OrdinalIgnoreCase)) != 1)
+            .ToArray();
+        if (unresolvedMedicationIds.Length > 0)
+            return BadRequest(new { errors = unresolvedMedicationIds.Select(id => $"Medication identifier '{id}' is missing or ambiguous in the medication catalog.") });
 
         patient.BloodType = request.BloodType;
         var profileDiseases = patient.Diseases.Where(d => d.MedicalEncounterId == null).ToList();
