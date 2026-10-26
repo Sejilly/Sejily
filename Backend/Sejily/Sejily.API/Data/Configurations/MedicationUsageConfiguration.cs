@@ -24,7 +24,7 @@ public class MedicationUsageConfiguration : IEntityTypeConfiguration<MedicationU
         
         builder.HasOne(usage => usage.MedicalEncounter)
             .WithMany(encounter => encounter.Medications)
-            .HasForeignKey(usage => usage.MedicationId);
+            .HasForeignKey(usage => usage.MedicalEncounterId);
         
     }
 }

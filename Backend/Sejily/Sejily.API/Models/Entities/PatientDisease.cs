@@ -9,9 +9,11 @@ public class PatientDisease
     public int PatientId { get; set; }
     public int DiseaseId { get; set; }
     public int? MedicalEncounterId { get; set; }
-    
-    public DiseaseStatus DiseaseStatus { get; set; }
-    
+
+    public DiseaseStatus? DiseaseStatus { get; set; }
+
+    public bool IsFamilyDisease { get; set; }
+
     public Patient Patient { get; set; } = null!;
     public Disease Disease { get; set; } = null!;
     public MedicalEncounter? MedicalEncounter { get; set; }

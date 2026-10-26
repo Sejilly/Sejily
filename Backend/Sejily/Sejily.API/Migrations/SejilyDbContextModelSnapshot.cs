@@ -297,6 +297,9 @@ namespace Sejily.API.Migrations
                     b.Property<int>("PatientId")
                         .HasColumnType("int");
 
+                    b.Property<int>("WorkplaceId")
+                        .HasColumnType("int");
+
                     b.Property<int>("WorkplacesId")
                         .HasColumnType("int");
 
@@ -305,6 +308,8 @@ namespace Sejily.API.Migrations
                     b.HasAlternateKey("DoctorId", "DateTime");
 
                     b.HasAlternateKey("PatientId", "DateTime");
+
+                    b.HasIndex("WorkplaceId");
 
                     b.ToTable("MedicalEncounters");
                 });
@@ -320,6 +325,14 @@ namespace Sejily.API.Migrations
                     b.Property<string>("ActiveIngredient")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("AtcCode")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("AtcVersion")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
@@ -333,6 +346,9 @@ namespace Sejily.API.Migrations
                     b.HasKey("MedicationId");
 
                     b.HasIndex("ActiveIngredient");
+
+                    b.HasIndex("AtcCode", "AtcVersion")
+                        .IsUnique();
 
                     b.ToTable("Medications");
                 });
@@ -367,6 +383,8 @@ namespace Sejily.API.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("MedicationUsageId");
+
+                    b.HasIndex("MedicalEncounterId");
 
                     b.HasIndex("MedicationId");
 
@@ -456,8 +474,11 @@ namespace Sejily.API.Migrations
                     b.Property<int>("DiseaseId")
                         .HasColumnType("int");
 
-                    b.Property<int>("DiseaseStatus")
+                    b.Property<int?>("DiseaseStatus")
                         .HasColumnType("int");
+
+                    b.Property<bool>("IsFamilyDisease")
+                        .HasColumnType("bit");
 
                     b.Property<int?>("MedicalEncounterId")
                         .HasColumnType("int");
@@ -470,6 +491,10 @@ namespace Sejily.API.Migrations
                     b.HasIndex("DiseaseId");
 
                     b.HasIndex("MedicalEncounterId");
+
+                    b.HasIndex("PatientId", "DiseaseId", "IsFamilyDisease")
+                        .IsUnique()
+                        .HasFilter("[MedicalEncounterId] IS NULL");
 
                     b.HasIndex("PatientId", "DiseaseId", "MedicalEncounterId")
                         .IsUnique()
@@ -705,24 +730,36 @@ namespace Sejily.API.Migrations
 
             modelBuilder.Entity("Sejily.API.Models.Entities.MedicalEncounter", b =>
                 {
-                    b.HasOne("Sejily.API.Models.Entities.Doctor", null)
+                    b.HasOne("Sejily.API.Models.Entities.Doctor", "Doctor")
                         .WithMany("Encounters")
                         .HasForeignKey("DoctorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Sejily.API.Models.Entities.Patient", null)
+                    b.HasOne("Sejily.API.Models.Entities.Patient", "Patient")
                         .WithMany("MedicalEncounters")
                         .HasForeignKey("PatientId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("Sejily.API.Models.Entities.Workplace", "Workplace")
+                        .WithMany()
+                        .HasForeignKey("WorkplaceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Doctor");
+
+                    b.Navigation("Patient");
+
+                    b.Navigation("Workplace");
                 });
 
             modelBuilder.Entity("Sejily.API.Models.Entities.MedicationUsage", b =>
                 {
                     b.HasOne("Sejily.API.Models.Entities.MedicalEncounter", "MedicalEncounter")
                         .WithMany("Medications")
-                        .HasForeignKey("MedicationId")
+                        .HasForeignKey("MedicalEncounterId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

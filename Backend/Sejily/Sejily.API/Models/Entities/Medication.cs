@@ -10,6 +10,10 @@ namespace Sejily.API.Models.Entities;
 public class Medication
 {
     public int MedicationId { get; set; }
+    
+    /// <summary>Standard medication classification identifier, such as an ATC code.</summary>
+    public required string AtcCode { get; set; }
+    public required string AtcVersion { get; set; }
 
     public string Name { get; set; } = null!;
 
