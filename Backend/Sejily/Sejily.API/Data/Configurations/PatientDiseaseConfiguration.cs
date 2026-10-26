@@ -14,12 +14,17 @@ public class PatientDiseaseConfiguration : IEntityTypeConfiguration<PatientDisea
 
         builder.HasIndex(patientDisease => new
         {
-            
+            patientDisease.PatientId,
+            patientDisease.DiseaseId,
+            patientDisease.IsFamilyDisease
+        }).IsUnique().HasFilter("[MedicalEncounterId] IS NULL");
+
+        builder.HasIndex(patientDisease => new
+        {
             patientDisease.PatientId,
             patientDisease.DiseaseId,
             patientDisease.MedicalEncounterId
-
-        }).IsUnique();
+        }).IsUnique().HasFilter("[MedicalEncounterId] IS NOT NULL");
 
         builder.HasOne(patientDisease => patientDisease.Patient)
             .WithMany(patient => patient.Diseases)

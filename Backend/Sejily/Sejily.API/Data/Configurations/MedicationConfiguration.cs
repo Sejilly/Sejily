@@ -8,6 +8,7 @@ public class MedicationConfiguration : IEntityTypeConfiguration<Medication>
 {
     public void Configure(EntityTypeBuilder<Medication> builder)
     {
+        builder.HasIndex(medication => new { medication.AtcCode, medication.AtcVersion }).IsUnique();
         
         builder.HasKey(medication => medication.MedicationId);
         
