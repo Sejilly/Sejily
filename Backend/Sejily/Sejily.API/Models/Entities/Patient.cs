@@ -15,10 +15,10 @@ public class Patient
 
     public ICollection<GuardianPatient> Guardians { get; set; } = [];
     public ICollection<GuardianPatient> Dependents { get; set; } = [];
-    
+
     public ICollection<PatientDisease> Diseases { get; set; } = [];
-    public ICollection<PatientDisease> FamilyDiseases { get; set; } = [];
-    
+    // public ICollection<PatientDisease> FamilyDiseases => _diseases.Where(disease => disease.IsFamilyDisease).ToList();
+
     public ICollection<MedicalEncounter> MedicalEncounters { get; set; } = [];
     public ICollection<MedicationUsage> Medications { get; set; } = [];
 }

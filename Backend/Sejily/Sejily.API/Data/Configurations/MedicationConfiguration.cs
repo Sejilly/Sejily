@@ -12,7 +12,7 @@ public class MedicationConfiguration : IEntityTypeConfiguration<Medication>
         
         builder.HasKey(medication => medication.MedicationId);
         
-        builder.HasIndex(medication => medication.ActiveIngredient).IsUnique(false);
+        // builder.HasIndex(medication => medication.ActiveIngredient).IsUnique(false);
 
     }
 }
