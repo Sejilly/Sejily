@@ -19,6 +19,8 @@ public class SejilyDbContext : IdentityDbContext<User, IdentityRole<int>, int>
 
     public DbSet<PatientRegistrationDraft> PatientRegistrationDrafts
     => Set<PatientRegistrationDraft>();
+    public DbSet<DependentRegistrationDraft> DependentRegistrationDrafts
+    => Set<DependentRegistrationDraft>();
     public DbSet<PatientHealthSetupRequest> PatientHealthSetupRequests
     => Set<PatientHealthSetupRequest>();
     public DbSet<Patient> Patients { get; set; }

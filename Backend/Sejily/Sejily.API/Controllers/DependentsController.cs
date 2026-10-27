@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Sejily.API.DTOs.Dependents;
+using Sejily.API.DTOs.Health;
 using Sejily.API.Models.Enums;
 using Sejily.API.Services;
 using System.Security.Claims;
@@ -15,10 +16,14 @@ namespace Sejily.API.Controllers;
 public class DependentsController : ControllerBase
 {
     private readonly IDependentService _dependentService;
+    private readonly IPatientHealthService _healthService;
 
-    public DependentsController(IDependentService dependentService)
+    public DependentsController(
+        IDependentService dependentService,
+        IPatientHealthService healthService)
     {
         _dependentService = dependentService;
+        _healthService = healthService;
     }
 
     // POST api/dependents
@@ -47,6 +52,100 @@ public class DependentsController : ControllerBase
 
             AddDependentStatus.Conflict =>
                 Conflict(new { errors = result.Errors }),
+
+            _ => BadRequest(new { errors = result.Errors })
+        };
+    }
+
+    // POST api/dependents/registration/start
+    // Step 1 (data screen): fails here if the National ID / health card is taken.
+    [HttpPost("registration/start")]
+    public async Task<IActionResult> StartRegistration(
+        StartDependentRegistrationRequest request)
+    {
+        if (!TryGetUserId(out var guardianUserId))
+        {
+            return Unauthorized();
+        }
+
+        var result = await _dependentService
+            .StartRegistrationAsync(guardianUserId, request);
+
+        return result.Status switch
+        {
+            AddDependentStatus.Created =>
+                Ok(new
+                {
+                    message = "Registration started successfully.",
+                    requestId = result.RequestId
+                }),
+
+            AddDependentStatus.GuardianNotFound =>
+                StatusCode(StatusCodes.Status403Forbidden, new { errors = result.Errors }),
+
+            AddDependentStatus.Conflict =>
+                Conflict(new { errors = result.Errors }),
+
+            _ => BadRequest(new { errors = result.Errors })
+        };
+    }
+
+    // POST api/dependents/registration/complete
+    // Step 2 (kinship): creates the dependent and the link, and returns
+    // healthRequestId for step 3.
+    [HttpPost("registration/complete")]
+    public async Task<IActionResult> CompleteRegistration(
+        CompleteDependentRegistrationRequest request)
+    {
+        if (!TryGetUserId(out var guardianUserId))
+        {
+            return Unauthorized();
+        }
+
+        var result = await _dependentService
+            .CompleteRegistrationAsync(guardianUserId, request);
+
+        return result.Status switch
+        {
+            AddDependentStatus.Created =>
+                StatusCode(StatusCodes.Status201Created, new
+                {
+                    message = "Dependent added successfully.",
+                    dependentId = result.DependentUserId,
+                    healthRequestId = result.HealthRequestId
+                }),
+
+            AddDependentStatus.GuardianNotFound =>
+                StatusCode(StatusCodes.Status403Forbidden, new { errors = result.Errors }),
+
+            AddDependentStatus.Conflict =>
+                Conflict(new { errors = result.Errors }),
+
+            _ => BadRequest(new { errors = result.Errors })
+        };
+    }
+
+    // POST api/dependents/registration/health
+    // Step 3 (health screen, can be skipped): fills in the health data of the
+    // dependent that was just created. Only the guardian who created it can call it.
+    [HttpPost("registration/health")]
+    public async Task<IActionResult> CompleteHealthProfile(
+        CompleteHealthProfileRequest request)
+    {
+        if (!TryGetUserId(out var guardianUserId))
+        {
+            return Unauthorized();
+        }
+
+        var result = await _healthService.SaveAsync(guardianUserId, request);
+
+        return result.Status switch
+        {
+            SaveHealthProfileStatus.Saved =>
+                Ok(new { message = "Health data saved successfully." }),
+
+            SaveHealthProfileStatus.RequestNotFound =>
+                NotFound(new { errors = result.Errors }),
 
             _ => BadRequest(new { errors = result.Errors })
         };
