@@ -297,9 +297,6 @@ namespace Sejily.API.Migrations
                     b.Property<int>("PatientId")
                         .HasColumnType("int");
 
-                    b.Property<int>("WorkplaceId")
-                        .HasColumnType("int");
-
                     b.Property<int>("WorkplacesId")
                         .HasColumnType("int");
 
@@ -309,7 +306,7 @@ namespace Sejily.API.Migrations
 
                     b.HasAlternateKey("PatientId", "DateTime");
 
-                    b.HasIndex("WorkplaceId");
+                    b.HasIndex("WorkplacesId");
 
                     b.ToTable("MedicalEncounters");
                 });
@@ -321,9 +318,6 @@ namespace Sejily.API.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MedicationId"));
-
-                    b.Property<string>("ActiveIngredient")
-                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("AtcCode")
                         .IsRequired()
@@ -344,8 +338,6 @@ namespace Sejily.API.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("MedicationId");
-
-                    b.HasIndex("ActiveIngredient");
 
                     b.HasIndex("AtcCode", "AtcVersion")
                         .IsUnique();
@@ -781,7 +773,7 @@ namespace Sejily.API.Migrations
 
                     b.HasOne("Sejily.API.Models.Entities.Workplace", "Workplace")
                         .WithMany()
-                        .HasForeignKey("WorkplaceId")
+                        .HasForeignKey("WorkplacesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

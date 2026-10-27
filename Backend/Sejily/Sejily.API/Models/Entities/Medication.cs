@@ -17,8 +17,6 @@ public class Medication
 
     public string Name { get; set; } = null!;
 
-    public string? ActiveIngredient { get; set; }
-
     public MedicationForm Form { get; set; }
     
     public string? Description { get; set; }

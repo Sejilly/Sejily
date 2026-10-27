@@ -23,5 +23,18 @@ public class MedicalEncounterConfiguration : IEntityTypeConfiguration<MedicalEnc
             encounter.DoctorId,
             encounter.DateTime
         });
+
+        builder.HasOne(encounter => encounter.Doctor)
+            .WithMany(doctor => doctor.Encounters)
+            .HasForeignKey(encounter => encounter.DoctorId);
+
+        builder.HasOne(encounter => encounter.Patient)
+            .WithMany(patient => patient.MedicalEncounters)
+            .HasForeignKey(encounter => encounter.PatientId);
+
+        builder.HasOne(encounter => encounter.Workplace)
+            .WithMany()
+            .HasForeignKey(encounter => encounter.WorkplacesId);
+
     }
 }
