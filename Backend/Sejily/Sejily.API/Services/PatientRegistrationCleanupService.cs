@@ -68,8 +68,15 @@ public class PatientRegistrationCleanupService : BackgroundService
             .Where(x => x.ExpiresAtUtc <= now)
             .ToListAsync(cancellationToken);
 
-        if (expiredRequests.Count == 0)
+        var expiredHealthRequests = await context.PatientHealthSetupRequests
+            .Where(x => x.ExpiresAtUtc <= now)
+            .ToListAsync(cancellationToken);
+
+        if (expiredRequests.Count == 0 && expiredHealthRequests.Count == 0)
             return;
+
+        context.PatientHealthSetupRequests.RemoveRange(
+            expiredHealthRequests);
 
         context.PatientRegistrationDrafts.RemoveRange(
             expiredRequests);
@@ -77,7 +84,7 @@ public class PatientRegistrationCleanupService : BackgroundService
         await context.SaveChangesAsync(cancellationToken);
 
         _logger.LogInformation(
-            "Deleted {Count} expired patient registration drafts.",
-            expiredRequests.Count);
+            "Deleted {Count} expired patient registration drafts and {HealthCount} expired health setup requests.",
+            expiredRequests.Count, expiredHealthRequests.Count);
     }
 }
