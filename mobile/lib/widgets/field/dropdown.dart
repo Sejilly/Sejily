@@ -10,9 +10,9 @@ class Dropdown extends StatefulWidget {
   final bool isloading;
   final bool isVerified;
   final bool selected;
-
+  final String? Function(String?)? validator;
   final bool optional;
-  const Dropdown({this.optional=false,required this.hintText,required this.lable,this.selected=false,this.isVerified=false,this.isloading=false,this.onselect,required this.array,required this.controller,super.key});
+  const Dropdown({required this.validator,this.optional=false,required this.hintText,required this.lable,this.selected=false,this.isVerified=false,this.isloading=false,this.onselect,required this.array,required this.controller,super.key});
 
   @override
   State<Dropdown> createState() => _DropdownState();
@@ -115,12 +115,7 @@ class _DropdownState extends State<Dropdown> {
                       style: const TextStyle(color:Color(0xff0B192C),fontSize: 14),
                        readOnly: true,
                        enabled: !widget.isloading,
-                      validator: (value) {
-                        if(value==null||value.isEmpty ){
-                          return 'ادخل صلة قرابتك بالتابع';
-      
-                        }return null;
-                      },
+                      validator:widget.validator,
                       decoration:InputDecoration(
                         hintText: widget.hintText,
                         hintStyle: TextStyle(color: Color(0xff94A3B8)),

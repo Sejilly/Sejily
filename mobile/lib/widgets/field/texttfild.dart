@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class Texttfild extends StatefulWidget {
-  final haserror;
+  final bool haserror;
   final TextEditingController control;
   final String lable;
   final String hint;
@@ -22,7 +22,8 @@ class Texttfild extends StatefulWidget {
   final bool optional;
   final bool odd;
   final bool enable;
-  const Texttfild({this.enable=true,this.optional=false,this.odd=false,this.phone=false,this.maxlength,this.number=false,this.lastpadding=true, required this.isSubmitted,this.haserror,this.ispassword=false,this.curser=true,this.icon,this.isicon=false,required this.control, super.key, required this.lable,required this.hint,this.validator,this.ontap,this.readonly=false});
+  final String errorms;
+  const Texttfild({this.errorms='',required this.enable,this.optional=false,this.odd=false,this.phone=false,this.maxlength,this.number=false,this.lastpadding=true, required this.isSubmitted,this.haserror=false,this.ispassword=false,this.curser=true,this.icon,this.isicon=false,required this.control, super.key, required this.lable,required this.hint,this.validator,this.ontap,this.readonly=false});
 
   @override
   State<Texttfild> createState() => _TexttfildState();
@@ -94,7 +95,7 @@ class _TexttfildState extends State<Texttfild> {
                      [BoxShadow(
                         blurRadius: 6,
                       spreadRadius: 0,
-                      offset: Offset(0, haserror?-3: 0),color:haserror&&f? Color(0xffB91C1C).withOpacity(0.10):f? Color(0xff2B6CB0).withOpacity(0.25):Color(0xffffffff))]
+                      offset: Offset(0, haserror?-3: 0),color:(haserror||widget.haserror)&&f? Color(0xffB91C1C).withOpacity(0.10):f? Color(0xff2B6CB0).withOpacity(0.25):Color(0xffffffff))]
                     
                   ),
                   child: TextFormField(
@@ -130,12 +131,12 @@ class _TexttfildState extends State<Texttfild> {
                       const SizedBox(width: 16,),
                       SvgPicture.asset("assets/images/icons/calender.svg",colorFilter: ColorFilter.mode( Color(iconColor), BlendMode.srcIn),),const SizedBox(width: 10,),Container(width: 1.25,height: 24,color: const Color(0xffCBD5E1),),const SizedBox(width: 10,)] ,):null,
                       focusedBorder:OutlineInputBorder(
-                      borderSide: const BorderSide(color: Color(0xff2B6CB0)),
+                      borderSide: BorderSide(color:  Color(widget.haserror?0xffB91C1C :0xff2B6CB0)),
                       borderRadius: BorderRadius.circular(8)
                     ),
                     enabledBorder:OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8),
-                      borderSide: const BorderSide(width:1,color: Color(0xffCBD5E1),
+                      borderSide:  BorderSide(width:1,color:  Color(widget.haserror?0xffB91C1C: 0xffCBD5E1),
                      )
                     ) ,
                     errorBorder: OutlineInputBorder(
@@ -158,7 +159,7 @@ class _TexttfildState extends State<Texttfild> {
                 ),
               ),
   
-              haserror?Text(errorMessage!,style: TextStyle(color: Color(0xffB91C1C),fontSize: 12),):SizedBox.shrink(),
+              haserror||widget.haserror?Text(haserror? errorMessage!:widget.errorms,style: TextStyle(color: Color(0xffB91C1C),fontSize: 12),):SizedBox.shrink(),
 
              widget.lastpadding? const SizedBox(height: 20,):SizedBox.shrink()
             ],

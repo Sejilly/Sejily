@@ -2,6 +2,7 @@
 class Stateauth {}
 class Intialauthstates extends Stateauth{}
 class RegLooding extends Stateauth{}
+class Regexpierd extends Stateauth{}
 class Regerrordublicatedid extends Stateauth{}
 class Regerrorpass extends Stateauth{}
 class Regerror extends Stateauth{}
@@ -28,6 +29,26 @@ class Resetpassloading extends Stateauth{}
 class Resetpassexpired extends Stateauth{}
 class Resetpasserror extends Stateauth{}
 class Resetpasssuccess extends Stateauth{}
+
+
+class verificationkinshiploading extends Stateauth{}
+class verificationkinshipsuccess extends Stateauth{}
+class verificationkinshiptokenerror extends Stateauth{}
+class verificationkinshipwrongaccounttype extends Stateauth{}
+class verificationkinshipexpired extends Stateauth{}
+class verificationkinshiperror extends Stateauth{}
+
+
+class guardianLooding extends Stateauth{}
+class guardianexpired extends Stateauth{}
+class guardianerrordublicatedid extends Stateauth{}
+class guardianerror extends Stateauth{}
+class guardiansuccess extends Stateauth{}
+class guardianerrordublicatedHealthcard extends Stateauth{}
+class guardianinvalidrelation extends Stateauth{}
+class guardianpolicyerror extends Stateauth{}
+class guardianexpiredtokenerror extends Stateauth{}
+class guardianverifiederror extends Stateauth{}
 
 
 

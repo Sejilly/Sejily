@@ -52,6 +52,7 @@ class _SignInState extends State<RestorePassword> {
             (cubit.state is Forgeterrorconnrction)?'تعذر إرسال رسالة التحقق القصيرة حالياً، يرجى المحاولة لاحقاً':
             cubit.state is Forgeterror?'حدث خطأ ما، يرجى المحاولة لاحقاً. ':'',haserror: (cubit.state is Forgetwrongidornumber)|| (cubit.state is Forgeterrorconnrction)|| cubit.state is Forgeterror?,title: "إستعادة كلمة المرور", subtitle: "أدخل بياناتك المسجلة للتحقق من هويتك واستعادة الحساب", 
             wedget1: Texttfild(
+                                enable: !(cubit.state is Forgetloading),
                                 isSubmitted: isSubmitted,
                                 control:_controller[0], 
                                 lable: "الرقم القومي", 
@@ -67,6 +68,7 @@ class _SignInState extends State<RestorePassword> {
                                   return null;
                                 },), 
                                 wedget2: Texttfild(
+                                   enable: !(cubit.state is Forgetloading),
                                   isSubmitted: isSubmitted,
                                     control: _controller[1],
                                     lable: "رقم الهاتف المحمول", 

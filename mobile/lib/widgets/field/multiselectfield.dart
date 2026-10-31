@@ -2,21 +2,23 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:mobile/model/icd11model.dart';
 
 class Multiselectfield extends StatefulWidget {
   final String lable;
   final String hintText;
   final Function(bool)? onFocusChange;
   final TextEditingController controller;
-  final List<String> suggestions ;
-  final List<String>? selectedItems;
-  final Function(List<String>) onChanged;
+  final List<Icd11model> suggestions ;
+  final List<Icd11model>? selectedItems;
+  final Function(List<Icd11model>)? onChanged;
   final bool lastpadding;
   final bool odd;
+  final List<String>?result;
 
 
   final bool optional;
-  const Multiselectfield({this.odd=false,this.lastpadding=true,required this.onChanged,required this.selectedItems,this.optional=false,required this.hintText,required this.lable,required this.suggestions,required this.controller,this.onFocusChange,super.key});
+  const Multiselectfield({ this.result,this.odd=false,this.lastpadding=true, this.onChanged,required this.selectedItems,this.optional=false,required this.hintText,required this.lable,required this.suggestions,required this.controller,this.onFocusChange,super.key});
 
   @override
   State<Multiselectfield> createState() => _MultiselectfieldState();
@@ -25,7 +27,7 @@ class Multiselectfield extends StatefulWidget {
 class _MultiselectfieldState extends State<Multiselectfield> {
   late FocusNode _focusNode;
   bool foucss=false;
- List<String> filtereditem=[];
+ List<Icd11model> filtereditem=[];
  @override
   void initState(){
     super.initState();
@@ -48,27 +50,42 @@ class _MultiselectfieldState extends State<Multiselectfield> {
     _focusNode.dispose();
      super.dispose();
   }
-  void toggle(String item){
-    final List<String> update=List.from(widget.selectedItems??[]);
+  @override
+  void didUpdateWidget(covariant Multiselectfield oldWidget) {
+    // TODO: implement didUpdateWidget
+    super.didUpdateWidget(oldWidget);
+    if(oldWidget.suggestions!=widget.suggestions){
+    
+        filtereditem = widget.suggestions;
+
+     
+    }
+  }
+  
+  void toggle(Icd11model item){
+    final List<Icd11model> update=List.from(widget.selectedItems??[]);
     if(update.contains(item)){
       update.remove(item);
     }
     else{
       update.add(item);
     }
-    widget.onChanged(update);
+    if( widget.onChanged!=null)
+    widget.onChanged!(update);
   }
   void addCustom(){
    final String text=widget.controller.text.trim();
    if(text.isEmpty)return;
-   final List<String> update=List.from(widget.selectedItems??[]);
-   if(!update.contains(text))
-   update.add(text);
-   widget.onChanged(update);
-   setState(() {
-     widget.controller.clear();
-     filtereditem=widget.suggestions;
-   });}
+   if(widget.result!=null){
+   if ( !widget.result!.contains(text)){
+    setState(() {
+       widget.result!.add(text);
+       widget.controller.clear();
+    });
+   
+   }
+   }
+  }
 
   
   void onchange(String text){
@@ -80,7 +97,7 @@ class _MultiselectfieldState extends State<Multiselectfield> {
     }
     else{
       setState(() {
-        filtereditem=widget.suggestions.where((item)=>item.toLowerCase().contains(text.toLowerCase())).toList();
+        filtereditem=widget.suggestions.where((item)=>item.arabtitle.toLowerCase().replaceAll(RegExp(r'[\u064B-\u065F\u0670\u0640]'), '').contains(text.toLowerCase().replaceAll(RegExp(r'[\u064B-\u065F\u0670\u0640]'), ''))).toList();
       });
     }
     if(!_menu.isOpen)openmenu();
@@ -115,6 +132,7 @@ class _MultiselectfieldState extends State<Multiselectfield> {
   }
   @override
   Widget build(BuildContext context) {
+    debugPrint('${widget.lable}: suggestions=${widget.suggestions.length} filtered=${filtereditem.length}');
     final select=widget.selectedItems??[];
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -126,7 +144,7 @@ class _MultiselectfieldState extends State<Multiselectfield> {
           
             SizedBox(height: 4,),
             SizedBox(
-              height: 45,
+              height: 50,
               width: double.infinity,
               child:LayoutBuilder(
                 builder:(context,constrained){
@@ -140,6 +158,7 @@ class _MultiselectfieldState extends State<Multiselectfield> {
                     });
                   },
                   onOpen: (){
+                    if (!mounted) return;
                     setState(() {
                       isopen=true;
                        
@@ -147,11 +166,11 @@ class _MultiselectfieldState extends State<Multiselectfield> {
                   },
                   crossAxisUnconstrained: false,
                   style: MenuStyle(
-                    padding: WidgetStatePropertyAll(EdgeInsets.zero),
+                    padding: const WidgetStatePropertyAll(EdgeInsets.zero),
                     minimumSize: WidgetStatePropertyAll(Size(constrained.maxWidth,0)),
                     maximumSize: WidgetStatePropertyAll(Size(constrained.maxWidth,144)),
-                    alignment: Alignment(1, 1.24),
-                    backgroundColor: WidgetStatePropertyAll(Color(0xffffffff)),
+                    alignment: const Alignment(1, 1.24),
+                    backgroundColor: const WidgetStatePropertyAll(Color(0xffffffff)),
                     surfaceTintColor: WidgetStatePropertyAll(Colors.transparent),
                     side:WidgetStatePropertyAll(BorderSide(color: Color(0xff2B6CB0,),width: 1),),
                     shape: WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))),
@@ -160,7 +179,9 @@ class _MultiselectfieldState extends State<Multiselectfield> {
                     
                   ),
                   controller: _menu,
-                  menuChildren: [...filtereditem.map((e){
+                  menuChildren: [
+                    if(!(widget.result!=null))
+                    ...filtereditem.take(50).map((e){
                     final bool isselect=widget.selectedItems?.contains(e)??false;
                     return MenuItemButton(
                       closeOnActivate: false,
@@ -174,13 +195,35 @@ class _MultiselectfieldState extends State<Multiselectfield> {
                             Flexible(
                               child: Text.rich(
                                 TextSpan(
-                                 text: e,style: TextStyle(color: Color(isselect?0xff0B192C:0xff475569)),),),
+                                 text:e.arabtitle,style: TextStyle(color: Color(isselect?0xff0B192C:0xff475569)),),),
                             )
                           ],
                         ),
                       ),
                     );
-                  }),if(widget.controller.text.trim().isNotEmpty&&!filtereditem.contains(widget.controller.text.trim())&&!(widget.selectedItems??[]).contains(widget.controller.text.trim()))
+
+                  }),if(!(widget.result!=null))
+                  if(filtereditem.isEmpty)
+                    MenuItemButton(
+                      closeOnActivate: false,
+                      
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 2,bottom: 0,top: 0),
+                        child: Row(
+                          children: [
+                            
+                            
+                            Flexible(
+                              child: Text.rich(
+                                TextSpan(
+                               text:  'لا توجد نتائج ',style: TextStyle(color: Color(0xff475569)),),),
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                  if(widget.result!=null)
+                    if(widget.controller.text.trim().isNotEmpty&&!(widget.result?.contains(widget.controller.text.trim())??false))
                     MenuItemButton(
                       closeOnActivate: false,
                       onPressed: addCustom,
@@ -188,6 +231,8 @@ class _MultiselectfieldState extends State<Multiselectfield> {
                         padding: const EdgeInsets.only(right: 2,bottom: 0,top: 0),
                         child: Row(
                           children: [
+                            
+                            
                             Flexible(
                               child: Text.rich(
                                 TextSpan(
@@ -200,34 +245,39 @@ class _MultiselectfieldState extends State<Multiselectfield> {
                   
                   ],
                   builder: (context, controller, child) {
-                    final field=TextField(
-                                controller: widget.controller,
-                                onChanged: onchange,
-                                onTap: () {
-                                  if(controller.isOpen){
-                                    controller.close();
-                                  }else{
-                                    openmenu();
-                                  }
-                                },
-                                focusNode: _focusNode,
-                                style: const TextStyle(color:Color(0xff0B192C),fontSize: 14),
-                                decoration:InputDecoration(
-                                isDense: true,
-                                prefixIcon: select.isEmpty&&!foucss? SvgPicture.asset('assets/images/icons/akar-icons_search.svg'):null,
-                                hintText:select.isEmpty? widget.hintText:'',
-                                hintStyle: TextStyle(color: Color(0xff94A3B8)),
-                                contentPadding: EdgeInsets.zero,
-                                filled: true,
-                                fillColor: Color(0xffffffff),
-                                border: InputBorder.none,
-                                enabledBorder: InputBorder.none,
-                                focusedBorder: InputBorder.none,
-                                disabledBorder: InputBorder.none,
-                                errorBorder: InputBorder.none,
-                                
-                                
-                                                        ));
+                    final field=
+                       
+                        TextField(
+                                    controller: widget.controller,
+                                    onChanged: onchange,
+                                    onTap: () {
+                                      if(controller.isOpen){
+                                        controller.close();
+                                      }else{
+                                        openmenu();
+                                      }
+                                    },
+                                    focusNode: _focusNode,
+                                    style: const TextStyle(color:Color(0xff0B192C),fontSize: 14),
+                                    decoration:InputDecoration(
+                                    isDense: true,
+                                   
+                                    hintText:(widget.result != null)
+                                    ? (widget.result!.isEmpty ? widget.hintText : '') // لو الحقل مخصص للـ Custom Results
+                                    : (select.isEmpty ? widget.hintText : ''),
+                                    hintStyle: TextStyle(color: Color(0xff94A3B8)),
+                                    contentPadding: EdgeInsets.zero,
+                                    filled: true,
+                                    fillColor: Color(0xffffffff),
+                                    border: InputBorder.none,
+                                    enabledBorder: InputBorder.none,
+                                    focusedBorder: InputBorder.none,
+                                    disabledBorder: InputBorder.none,
+                                    errorBorder: InputBorder.none,
+                                    
+                                    
+                                                            ));
+                    
                     return SizedBox(
                       height: 50,
                       child: InputDecorator(
@@ -262,6 +312,10 @@ class _MultiselectfieldState extends State<Multiselectfield> {
                               reverse: false,
                               child:Row(
                                 children: [
+                                  SizedBox(width: 10,),
+                                   if( select.isEmpty&&!foucss&&widget.result==null)
+                                  SvgPicture.asset('assets/images/icons/akar-icons_search.svg'),
+                                   if( select.isEmpty&&!foucss&&widget.result==null)SizedBox(width: 10,),
                                   if(select.isNotEmpty)
                                   Row(
                                     
@@ -272,12 +326,44 @@ class _MultiselectfieldState extends State<Multiselectfield> {
                                       labelPadding: EdgeInsets.zero,
                                       visualDensity: VisualDensity.compact,
                                      
-                                      label: Text(item,style: TextStyle(color: Color(0xff0B192C),fontSize: 12),),
+                                      label: Text( item.arabtitle,style: TextStyle(color: Color(0xff0B192C),fontSize: 12),),
                                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                      
                                      backgroundColor: Color(0xff2B6CB0).withOpacity(.35),
                                      deleteIcon: SvgPicture.asset("assets/images/icons/delete.svg"),
                                      onDeleted:()=> toggle(item),
+                                     shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(50),
+                                      side: BorderSide(color: Color(0Xff2B6CB0))
+                                     ),
+                                     
+                                     
+                                     
+                                     
+                                      ),);
+                                    }).toList(),
+                                  ),
+                                  if(widget.result!=null&&widget.result!.isNotEmpty)
+                                    Row(
+                                    
+                                    children:widget.result!.map((item){
+                                     return Padding(padding: EdgeInsets.only(left: 4),
+                                     child: Chip(
+                                      padding: const EdgeInsets.only(right: 8, top: 0,bottom:10),
+                                      labelPadding: EdgeInsets.zero,
+                                      visualDensity: VisualDensity.compact,
+                                     
+                                      label: Text( item,style: TextStyle(color: Color(0xff0B192C),fontSize: 12),),
+                                     materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                     
+                                     backgroundColor: Color(0xff2B6CB0).withOpacity(.35),
+                                     deleteIcon: SvgPicture.asset("assets/images/icons/delete.svg"),
+                                     onDeleted:(){
+
+                                      setState(() {
+                                        widget.result!.remove(item);
+                                      });
+                                     },
                                      shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(50),
                                       side: BorderSide(color: Color(0Xff2B6CB0))

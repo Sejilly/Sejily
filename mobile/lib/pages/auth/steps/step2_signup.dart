@@ -20,16 +20,17 @@ class _Step2State extends State<Step2> {
       
       children: [
         Texttfild(
+          enable: true,
             isSubmitted: widget.isSubmitted,
             control: widget.controllertext[4],
             lable: "رقم الهاتف المحمول", 
             hint: "01X  XXXX  XXXX",
             validator: (value) {
               if(value==null||value.trim().isEmpty){
-                return "برجاء إدخال رقم الهاتف";
+                return "هذا الحقل إلزامى، يرجى استكمال البيانات";
               }
-              else if(value.length!=11){
-                return "رقم الهاتف غير صحيح";
+              else if(value.length!=11||!RegExp(r'^(010|011|012|015)[0-9]{8}$').hasMatch(value)){
+                return "برجاء إدخال رقم تليفون صحيح";
               }
               return null;
             },
@@ -37,6 +38,8 @@ class _Step2State extends State<Step2> {
               isicon: true,
               ),
         Texttfild(
+          
+          enable: true,
           isSubmitted: widget.isSubmitted,
           optional: true,
           control: widget.controllertext[5],
@@ -49,22 +52,21 @@ class _Step2State extends State<Step2> {
             fouc=value;
           }),
           child:  Texttfild(
+            enable: true,
           isSubmitted: widget.isSubmitted,
           control: widget.controllertext[6],
           lable: "تعيين كلمة المرور", 
           hint: "••••••••••••••••",
           validator: (value) {
             if(value==null||value.trim().isEmpty){
-              return "برجاء إدخال كلمة المرور ";
+              return "هذا الحقل إلزامى، يرجى استكمال البيانات ";
             }
             else{ 
             if( value.length <8){
-            return "يجب أن تحتوى على 8 رموز على الأقل.";}
-            if(!value.contains(RegExp(r'[a-zA-Z]')))
-            {return "يجب أن تحتوي على حروف.";}
-            if(!value.contains(RegExp(r'[0-9]'))){
-              return "يجب أن تحتوي على أرقام.";
-            }
+            return "كلمة المرور يجب أن تكون على الأقل 8 خانات من حروف و أرقام";}
+            else if(!value.contains(RegExp(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?=.*[0-9])')))
+            {return "كلمة المرور يجب أن تحتوي على حرف كبير، حرف صغير، رقم، ورمز خاص واحد على الأقل، وألا تقل عن 8 أحرف ";}
+            
 
             return null;}
           },
@@ -72,7 +74,7 @@ class _Step2State extends State<Step2> {
         ,fouc?
           Passwordrule(passcontroller: widget.controllertext[6]):SizedBox.shrink()
           ,
-          Texttfild(
+          Texttfild(enable: true,
           isSubmitted: widget.isSubmitted,
           control: widget.controllertext[7],
           lable: "تأكيد كلمة المرور", 
