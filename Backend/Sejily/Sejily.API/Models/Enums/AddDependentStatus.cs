@@ -5,6 +5,7 @@
         Created,
         GuardianNotFound,   // the caller has no Patient profile (F1.1 dependency)
         Conflict,           // National ID or Health Card Number already exists
-        Invalid             // rejected by ASP.NET Core Identity
+        Invalid,            // rejected by ASP.NET Core Identity or by input validation
+        DraftNotFound       // registration request is missing, expired or belongs to someone else
     }
 }
