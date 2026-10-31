@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Sejily.API.Data;
 using Sejily.API.DTOs.Auth;
+using Sejily.API.DTOs.Health;
 using Sejily.API.Models.Entities;
 using Sejily.API.Models.Enums;
 using Sejily.API.Services;
@@ -25,6 +26,7 @@ public class AuthController : ControllerBase
     private readonly IConfiguration _configuration;
     private readonly IOtpSmsSender _otpSmsSender;
     private readonly IDoctorWorkplaceService _doctorWorkplaceService;
+    private readonly IPatientHealthService _healthService;
 
     private const int OtpLifetimeMinutes = 5;
     private const int OtpResendCooldownSeconds = 60;
@@ -36,13 +38,15 @@ public class AuthController : ControllerBase
         SejilyDbContext context,
         IConfiguration configuration,
         IOtpSmsSender otpSmsSender,
-        IDoctorWorkplaceService doctorWorkplaceService)
+        IDoctorWorkplaceService doctorWorkplaceService,
+        IPatientHealthService healthService)
     {
         _userManager = userManager;
         _context = context;
         _configuration = configuration;
         _otpSmsSender = otpSmsSender;
         _doctorWorkplaceService = doctorWorkplaceService;
+        _healthService = healthService;
     }
 
     // =====================================
@@ -356,6 +360,9 @@ public class AuthController : ControllerBase
     public async Task<IActionResult> ForgotPassword(
         ForgotPasswordRequest request)
     {
+        const string message0 =
+            "Wrong user name or phone number. ";
+
         const string message =
             "If the account exists and the phone number matches, " +
             "a reset code will be sent.";
@@ -365,7 +372,7 @@ public class AuthController : ControllerBase
 
         var user = await _context.Users.FirstOrDefaultAsync(u =>
             u.NationalID == request.NationalID &&
-
+            u.PhoneNumber== request.PhoneNumber &&
             u.AccountType == request.AccountType!.Value);
 
         if (user == null ||
@@ -376,7 +383,8 @@ public class AuthController : ControllerBase
             // Use the same response format even if no account matches.
             return Ok(new
             {
-                message,
+               // message,
+               message0,
                 requestId
             });
         }
@@ -823,7 +831,20 @@ public class AuthController : ControllerBase
             return Conflict(
                 "A Patient account with this National ID already exists.");
         }
+        //////////
+        if (!string.IsNullOrWhiteSpace(request.HealthCardNumber))
+        {
+            var healthCardExists = await _context.Patients
+                .AnyAsync(p =>
+                    p.HealthCardNumber == request.HealthCardNumber);
 
+            if (healthCardExists)
+            {
+                return Conflict(
+                    "A Patient with this Health Card Number already exists.");
+            }
+        }
+        ////////////
         await using var transaction =
             await _context.Database.BeginTransactionAsync();
 
@@ -857,7 +878,10 @@ public class AuthController : ControllerBase
             var patient = new Patient
             {
                 UserId = user.Id,
-                HealthCardNumber = request.HealthCardNumber
+                HealthCardNumber = string.IsNullOrWhiteSpace(
+                request.HealthCardNumber)
+                ? null
+               : request.HealthCardNumber.Trim()
             };
 
             _context.Patients.Add(patient);
@@ -866,13 +890,17 @@ public class AuthController : ControllerBase
             // Delete the temporary registration data.
             _context.PatientRegistrationDrafts.Remove(draft);
 
+            // Token for the health step (no guardian: the patient registers for themselves).
+            var healthRequestId = _healthService.AddSetupRequest(user.Id, null);
+
             await _context.SaveChangesAsync();
             await transaction.CommitAsync();
 
             return Ok(new
             {
                 message = "Patient registered successfully.",
-                userId = user.Id
+                userId = user.Id,
+                healthRequestId
             });
         }
         catch
@@ -880,6 +908,27 @@ public class AuthController : ControllerBase
             await transaction.RollbackAsync();
             throw;
         }
+    }
+
+    // Step 3 of mobile patient registration (health screen, can be skipped).
+    // Anonymous: the patient has not logged in yet; the single-use requestId
+    // returned by register/patient/complete is the proof.
+    [HttpPost("register/patient/health")]
+    public async Task<IActionResult> CompletePatientHealthProfile(
+        CompleteHealthProfileRequest request)
+    {
+        var result = await _healthService.SaveAsync(null, request);
+
+        return result.Status switch
+        {
+            SaveHealthProfileStatus.Saved =>
+                Ok(new { message = "Health data saved successfully." }),
+
+            SaveHealthProfileStatus.RequestNotFound =>
+                BadRequest(new { errors = result.Errors }),
+
+            _ => BadRequest(new { errors = result.Errors })
+        };
     }
 
 

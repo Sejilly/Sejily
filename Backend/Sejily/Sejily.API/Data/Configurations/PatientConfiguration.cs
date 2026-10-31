@@ -13,7 +13,7 @@ public class PatientConfiguration : IEntityTypeConfiguration<Patient>
 
         builder.Property(p => p.HealthCardNumber).HasMaxLength(50);
 
-        builder.HasIndex(p => p.HealthCardNumber).IsUnique();
+        builder.HasIndex(p => p.HealthCardNumber).IsUnique().HasFilter("[HealthCardNumber] IS NOT NULL");
 
         builder.HasOne(p => p.User)
             .WithOne(u => u.Patient)
