@@ -831,7 +831,20 @@ public class AuthController : ControllerBase
             return Conflict(
                 "A Patient account with this National ID already exists.");
         }
+        //////////
+        if (!string.IsNullOrWhiteSpace(request.HealthCardNumber))
+        {
+            var healthCardExists = await _context.Patients
+                .AnyAsync(p =>
+                    p.HealthCardNumber == request.HealthCardNumber);
 
+            if (healthCardExists)
+            {
+                return Conflict(
+                    "A Patient with this Health Card Number already exists.");
+            }
+        }
+        ////////////
         await using var transaction =
             await _context.Database.BeginTransactionAsync();
 
@@ -865,7 +878,10 @@ public class AuthController : ControllerBase
             var patient = new Patient
             {
                 UserId = user.Id,
-                HealthCardNumber = request.HealthCardNumber
+                HealthCardNumber = string.IsNullOrWhiteSpace(
+                request.HealthCardNumber)
+                ? null
+               : request.HealthCardNumber.Trim()
             };
 
             _context.Patients.Add(patient);
