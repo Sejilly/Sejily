@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mobile/auth/cubitstates.dart/cubite.dart';
+import 'package:mobile/auth/cubitstates.dart/states.dart';
+import 'package:mobile/model/icd11model.dart';
 import 'package:mobile/pages/auth/sign_up/sign_up_Process_Success.dart';
 import 'package:mobile/pages/auth/steps/step1.dart';
 import 'package:mobile/pages/auth/steps/step2_signup.dart';
@@ -16,14 +20,15 @@ class SignUpProcess extends StatefulWidget {
 }
 
 class _SignUpProcess_1State extends State<SignUpProcess> {
-   late List<List<String>?> selectedItemsLists;
+   late List<List<Icd11model>?> selectedItemsLists;
   bool isSubmitted=false;
   int currentindex=0;
-  List<Widget> get steps=>[Step1(controllertext: controllertext,isSubmitted: isSubmitted,),Step2(isSubmitted: isSubmitted,controllertext: controllertext),Step3(selectedItemsLists: selectedItemsLists,isSubmitted:isSubmitted ,controllertext: controllertext)];
+   DateTime? date;
   late List<TextEditingController> controllertext;
   PageController sign=PageController();
   List arr=["البيانات","الأمان","الصحية"];
-  late final _formkey ;
+  late final List<GlobalKey<FormState>> _formkey ;
+   List<String> Medicines=[];
   @override
   void initState() {
     // TODO: implement initState
@@ -31,24 +36,49 @@ class _SignUpProcess_1State extends State<SignUpProcess> {
     selectedItemsLists=List.generate(3, (_)=>null);
     controllertext=List.generate(13, (_)=>TextEditingController());
     _formkey=List.generate(3, (_)=> GlobalKey<FormState>()) ;
+    
   }
   @override
   void dispose() {
 
-    super.dispose();
+    
         for(var x in controllertext){
            x.dispose();
 
     }
     sign.dispose();
+    super.dispose();
+  }
+  void selectdate({required DateTime dateOfBirth}){
+    date=dateOfBirth;
+
   }
   @override
   Widget build(BuildContext context) {
+       return  BlocListener<Cubiteauth, Stateauth>(
+  listener: (context, state) {
+     debugPrint('STATE: ${state.runtimeType}  step=$currentindex');
+    if (state is Regsuccess) {
+      print('sucsseslogin');
+      if(currentindex<2){
+      setState(() {
+        currentindex++; 
+      });} else if(currentindex==2){
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (_)=>Signup_Process_Success(name: controllertext[0].text.trim().split(' ').first,)));
+      }
+    }
+  },
+   child:  BlocBuilder<Cubiteauth,Stateauth>(builder: (context,state){
+    
+       var cubit=BlocProvider.of<Cubiteauth>(context);
+         List<Widget>  steps=[Step1(guardian: false,loading: state is RegLooding,haserror:state is Regerrordublicatedid ,selectdate:selectdate,controllertext: controllertext,isSubmitted: isSubmitted,),Step2(isSubmitted: isSubmitted,controllertext: controllertext),Step3(Medicines: Medicines,selectedItemsLists: selectedItemsLists,isSubmitted:isSubmitted ,controllertext: controllertext)];
+
+
     return SafeArea(
       child: PopScope(
         canPop: currentindex==0,
         onPopInvokedWithResult: (didPop, result) {
-           if(didPop)return null;
+           if(didPop)return ;
           else if (currentindex<3&&currentindex>0)
           setState(() {
             currentindex--;
@@ -75,7 +105,8 @@ class _SignUpProcess_1State extends State<SignUpProcess> {
                             children: [
                               BarAuth(array:arr,title: "إنشاء حساب جديد",subtitle:currentindex<2? "أكمل الخطوات التالية لإنشاء حسابك":null,index: currentindex,
                               ontap:(){
-                                Navigator.push(context, MaterialPageRoute(builder: (_)=>Signup_Process_Success(name:  controllertext[0].text.trim().split(' ').first,)));
+                                cubit.registrationnothingfieldstep3();
+                               
                               } ,),
                               AnimatedSwitcher(
       
@@ -86,20 +117,56 @@ class _SignUpProcess_1State extends State<SignUpProcess> {
                                   ),
                               ),
                                 const SizedBox(height: 4,),
+                                 if (state is Regerror ||cubit.state is Regexpierd) SizedBox(height: 16,),
+                                if(cubit.state is Regexpierd||state is Regerror)
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                                  child: Container(
+                                                      width: double.infinity,
+                                                     
+                                                      decoration: BoxDecoration(
+                                                        color: Color(0xffDC2626).withOpacity(0.05),
+                                                        borderRadius: BorderRadius.circular(8),
+                                                        border: Border.all(color: Color(0xffDC2626).withOpacity(0.5))
+                                                      ),
+                                                      child:Padding(
+                                                        padding: const EdgeInsets.only(right: 8,left: 16,top: 12,bottom: 12),
+                                                        child: Row(children: [
+                                                          SvgPicture.asset("assets/images/icons/error-circle.svg"),SizedBox(width: 8,),
+                                                          Flexible(
+                                                            child: Text.rich(TextSpan(text:cubit.state is Regexpierd?  "انتهت صلاحية طلب التسجيل أو أصبح غير صالح، يرجى إعادة المحاولة من البداية":  'حدث خطا ما حاول مجددا',
+                                                            style: TextStyle(color: Color(0xffDC2626)))),
+                                                          )
+                                  
+                                                        ],),
+                                                      ) ,
+                                                    ),
+                                ) ,
+                                SizedBox(height: 16,),
+                               
+                                
+                                
                                 Padding(
                                   padding: const EdgeInsets.symmetric(horizontal: 16),
                                   child: Buttonn(text: currentindex==2?"إنشاء الحساب":"التالي",width: 313,onPressed: (){
+                                    if (cubit.state is RegLooding) return;
                                    setState(() {
                                     isSubmitted=true;
                                    });
                                     if(_formkey[currentindex].currentState!.validate()){
                                     setState(() {
                                       isSubmitted=false;
-                                      if(currentindex<2)
-                                       currentindex++;
-                                       else
-                                       Navigator.pushReplacement(context, MaterialPageRoute(builder: (_)=>Signup_Process_Success(name:  controllertext[0].text.trim().split(' ').first)));
-                                  });}},),
+                                     
+                                  });
+                                   if(currentindex==0){
+                                        cubit.registrationstep1(nationalID: controllertext[1].text.trim(), fullName: controllertext[0].text.trim(), address: controllertext[2].text.trim(), dateOfBirth: date);
+                                      }else if(currentindex==1){
+                                        cubit.registrationstep2(phoneNumber: controllertext[4].text.trim(), password: controllertext[6].text.trim(), confirmPassword: controllertext[7].text.trim(), healthCardNumber: controllertext[5].text.trim());
+                                      }
+                                      else if(currentindex==2){
+                                        cubit.registrationstep3(bloodType: controllertext[12].text.trim(), diseaseIcdCodes: selectedItemsLists[0]!=null? selectedItemsLists[0]!.map((e)=>e.code).toList():[], allergyIcdCodes: selectedItemsLists[1]!=null? selectedItemsLists[1]!.map((e)=>e.code).toList():[], familyDiseaseIcdCodes:selectedItemsLists[2]!=null? selectedItemsLists[2]!.map((e)=>e.code).toList():[], medicationIds:Medicines );
+                                      }
+                                      }},),
                                 )
                                 ,const SizedBox(height: 16,),
                                 currentindex==2?
@@ -113,7 +180,7 @@ class _SignUpProcess_1State extends State<SignUpProcess> {
                                                 backgroundColor:Color(0xffffffff),
                                                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12),side: BorderSide(color:Color(0xff2B6CB0)))),
                                                 onPressed: (){
-                                                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (_)=>Signup_Process_Success(name: controllertext[0].text.trim().split(' ').first,)));
+                                                 cubit.registrationnothingfieldstep3();
                                                 },
                                                  child: Text("تخطي" ,style: TextStyle(fontWeight: FontWeight.w600,fontSize: 16,color:Color(0xff2B6CB0) ),)),
                                   ),
@@ -145,6 +212,6 @@ class _SignUpProcess_1State extends State<SignUpProcess> {
           ),
         ),
       ),
-    );
+    );}));
   }
 }

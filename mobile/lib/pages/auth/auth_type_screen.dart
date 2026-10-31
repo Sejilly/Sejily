@@ -61,7 +61,7 @@ class _AuthTypeScreenState extends State<AuthTypeScreen> {
                     const SizedBox(height: 44,),
                     Buttonn(width: 316,onPressed:  (){
                                   if(selectionoption==1){
-                                    Navigator.push(context, MaterialPageRoute(builder: (_)=>const GuardianSignup()));
+                                    Navigator.push(context, MaterialPageRoute(builder: (_)=>const SignUpProcess()));
                         
                                   }else if(selectionoption==0){Navigator.push(context, MaterialPageRoute(builder: (_)=>const SignIn()));}
                               },canpressed: selectionoption !=null,text:"التالي" ,)

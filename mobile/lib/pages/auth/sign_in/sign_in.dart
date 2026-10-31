@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile/auth/cubitstates.dart/cubite.dart';
 import 'package:mobile/auth/cubitstates.dart/states.dart';
+import 'package:mobile/pages/auth/guardian_signup/guardian_signup.dart';
 import 'package:mobile/pages/auth/sign_in/card.dart';
 import 'package:mobile/widgets/field/texttfild.dart';
 
@@ -37,10 +38,12 @@ class _SignInState extends State<SignIn> {
   Widget build(BuildContext context) {
    return  BlocListener<Cubiteauth, Stateauth>(
   listener: (context, state) {
+         debugPrint('STATE: ${state.runtimeType}  ');
+
     if (state is Loginsuccess) {
       print('sucsseslogin');
       // هنا تضعين الانتقال للشاشة الرئيسية مثلاً:
-      // Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => HomeScreen()));
+       Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => GuardianSignup()));
     }
   },
    child:  BlocBuilder<Cubiteauth,Stateauth>(builder: (context,State){
@@ -51,10 +54,11 @@ class _SignInState extends State<SignIn> {
           body: 
           SafeArea(
             child:Cardd(
-              error: (cubit.state is Loginsuccess)?'صحح':(cubit.state is Loginwrongpassorid)?'الرقم القومي أو كلمة المرور غير صحيحة، يرجى التحقق من البيانات المدخلة.':
+              error:(cubit.state is Loginwrongpassorid)?'الرقم القومي أو كلمة المرور غير صحيحة، يرجى التحقق من البيانات المدخلة.':
               (cubit.state is Loginerror )?'تعذر تسجيل الدخول حالياً، يرجى التحقق من اتصال الإنترنت والمحاولة لاحقاً.':'',
               haserror: cubit.state is Loginsuccess||(cubit.state is Loginwrongpassorid)||(cubit.state is Loginerror),title: "تسجيل الدخول", subtitle: "أهلاً بعودتك، يرجى إدخال بيانات حسابك",
-             wedget1: Texttfild(
+             wedget1: Texttfild(enable: cubit.state is! Loginloading,
+                               haserror: cubit.state is Loginsuccess||(cubit.state is Loginwrongpassorid)||(cubit.state is Loginerror),
                                 isSubmitted: isSubmitted,
                                 control:_controller[0], 
                                 lable: "الرقم القومي", 
@@ -71,6 +75,8 @@ class _SignInState extends State<SignIn> {
                                   return null;
                                 },),
                                  wedget2: Texttfild(
+                                  haserror: cubit.state is Loginsuccess||(cubit.state is Loginwrongpassorid)||(cubit.state is Loginerror),
+                                  enable: cubit.state is! Loginloading,
                                   isSubmitted: isSubmitted,
                                   control: _controller[1],
                                   lable: "كلمة المرور", 

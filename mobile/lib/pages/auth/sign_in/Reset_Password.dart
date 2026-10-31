@@ -56,6 +56,7 @@ class _SignInState extends State<Reset_Password> {
            cubit.state is Resetpasserror?'حدث خطأ ما أثناء إعادة تعيين كلمة المرور، يرجى المحاولة مرة أخرى':''
            ,title: "إعادة تعيين كلمة المرور", subtitle: "أنشئ كلمة مرور قوية وجديدة لحسابك.", 
             wedget1:Texttfild(
+                  enable:! (cubit.state is Resetpassloading),
                   isSubmitted: isSubmitted,
                   control: _controller[0],
                   lable: "كلمة المرور", 
@@ -82,6 +83,7 @@ class _SignInState extends State<Reset_Password> {
                     fouc=value;
                   }),
                   child:  Texttfild(
+                  enable:! (cubit.state is Resetpassloading),
                   isSubmitted: isSubmitted,
                   control: _controller[1],
                   lable: "تأكيد كلمة المرور", 

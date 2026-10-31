@@ -5,8 +5,12 @@ import 'package:mobile/widgets/field/texttfild.dart';
 
 class Step1 extends StatelessWidget {
   final isSubmitted;
+  final bool haserror;
+  final bool loading;
+  final Function selectdate;
   final List<TextEditingController> controllertext;
-   Step1({required this.controllertext, super.key,  required this.isSubmitted});
+  final bool guardian;
+   Step1({required this.guardian, required this.loading,required this.haserror,required this.selectdate,required this.controllertext, super.key,  required this.isSubmitted});
 
  
   @override
@@ -16,49 +20,56 @@ class Step1 extends StatelessWidget {
       
       children: [
         Texttfild(
+
+          enable: !loading,
           isSubmitted: isSubmitted,
           control: controllertext[0],
           lable:"الاسم الكامل" ,
           hint:"الاسم كما ببطاقة الهوية" ,
           validator:(value) {
             if(value==null||value.trim().isEmpty){
-              return "برجاء إدخال الاسم الكامل";
+              return "هذا الحقل إلزامى، يرجى استكمال البيانات";
             }
             return null;} ,),
         Texttfild(
+           maxlength: 14,
+           number: true,
+          enable: !loading,
+          haserror: haserror,
+          errorms: 'هذا الرقم القومي مسجل مسبقاً!',
           isSubmitted: isSubmitted,
           control: controllertext[1],
           lable: "الرقم القومي", 
           hint: "الرقم القومي",
           validator: (value) {
             if(value==null||value.trim().isEmpty){
-              return "برجاء إدخال الرقم القومي";
+              return "هذا الحقل إلزامى، يرجى استكمال البيانات";
             }
-            else if( value.length <14){
-            return "الرقم القومي غيرمكتمل!";}
-            else if(value.length>14)
-            return "الرقم القومي غير صحيح";
+            else if( value.length !=14|| value.contains(RegExp(r'\D'))){
+            return 'الرقم القومى خاطئ، يرجى إعادة الادخال';}
             return null;
           },),
           Texttfild(
+            enable: !loading,
           isSubmitted: isSubmitted,
           control:controllertext[2] ,
           lable: "العنوان", 
           hint: "العنوان كما ببطاقة الهوية",
           validator: (value) {
             if(value==null||value.trim().isEmpty){
-              return "برجاء إدخال العنوان";
+              return "هذا الحقل إلزامى، يرجى استكمال البيانات";
             }
             return null;
           },),
           Texttfild(
+            enable: !loading,
             isSubmitted: isSubmitted,
             control: controllertext[3],
             lable: "تاريخ الميلاد", 
             hint: "اليوم/الشهر/السنة",
             validator: (value) {
               if(value==null||value.trim().isEmpty){
-                return "برجاء تاريخ الميلاد";
+                return "هذا الحقل إلزامى، يرجى استكمال البيانات";
               }
               return null;
             },ontap: ()async {
@@ -89,6 +100,7 @@ class Step1 extends StatelessWidget {
     );
                 },);
               if(date!=null){
+                selectdate(dateOfBirth:date);
                 controllertext[3].text=toArabicDigits("${date.year}/${date.month}/${date.day}");
               }
               
@@ -97,6 +109,17 @@ class Step1 extends StatelessWidget {
           icon:"assets/images/icons/calender.svg",
           isicon: true,curser: false,
           readonly: true,),
+          if(guardian)
+          Texttfild(
+          
+          enable: true,
+          isSubmitted:isSubmitted,
+          optional: true,
+          control:controllertext[4],
+          lable:"رقم البطاقة الصحية (إن وُجدت)" ,
+          hint:"رقم البطاقة الصحية" ,
+          validator:(value) {
+            return null;} ,),
           
 
           

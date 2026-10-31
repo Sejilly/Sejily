@@ -20,6 +20,7 @@ dependencies:
   firebase_auth: ^6.4.0
   dio: ^5.11.1
   flutter_bloc: ^9.1.1
+  flutter_secure_storage: ^10.3.4
 
 dev_dependencies:
   flutter_test:
@@ -36,6 +37,7 @@ flutter:
     - assets/images/
     - assets/images/onboarding_screen/
     - assets/images/icons/
+    - assets/json/icd11.json
 
   fonts:
     - family: Vazirmatin
