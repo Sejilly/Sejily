@@ -356,6 +356,9 @@ public class AuthController : ControllerBase
     public async Task<IActionResult> ForgotPassword(
         ForgotPasswordRequest request)
     {
+        const string message0 =
+            "Wrong user name or phone number. ";
+
         const string message =
             "If the account exists and the phone number matches, " +
             "a reset code will be sent.";
@@ -365,7 +368,7 @@ public class AuthController : ControllerBase
 
         var user = await _context.Users.FirstOrDefaultAsync(u =>
             u.NationalID == request.NationalID &&
-
+            u.PhoneNumber== request.PhoneNumber &&
             u.AccountType == request.AccountType!.Value);
 
         if (user == null ||
@@ -376,7 +379,8 @@ public class AuthController : ControllerBase
             // Use the same response format even if no account matches.
             return Ok(new
             {
-                message,
+               // message,
+               message0,
                 requestId
             });
         }
