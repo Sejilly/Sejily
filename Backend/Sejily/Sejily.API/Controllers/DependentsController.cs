@@ -26,37 +26,6 @@ public class DependentsController : ControllerBase
         _healthService = healthService;
     }
 
-    // POST api/dependents
-    [HttpPost]
-    public async Task<IActionResult> AddDependent(AddDependentRequest request)
-    {
-        if (!TryGetUserId(out var guardianUserId))
-        {
-            return Unauthorized();
-        }
-
-        var result = await _dependentService
-            .AddDependentAsync(guardianUserId, request);
-
-        return result.Status switch
-        {
-            AddDependentStatus.Created =>
-                StatusCode(StatusCodes.Status201Created, new
-                {
-                    message = "Dependent added successfully.",
-                    dependentId = result.DependentUserId
-                }),
-
-            AddDependentStatus.GuardianNotFound =>
-                StatusCode(StatusCodes.Status403Forbidden, new { errors = result.Errors }),
-
-            AddDependentStatus.Conflict =>
-                Conflict(new { errors = result.Errors }),
-
-            _ => BadRequest(new { errors = result.Errors })
-        };
-    }
-
     // POST api/dependents/registration/start
     // Step 1 (data screen): fails here if the National ID / health card is taken.
     [HttpPost("registration/start")]
@@ -90,9 +59,40 @@ public class DependentsController : ControllerBase
         };
     }
 
+    // POST api/dependents/registration/verify-kinship
+    // Step 2a (kinship screen): called when the guardian picks the relationship.
+    // Needs the requestId of step 1, so it works before the dependent exists.
+    [HttpPost("registration/verify-kinship")]
+    public async Task<IActionResult> VerifyKinship(
+        VerifyDependentKinshipRequest request)
+    {
+        if (!TryGetUserId(out var guardianUserId))
+        {
+            return Unauthorized();
+        }
+
+        var result = await _dependentService
+            .VerifyKinshipAsync(guardianUserId, request);
+
+        return result.Status switch
+        {
+            VerifyDraftKinshipStatus.Verified =>
+                Ok(new
+                {
+                    message = "Kinship verified successfully.",
+                    requestId = request.RequestId,
+                    relationship = request.Relationship,
+                    verificationStatus = VerificationStatus.Verified,
+                    verifiedAt = result.VerifiedAt
+                }),
+
+            _ => BadRequest(new { errors = result.Errors })
+        };
+    }
+
     // POST api/dependents/registration/complete
-    // Step 2 (kinship): creates the dependent and the link, and returns
-    // healthRequestId for step 3.
+    // Step 2b (kinship screen, "Next"): creates the dependent and the (already
+    // verified) link, and returns healthRequestId for step 3.
     [HttpPost("registration/complete")]
     public async Task<IActionResult> CompleteRegistration(
         CompleteDependentRegistrationRequest request)
