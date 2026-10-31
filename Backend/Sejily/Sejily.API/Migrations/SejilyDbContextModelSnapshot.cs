@@ -183,9 +183,15 @@ namespace Sejily.API.Migrations
                     b.Property<string>("HealthCardNumber")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime?>("KinshipVerifiedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("NationalID")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("Relationship")
+                        .HasColumnType("int");
 
                     b.Property<Guid>("RequestId")
                         .HasColumnType("uniqueidentifier");

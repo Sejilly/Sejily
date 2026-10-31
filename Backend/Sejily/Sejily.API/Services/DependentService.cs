@@ -23,102 +23,6 @@ public class DependentService : IDependentService
         _healthService = healthService;
     }
 
-    // =========================
-    // Add a dependent
-    // =========================
-
-    public async Task<AddDependentResult> AddDependentAsync(
-        int guardianUserId, AddDependentRequest request)
-    {
-        // the guardian must already be a registered patient
-        var guardianIsPatient = await _context.Patients
-            .AnyAsync(p => p.UserId == guardianUserId);
-
-        if (!guardianIsPatient)
-        {
-            return new AddDependentResult(
-                AddDependentStatus.GuardianNotFound,
-                Errors: new[] { "Only a registered patient can add a dependent." });
-        }
-
-        var healthCard = string.IsNullOrWhiteSpace(request.HealthCardNumber)
-    ? null
-    : request.HealthCardNumber.Trim();
-
-        // 2) The depenfent must not be registered before (a Duplicate)
-        if (await _context.Users.AnyAsync(u =>
-                u.NationalID == request.NationalID &&
-                u.AccountType == AccountType.Patient))
-        {
-            return new AddDependentResult(
-                AddDependentStatus.Conflict,
-                Errors: new[] { "National ID already exists." });
-        }
-
-        if (healthCard != null &&
-        await _context.Patients.AnyAsync(p => p.HealthCardNumber == healthCard))
-        {
-            return new AddDependentResult(
-                AddDependentStatus.Conflict,
-                Errors: new[] { "Health card number already exists." });
-        }
-
-        // 3) All-or-nothing: User + Patient + GuardianPatient are saved together.
-        await using var transaction = await _context.Database.BeginTransactionAsync();
-
-        try
-        {
-            // No password: the dependent cannot log in directly.
-            var user = new User
-            {
-                UserName = BuildUserName(request.NationalID),
-                NationalID = request.NationalID,
-                AccountType = AccountType.Patient,
-                FullName = request.FullName,
-                Address = request.Address,
-                DateOfBirth = request.DateOfBirth,
-                //PhoneNumber = request.PhoneNumber
-            };
-
-            var identityResult = await _userManager.CreateAsync(user);
-
-            if (!identityResult.Succeeded)
-            {
-                return new AddDependentResult(
-                    AddDependentStatus.Invalid,
-                    Errors: identityResult.Errors.Select(e => e.Description));
-            }
-
-            _context.Patients.Add(new Patient
-            {
-                UserId = user.Id,
-                //BloodType = request.BloodType,
-                HealthCardNumber = healthCard
-            });
-
-            // Kinship is verified later (F1.4), so the link starts as Pending.
-            _context.GuardianPatients.Add(new GuardianPatient
-            {
-                GuardianId = guardianUserId,
-                PatientId = user.Id,
-                Relationship = request.Relationship,
-                VerificationStatus = VerificationStatus.Pending
-            });
-
-            await _context.SaveChangesAsync();
-            await transaction.CommitAsync();
-
-            return new AddDependentResult(AddDependentStatus.Created, user.Id);
-        }
-        catch (DbUpdateException)
-        {
-            // Unique-index violation from a concurrent request; the transaction rolls back.
-            return new AddDependentResult(
-                AddDependentStatus.Conflict,
-                Errors: new[] { "National ID or health card number already exists." });
-        }
-    }
-
     // ======================================
     // Two-step registration (mobile wizard)
     // ======================================
@@ -166,14 +70,16 @@ public class DependentService : IDependentService
             AddDependentStatus.Created, draft.RequestId);
     }
 
-    // Step 2: User + Patient + GuardianPatient are saved together or not at all.
-    public async Task<AddDependentResult> CompleteRegistrationAsync(
-        int guardianUserId, CompleteDependentRegistrationRequest request)
+    // Step 2a: runs when the guardian picks the relationship on the kinship screen.
+    // check yet, so a valid request cannot fail. The result is kept on the draft
+    // and used by the complete step. Picking another relationship verifies again.
+    public async Task<VerifyDraftKinshipResult> VerifyKinshipAsync(
+        int guardianUserId, VerifyDependentKinshipRequest request)
     {
         if (!Enum.IsDefined(request.Relationship))
         {
-            return new AddDependentResult(
-                AddDependentStatus.Invalid,
+            return new VerifyDraftKinshipResult(
+                VerifyDraftKinshipStatus.Invalid,
                 Errors: new[] { "Invalid relationship." });
         }
 
@@ -188,9 +94,46 @@ public class DependentService : IDependentService
 
         if (draft == null)
         {
+            return new VerifyDraftKinshipResult(
+                VerifyDraftKinshipStatus.DraftNotFound,
+                Errors: new[] { "Invalid or expired registration request." });
+        }
+
+        draft.Relationship = request.Relationship;
+        draft.KinshipVerifiedAt = now;
+
+        await _context.SaveChangesAsync();
+
+        return new VerifyDraftKinshipResult(
+            VerifyDraftKinshipStatus.Verified, now);
+    }
+
+    // Step 2b: User + Patient + GuardianPatient are saved together or not at all.
+    public async Task<AddDependentResult> CompleteRegistrationAsync(
+        int guardianUserId, CompleteDependentRegistrationRequest request)
+    {
+        var now = DateTime.UtcNow;
+
+        // Same answer for "missing", "expired" and "someone else's" draft.
+        var draft = await _context.DependentRegistrationDrafts
+            .FirstOrDefaultAsync(d =>
+                d.RequestId == request.RequestId &&
+                d.GuardianUserId == guardianUserId &&
+                d.ExpiresAtUtc > now);
+
+        if (draft == null)
+        {
             return new AddDependentResult(
                 AddDependentStatus.DraftNotFound,
                 Errors: new[] { "Invalid or expired registration request." });
+        }
+
+        // The kinship must be verified first (POST registration/verify-kinship).
+        if (draft.Relationship == null || draft.KinshipVerifiedAt == null)
+        {
+            return new AddDependentResult(
+                AddDependentStatus.Invalid,
+                Errors: new[] { "Kinship must be verified before completing the registration." });
         }
 
         if (!await _context.Patients.AnyAsync(p => p.UserId == guardianUserId))
@@ -241,13 +184,14 @@ public class DependentService : IDependentService
 
             _context.Patients.Add(patient);
 
-            // Kinship is verified later (F1.4), so the link starts as Pending.
+            // The kinship was already verified on the draft, so the link starts as Verified.
             _context.GuardianPatients.Add(new GuardianPatient
             {
                 GuardianId = guardianUserId,
                 PatientId = user.Id,
-                Relationship = request.Relationship,
-                VerificationStatus = VerificationStatus.Pending
+                Relationship = draft.Relationship.Value,
+                VerificationStatus = VerificationStatus.Verified,
+                VerifiedAt = draft.KinshipVerifiedAt
             });
 
             _context.DependentRegistrationDrafts.Remove(draft);

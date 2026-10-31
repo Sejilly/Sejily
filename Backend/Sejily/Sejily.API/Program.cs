@@ -122,7 +122,6 @@ public class Program
 
         builder.Services.AddScoped<IDependentService, DependentService>();
         builder.Services.AddScoped<IPatientHealthService, PatientHealthService>();
-        builder.Services.AddScoped<IKinshipVerificationService, KinshipVerificationService>();
         builder.Services.AddScoped<ITokenService, TokenService>();
         builder.Services.AddScoped<IAccountSwitchingService, AccountSwitchingService>();
         builder.Services.AddScoped<IDoctorWorkplaceService, DoctorWorkplaceService>();
