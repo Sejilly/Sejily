@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mobile/widgets/success_process.dart';
+import 'package:mobile/auth/widgets/success_process.dart';
 
 class Signup_Process_Success extends StatelessWidget {
   final String name;

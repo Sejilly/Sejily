@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:mobile/pages/auth/guardian_signup/guardian_signup.dart';
-import 'package:mobile/pages/auth/sign_in/sign_in.dart';
-import 'package:mobile/pages/auth/sign_up/Sign_up_Process%20.dart';
-import 'package:mobile/widgets/button.dart';
-import 'package:mobile/widgets/termsNotice.dart';
+import 'package:mobile/auth/pages/sign_in/sign_in.dart';
+import 'package:mobile/auth/pages/sign_up/Sign_up_Process%20.dart';
+import 'package:mobile/auth/widgets/button.dart';
+import 'package:mobile/auth/widgets/termsNotice.dart';
 
 class AuthTypeScreen extends StatefulWidget {
   const AuthTypeScreen({super.key});

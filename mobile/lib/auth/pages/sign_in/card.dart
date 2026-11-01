@@ -1,8 +1,8 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:mobile/pages/auth/sign_in/forgetpassword.dart';
-import 'package:mobile/widgets/button.dart';
+import 'package:mobile/auth/pages/sign_in/forgetpassword.dart';
+import 'package:mobile/auth/widgets/button.dart';
 
 class Cardd extends StatefulWidget {
   final GlobalKey<FormState> formkey;

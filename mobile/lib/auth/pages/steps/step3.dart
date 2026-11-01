@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:mobile/model/icd11model.dart';
-import 'package:mobile/model/icd11servece.dart';
-import 'package:mobile/widgets/field/dropdown.dart';
-import 'package:mobile/widgets/field/multiselectfield.dart';
-import 'package:mobile/widgets/field/texttfild.dart';
+import 'package:mobile/auth/model/icd11model.dart';
+import 'package:mobile/auth/model/icd11servece.dart';
+import 'package:mobile/auth/widgets/field/dropdown.dart';
+import 'package:mobile/auth/widgets/field/multiselectfield.dart';
 
 
+// ignore: must_be_immutable
 class Step3 extends StatefulWidget {
   final isSubmitted;
   final List<TextEditingController> controllertext;

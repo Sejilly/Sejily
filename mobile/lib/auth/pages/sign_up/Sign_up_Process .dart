@@ -3,14 +3,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mobile/auth/cubitstates.dart/cubite.dart';
 import 'package:mobile/auth/cubitstates.dart/states.dart';
-import 'package:mobile/model/icd11model.dart';
-import 'package:mobile/pages/auth/sign_up/sign_up_Process_Success.dart';
-import 'package:mobile/pages/auth/steps/step1.dart';
-import 'package:mobile/pages/auth/steps/step2_signup.dart';
-import 'package:mobile/pages/auth/steps/step3.dart';
-import 'package:mobile/widgets/bar_auth.dart';
-import 'package:mobile/widgets/button.dart';
-import 'package:mobile/widgets/termsNotice.dart';
+import 'package:mobile/auth/model/icd11model.dart';
+import 'package:mobile/auth/pages/sign_up/sign_up_Process_Success.dart';
+import 'package:mobile/auth/pages/steps/step1.dart';
+import 'package:mobile/auth/pages/steps/step2_signup.dart';
+import 'package:mobile/auth/pages/steps/step3.dart';
+import 'package:mobile/auth/widgets/bar_auth.dart';
+import 'package:mobile/auth/widgets/button.dart';
+import 'package:mobile/auth/widgets/termsNotice.dart';
 
 class SignUpProcess extends StatefulWidget {
   const SignUpProcess({super.key});
@@ -71,7 +71,7 @@ class _SignUpProcess_1State extends State<SignUpProcess> {
    child:  BlocBuilder<Cubiteauth,Stateauth>(builder: (context,state){
     
        var cubit=BlocProvider.of<Cubiteauth>(context);
-         List<Widget>  steps=[Step1(guardian: false,loading: state is RegLooding,haserror:state is Regerrordublicatedid ,selectdate:selectdate,controllertext: controllertext,isSubmitted: isSubmitted,),Step2(isSubmitted: isSubmitted,controllertext: controllertext),Step3(Medicines: Medicines,selectedItemsLists: selectedItemsLists,isSubmitted:isSubmitted ,controllertext: controllertext)];
+         List<Widget>  steps=[Step1(guardian: false,loading: state is RegLooding,haserror:state is Regerrordublicatedid ,selectdate:selectdate,controllertext: controllertext,isSubmitted: isSubmitted,),Step2(isloading: state is RegLooding,isSubmitted: isSubmitted,controllertext: controllertext,),Step3(Medicines: Medicines,selectedItemsLists: selectedItemsLists,isSubmitted:isSubmitted ,controllertext: controllertext)];
 
 
     return SafeArea(

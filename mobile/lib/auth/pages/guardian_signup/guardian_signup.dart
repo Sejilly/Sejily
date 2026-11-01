@@ -3,14 +3,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:mobile/auth/cubitstates.dart/cubite.dart';
 import 'package:mobile/auth/cubitstates.dart/states.dart';
-import 'package:mobile/model/icd11model.dart';
-import 'package:mobile/pages/auth/guardian_signup/guardian_success.dart';
-import 'package:mobile/pages/auth/steps/step1.dart';
-import 'package:mobile/pages/auth/steps/step2_guargian.dart';
-import 'package:mobile/pages/auth/steps/step3.dart';
-import 'package:mobile/widgets/bar_auth.dart';
-import 'package:mobile/widgets/button.dart';
-import 'package:mobile/widgets/termsNotice.dart';
+import 'package:mobile/auth/model/icd11model.dart';
+import 'package:mobile/auth/pages/guardian_signup/guardian_success.dart';
+import 'package:mobile/auth/pages/steps/step1.dart';
+import 'package:mobile/auth/pages/steps/step2_guargian.dart';
+import 'package:mobile/auth/pages/steps/step3.dart';
+import 'package:mobile/auth/widgets/bar_auth.dart';
+import 'package:mobile/auth/widgets/button.dart';
+import 'package:mobile/auth/widgets/termsNotice.dart';
 
 class GuardianSignup extends StatefulWidget {
   const GuardianSignup({super.key});
@@ -66,7 +66,7 @@ class _GuardianSignupState extends State<GuardianSignup> {
   Widget build(BuildContext context) {
     return  BlocListener<Cubiteauth, Stateauth>(
   listener: (context, state) {
-    var cubit=BlocProvider.of<Cubiteauth>(context);
+    BlocProvider.of<Cubiteauth>(context);
     if (state is guardiansuccess) {
       print('sucsseslogin');
       if(currentindex<2){

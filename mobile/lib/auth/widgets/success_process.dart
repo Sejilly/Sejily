@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:mobile/widgets/button.dart';
+import 'package:mobile/auth/widgets/button.dart';
 
 class SuccessProcess extends StatelessWidget {
   final String title;

@@ -3,16 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:mobile/auth/cubitstates.dart/states.dart';
-import 'package:mobile/auth/server.dart';
+import 'package:mobile/server.dart';
 
 class Cubiteauth extends Cubit<Stateauth> {
   String? requestId;
    int? dependentId;
+   String? healthid;
   Cubiteauth():super(Intialauthstates());
   void registrationstep1({required nationalID,required fullName,required address,required dateOfBirth })async{
     emit(RegLooding());
     try{
-      final Response=await server.post(
+      final  Response=await server.post(
       '/api/auth/register/patient/start',
       data: {
           "nationalID": nationalID,
@@ -48,7 +49,10 @@ class Cubiteauth extends Cubit<Stateauth> {
           "confirmPassword":confirmPassword
       }
     );
-    requestId = Response.data['healthRequestId'];
+
+    healthid=Response.data['healthRequestId'];
+
+
     emit(Regsuccess());
     }catch(e){
      if(e is DioException){
@@ -97,9 +101,12 @@ class Cubiteauth extends Cubit<Stateauth> {
       else   if(status==409 && data.toString().toLowerCase().contains(('Health card').toLowerCase())){
 
        emit(guardianerrordublicatedHealthcard());}
-      else {print(status); emit(guardianerror());}
+      else {
+         print(status); emit(guardianerror());}
      
-    } else emit(guardianerror());}}
+    } else {
+       emit(guardianerror());
+     }}}
 
      void guardianstep2()async{
     emit(guardianLooding());
@@ -110,9 +117,13 @@ class Cubiteauth extends Cubit<Stateauth> {
           "requestId":requestId,
           
       }
+
     );
-    dependentId = Response.data['dependentId'];
-    requestId = Response.data['healthRequestId'];
+
+
+     healthid=Response.data['healthRequestId'];
+    dependentId=Response.data['dependentId'];
+
     emit(guardiansuccess());
     }catch(e){
      if(e is DioException){
@@ -140,7 +151,7 @@ class Cubiteauth extends Cubit<Stateauth> {
     void verificationkinship({required String relationship})async{
         emit(verificationkinshiploading());
     try{ 
-     final Response= await server.post('/api/dependents/registration/verify-kinship',
+      await server.post('/api/dependents/registration/verify-kinship',
      data: {
           "requestId":requestId,
           "relationship": relationship
@@ -232,7 +243,7 @@ class Cubiteauth extends Cubit<Stateauth> {
          if(e is DioException){
             debugPrint('RESEND ERROR status=${e.response?.statusCode} data=${e.response?.data} type=${e.type} msg=${e.message}');
           final status =e.response?.statusCode;
-          final massege=e.response?.statusMessage;
+          
           if( status==400)emit(ResendOtpexpired());
           else if(status==429)emit(ResendOtpCooldown());
           else{   emit(ResendOtperror());}
@@ -243,7 +254,7 @@ class Cubiteauth extends Cubit<Stateauth> {
       void otp({required otp})async{
       emit(Otploading());
       try{
-        final Response= await server.post(
+         await server.post(
           '/api/auth/verify-otp',
           data:{
           "requestId": requestId,
@@ -260,7 +271,7 @@ class Cubiteauth extends Cubit<Stateauth> {
       void resetpassword({required password,required confirmPassword})async{
       emit(Resetpassloading());
       try{
-        final Response= await server.post(
+         await server.post(
           '/api/auth/reset-password',
           data:{
           "requestId": requestId,
@@ -288,10 +299,10 @@ class Cubiteauth extends Cubit<Stateauth> {
     void guardianstep3({required bloodType,required diseaseIcdCodes,required allergyIcdCodes,required familyDiseaseIcdCodes ,medicationIds})async{
     emit(guardianLooding());
     try{
-      final Response=await server.post(
+      await server.post(
       '/api/dependents/registration/health',
       data:{
-       "requestId": requestId,
+       "requestId": healthid,
         "bloodType": bloodType,
         "diseaseIcdCodes":diseaseIcdCodes,
         "allergyIcdCodes":allergyIcdCodes,
@@ -309,12 +320,13 @@ class Cubiteauth extends Cubit<Stateauth> {
       debugPrint('data=${e.response?.data}');
       if(status==400&&data.toString().toLowerCase().contains(('Invalid or expired registration request.').toLowerCase())){
        emit(guardianexpired());}
-      else if(status==400 && data['errors'].any((error)=>error.contains('ICD'))){
+           else  if(status==400&&data.toString().toLowerCase().contains(('ICD').toLowerCase())){
+
       print(    "ICD code 'ZZ99' is missing or ambiguous; provide a unique code in the catalog."
          );
           emit(guardianerror());
          }
-         else if(status==400 && data['errors'].any((error)=>error.contains('medication'))){
+          else  if(status==400&&data.toString().toLowerCase().contains(('medication').toLowerCase())){
       print(    "Medication identifier 'X00XX00' is missing or ambiguous in the medication catalog.");
       emit(guardianerror());
          ;}else if(status==400){
@@ -329,10 +341,10 @@ class Cubiteauth extends Cubit<Stateauth> {
      void guardiannothingfieldstep3()async{
     emit(guardianLooding());
     try{
-      final Response=await server.post(
+      await server.post(
       '/api/dependents/registration/health',
       data:{
-       "requestId": requestId,
+       "requestId": healthid,
        
       }
     );
@@ -344,10 +356,10 @@ class Cubiteauth extends Cubit<Stateauth> {
      void registrationstep3({required bloodType,required diseaseIcdCodes,required allergyIcdCodes,required familyDiseaseIcdCodes ,required medicationIds})async{
     emit(RegLooding());
     try{
-      final Response=await server.post(
+      await server.post(
       '/api/auth/register/patient/health',
       data:{
-       "requestId": requestId,
+       "requestId": healthid,
         "bloodType": bloodType,
         "diseaseIcdCodes":diseaseIcdCodes,
         "allergyIcdCodes":allergyIcdCodes,
@@ -363,6 +375,7 @@ class Cubiteauth extends Cubit<Stateauth> {
       final status=e.response?.statusCode;
       final data=e.response?.data;
       debugPrint('data=${e.response?.data}');
+      
       if(status==400&&data.toString().toLowerCase().contains(('expired').toLowerCase())){
        emit(Regexpierd());}
       else if(status==400&&data.toString().toLowerCase().contains(('ICD').toLowerCase())){
@@ -384,17 +397,18 @@ class Cubiteauth extends Cubit<Stateauth> {
      void registrationnothingfieldstep3()async{
     emit(RegLooding());
     try{
-      final Response=await server.post(
+      await server.post(
       '/api/auth/register/patient/health',
       data:{
-       "requestId": requestId,
+       "requestId": healthid,
        
       }
     );
       
     emit(Regsuccess());
     }catch(e){
-      
+      if(e is DioException)
+       debugPrint('data=${e.response?.data}');
      emit(Regerror());}}
     
     

@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
-import 'package:mobile/model/icd11model.dart';
+import 'package:mobile/auth/model/icd11model.dart';
 
 class Icd11servece {
   static bool isloaded=false;

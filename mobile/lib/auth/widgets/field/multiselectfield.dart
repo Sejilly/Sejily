@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:mobile/model/icd11model.dart';
+import 'package:mobile/auth/model/icd11model.dart';
 
 class Multiselectfield extends StatefulWidget {
   final String lable;
