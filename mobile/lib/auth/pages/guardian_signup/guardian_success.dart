@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mobile/widgets/success_process.dart';
+import 'package:mobile/auth/widgets/success_process.dart';
 
 class GuardianSuccess extends StatelessWidget {
   

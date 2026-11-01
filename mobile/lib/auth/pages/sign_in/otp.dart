@@ -5,8 +5,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:mobile/auth/cubitstates.dart/cubite.dart';
 import 'package:mobile/auth/cubitstates.dart/states.dart';
-import 'package:mobile/pages/auth/sign_in/Reset_Password.dart';
-import 'package:mobile/widgets/button.dart';
+import 'package:mobile/auth/pages/sign_in/Reset_Password.dart';
+import 'package:mobile/auth/widgets/button.dart';
 
 class OTP extends StatefulWidget {
   

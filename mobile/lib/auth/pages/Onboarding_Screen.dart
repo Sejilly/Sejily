@@ -1,7 +1,7 @@
 
 import 'package:flutter/material.dart';
-import 'package:mobile/pages/auth/auth_type_screen.dart';
-import 'package:mobile/widgets/button.dart';
+import 'package:mobile/auth/pages/auth_type_screen.dart';
+import 'package:mobile/auth/widgets/button.dart';
 class OnboardingScreendata {
    final String title;
    final String description;

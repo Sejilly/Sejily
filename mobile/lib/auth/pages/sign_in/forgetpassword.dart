@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile/auth/cubitstates.dart/cubite.dart';
 import 'package:mobile/auth/cubitstates.dart/states.dart';
-import 'package:mobile/pages/auth/sign_in/card.dart';
-import 'package:mobile/pages/auth/sign_in/otp.dart';
-import 'package:mobile/widgets/field/texttfild.dart';
+import 'package:mobile/auth/pages/sign_in/card.dart';
+import 'package:mobile/auth/pages/sign_in/otp.dart';
+import 'package:mobile/auth/widgets/field/texttfild.dart';
 
 class RestorePassword extends StatefulWidget {
   const RestorePassword({super.key});
@@ -68,6 +68,7 @@ class _SignInState extends State<RestorePassword> {
                                   return null;
                                 },), 
                                 wedget2: Texttfild(
+                                  number: true,maxlength: 11,
                                    enable: !(cubit.state is Forgetloading),
                                   isSubmitted: isSubmitted,
                                     control: _controller[1],

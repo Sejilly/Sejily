@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile/auth/cubitstates.dart/cubite.dart';
 import 'package:mobile/auth/cubitstates.dart/states.dart';
-import 'package:mobile/pages/auth/guardian_signup/guardian_signup.dart';
-import 'package:mobile/pages/auth/sign_in/card.dart';
-import 'package:mobile/widgets/field/texttfild.dart';
+import 'package:mobile/auth/pages/guardian_signup/guardian_signup.dart';
+import 'package:mobile/auth/pages/sign_in/card.dart';
+import 'package:mobile/auth/widgets/field/texttfild.dart';
 
 class SignIn extends StatefulWidget {
   const SignIn({super.key});
@@ -57,7 +57,8 @@ class _SignInState extends State<SignIn> {
               error:(cubit.state is Loginwrongpassorid)?'الرقم القومي أو كلمة المرور غير صحيحة، يرجى التحقق من البيانات المدخلة.':
               (cubit.state is Loginerror )?'تعذر تسجيل الدخول حالياً، يرجى التحقق من اتصال الإنترنت والمحاولة لاحقاً.':'',
               haserror: cubit.state is Loginsuccess||(cubit.state is Loginwrongpassorid)||(cubit.state is Loginerror),title: "تسجيل الدخول", subtitle: "أهلاً بعودتك، يرجى إدخال بيانات حسابك",
-             wedget1: Texttfild(enable: cubit.state is! Loginloading,
+             wedget1: Texttfild(number: true, maxlength: 14,
+              enable: cubit.state is! Loginloading,
                                haserror: cubit.state is Loginsuccess||(cubit.state is Loginwrongpassorid)||(cubit.state is Loginerror),
                                 isSubmitted: isSubmitted,
                                 control:_controller[0], 

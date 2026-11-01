@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile/auth/cubitstates.dart/cubite.dart';
-import 'package:mobile/model/icd11servece.dart';
+import 'package:mobile/auth/model/icd11servece.dart';
 import 'package:mobile/splash.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 

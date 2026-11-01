@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile/auth/cubitstates.dart/cubite.dart';
 import 'package:mobile/auth/cubitstates.dart/states.dart';
-import 'package:mobile/pages/auth/sign_in/card.dart';
-import 'package:mobile/pages/auth/sign_in/sign_in.dart';
-import 'package:mobile/widgets/rule/passwordrule.dart';
-import 'package:mobile/widgets/field/texttfild.dart';
+import 'package:mobile/auth/pages/sign_in/card.dart';
+import 'package:mobile/auth/pages/sign_in/sign_in.dart';
+import 'package:mobile/auth/widgets/rule/passwordrule.dart';
+import 'package:mobile/auth/widgets/field/texttfild.dart';
 
 class Reset_Password extends StatefulWidget {
   const Reset_Password({super.key});

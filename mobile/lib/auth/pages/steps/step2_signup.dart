@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:mobile/widgets/rule/passwordrule.dart';
-import 'package:mobile/widgets/field/texttfild.dart';
+import 'package:mobile/auth/widgets/rule/passwordrule.dart';
+import 'package:mobile/auth/widgets/field/texttfild.dart';
 
 
 class Step2 extends StatefulWidget {
   final isSubmitted;
   final List<TextEditingController> controllertext;
-  const Step2({this.isSubmitted,required this.controllertext, super.key});
+  final bool isloading;
+  const Step2({required this.isloading,this.isSubmitted,required this.controllertext, super.key});
 
   @override
   State<Step2> createState() => _Step2State();
@@ -20,8 +21,10 @@ class _Step2State extends State<Step2> {
       
       children: [
         Texttfild(
-          enable: true,
-            isSubmitted: widget.isSubmitted,
+          maxlength: 11,
+          number: true,
+          enable: !widget.isloading,
+             isSubmitted: widget.isSubmitted,
             control: widget.controllertext[4],
             lable: "رقم الهاتف المحمول", 
             hint: "01X  XXXX  XXXX",
@@ -39,7 +42,7 @@ class _Step2State extends State<Step2> {
               ),
         Texttfild(
           
-          enable: true,
+           enable: !widget.isloading,
           isSubmitted: widget.isSubmitted,
           optional: true,
           control: widget.controllertext[5],
@@ -52,7 +55,7 @@ class _Step2State extends State<Step2> {
             fouc=value;
           }),
           child:  Texttfild(
-            enable: true,
+            enable: !widget.isloading,
           isSubmitted: widget.isSubmitted,
           control: widget.controllertext[6],
           lable: "تعيين كلمة المرور", 
@@ -74,7 +77,7 @@ class _Step2State extends State<Step2> {
         ,fouc?
           Passwordrule(passcontroller: widget.controllertext[6]):SizedBox.shrink()
           ,
-          Texttfild(enable: true,
+          Texttfild( enable: !widget.isloading,
           isSubmitted: widget.isSubmitted,
           control: widget.controllertext[7],
           lable: "تأكيد كلمة المرور", 
