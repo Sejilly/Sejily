@@ -34,6 +34,7 @@ class Cubiteauth extends Cubit<Stateauth> {
       else {print(status); emit(Regerror());}
      
     } else emit(Regerror());}}
+
       void registrationstep2({ required phoneNumber,required password,required confirmPassword,required healthCardNumber})async{
     emit(RegLooding());
     try{
@@ -47,6 +48,7 @@ class Cubiteauth extends Cubit<Stateauth> {
           "confirmPassword":confirmPassword
       }
     );
+    requestId = Response.data['healthRequestId'];
     emit(Regsuccess());
     }catch(e){
      if(e is DioException){
@@ -109,7 +111,8 @@ class Cubiteauth extends Cubit<Stateauth> {
           
       }
     );
-    dependentId=Response.data['dependentId'];
+    dependentId = Response.data['dependentId'];
+    requestId = Response.data['healthRequestId'];
     emit(guardiansuccess());
     }catch(e){
      if(e is DioException){
