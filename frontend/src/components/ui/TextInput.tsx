@@ -28,9 +28,15 @@ type Props = InputHTMLAttributes<HTMLInputElement> & {
   success?: boolean;
 };
 
-export const shellClass = (invalid?: boolean, disabled?: boolean, success?: boolean,) =>
+export const shellClass = (
+  invalid?: boolean,
+  disabled?: boolean,
+  success?: boolean,
+  hasDatePicker?: boolean,
+) =>
   cn(
-    "relative flex h-12 items-center rounded-lg border bg-white transition-colors overflow-hidden",
+    "relative flex h-12 items-center rounded-lg border bg-white transition-colors",
+    !hasDatePicker && "overflow-hidden",
     "focus-within:border-brand-blue focus-within:ring-2 focus-within:ring-brand-blue/20",
     success
       ? "border-emerald-600 border ring-emerald-600/20"
@@ -39,7 +45,6 @@ export const shellClass = (invalid?: boolean, disabled?: boolean, success?: bool
         : "border-line",
     disabled && "bg-surface",
   );
-
 export const TextInput = forwardRef<HTMLInputElement, Props>(
   function TextInput(
     {
@@ -64,7 +69,12 @@ export const TextInput = forwardRef<HTMLInputElement, Props>(
     );
 
     const containerClass = cn(
-      shellClass(invalid, rest.disabled || rest.readOnly, success),
+      shellClass(
+  invalid,
+  rest.disabled || rest.readOnly,
+  success,
+  Boolean(datePicker),
+),
       adornmentPosition === "end" && "flex-row-reverse",
     );
 
