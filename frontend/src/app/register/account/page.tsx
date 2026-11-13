@@ -33,6 +33,7 @@ const {
 );
 
 const passwordRequirements = getPasswordRequirements(values.password);
+const [isPasswordFocused, setIsPasswordFocused] = useState(false);
 ///
   const [submitting, setSubmitting] = useState(false);
 
@@ -121,33 +122,41 @@ setDuplicateField(null);
           <TextInput id="email" type="email" dir="ltr" className="text-right" placeholder="أدخل البريد الإلكتروني" {...bind("email")} />
         </Field>
 
+
 <Field id="password" label="تعيين كلمة المرور" error={errors.password}>
   <PasswordInput
     id="password"
     autoComplete="new-password"
     placeholder="••••••••"
+    onFocus={() => setIsPasswordFocused(true)}
+    onBlur={() => setIsPasswordFocused(false)}
     {...bind("password")}
   />
 
-  <ul dir="rtl" className="mt-3 space-y-2">
-    {passwordRequirements.map((requirement) => (
-      <li
-        key={requirement.id}
-        className={`flex items-center gap-2 text-xs transition-colors ${
-          requirement.passed ? "text-success" : "text-disabled"
-        }`}
-      >
-        <span
-          aria-hidden="true"
+  {isPasswordFocused && (
+    <ul dir="rtl" className="mt-3 space-y-2">
+      {passwordRequirements.map((requirement) => (
+        <li
+          key={requirement.id}
+          className={`flex items-center gap-2 text-xs transition-colors ${
+            requirement.passed ? "text-success" : "text-disabled"
+          }`}
         >
-          {requirement.passed ? <SmallCheckIcon className="text-success" /> : <SmallCheckIcon className="text-disabled" />}
-        </span>
+          <span aria-hidden="true">
+            {requirement.passed ? (
+              <SmallCheckIcon className="text-success" />
+            ) : (
+              <SmallCheckIcon className="text-disabled" />
+            )}
+          </span>
 
-        <span>{requirement.label}</span>
-      </li>
-    ))}
-  </ul>
+          <span>{requirement.label}</span>
+        </li>
+      ))}
+    </ul>
+  )}
 </Field>
+
 
         <Field id="confirmPassword" label="تأكيد كلمة المرور" error={errors.confirmPassword}>
           <PasswordInput id="confirmPassword" autoComplete="new-password" placeholder="••••••••" {...bind("confirmPassword")} />

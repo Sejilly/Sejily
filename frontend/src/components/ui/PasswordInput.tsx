@@ -1,14 +1,26 @@
 "use client";
 
-import { useState, type InputHTMLAttributes } from "react";
+import { useState, type InputHTMLAttributes, type FocusEvent} from "react";
 import { EyeIcon, EyeOffIcon } from "@/components/icons";
 import { TextInput } from "./TextInput";
 
-export function PasswordInput(
-  props: Omit<InputHTMLAttributes<HTMLInputElement>, "type"> & { invalid?: boolean },
-) {
+export function PasswordInput({
+  onBlur,
+  ...props
+}: Omit<InputHTMLAttributes<HTMLInputElement>, "type"> & {
+  invalid?: boolean;
+}) {
   const [show, setShow] = useState(false);
+const handleBlur = (event: FocusEvent<HTMLDivElement>) => {
+  const nextTarget = event.relatedTarget as Node | null;
+
+  if (!event.currentTarget.contains(nextTarget)) {
+    setShow(false);
+    onBlur?.(event as unknown as React.FocusEvent<HTMLInputElement>);
+  }
+};
   return (
+    <div onBlur={handleBlur}>
     <TextInput
       {...props}
       type={show ? "text" : "password"}
@@ -26,5 +38,6 @@ export function PasswordInput(
         </button>
       }
     />
+    </div>
   );
 }
