@@ -69,7 +69,7 @@ class _BarAuthState extends State<BarAuth> {
                                       const SizedBox(height: 8,),
                                       Row(
                                         mainAxisAlignment: MainAxisAlignment.start,
-                                        children: [SvgPicture.asset(widget.index>ind?"assets/images/icons/mdi_check-circle.svg":widget.index==ind?"assets/images/icons/akar-icons_radio-fill.svg":"assets/images/icons/Circule.svg"),
+                                        children: [SvgPicture.asset(widget.index>ind?"assets/images/icons/auth/mdi_check-circle.svg":widget.index==ind?"assets/images/icons/auth/akar-icons_radio-fill.svg":"assets/images/icons/auth/Circule.svg"),
                                         const SizedBox(width: 4,),
                                         Text(widget.array[ind],style: TextStyle(color:Color(widget.index>ind?0xff475569:widget.index==ind?0xff0B192C:0xff94A3B8),fontSize: 12),)],)
                                     ],),

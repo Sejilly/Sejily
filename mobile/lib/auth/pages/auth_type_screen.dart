@@ -48,17 +48,18 @@ class _AuthTypeScreenState extends State<AuthTypeScreen> {
                      Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        _Selectcard(icon: "assets/images/icons/codicon_sign-in.svg", title: "تسجيل الدخول", description: "أملك حساباً بالفعل",isselect:selectionoption==0, index:0,ontap: ()=>setState(() {
+                        _Selectcard(icon: "assets/images/icons/auth/codicon_sign-in.svg", title: "تسجيل الدخول", description: "أملك حساباً بالفعل",isselect:selectionoption==0, index:0,ontap: ()=>setState(() {
                            selectionoption=0;
                         }),),
                         const SizedBox(width: 16,),
-                        _Selectcard(icon: "assets/images/icons/basil_user-plus-outline.svg", title: " حساب جديد", description: "للتسجيل لأول مرة",isselect:selectionoption==1,index:1,ontap:()=>setState(() {
+                        _Selectcard(icon: "assets/images/icons/auth/basil_user-plus-outline.svg", title: " حساب جديد", description: "للتسجيل لأول مرة",isselect:selectionoption==1,index:1,ontap:()=>setState(() {
                           selectionoption=1;
                         }),)
                       ],
                     ),
                     const SizedBox(height: 44,),
                     Buttonn(width: 316,onPressed:  (){
+                       debugPrint('NEXT TAPPED option=$selectionoption');
                                   if(selectionoption==1){
                                     Navigator.push(context, MaterialPageRoute(builder: (_)=>const SignUpProcess()));
                         

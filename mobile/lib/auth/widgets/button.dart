@@ -28,7 +28,7 @@ class Buttonn extends StatelessWidget {
                     children: [
                       Text(text ,style: TextStyle(fontWeight:backcolor? FontWeight.w600:FontWeight.w400,fontSize: 16,color:canpressed? Color(isloading?0xff94A3B8 :backcolor?0xffFFFFFF:0xff2B6CB0):Color( 0xff94A3B8) ),),
                       if(isloading)...[SizedBox(width: 10,),
-                      SvgPicture.asset("assets/images/icons/isloading.svg")]
+                      SvgPicture.asset("assets/images/icons/auth/isloading.svg")]
                     ],
                   )),
       );

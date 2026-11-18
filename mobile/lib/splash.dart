@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mobile/auth/pages/Onboarding_Screen.dart';
+import 'package:mobile/navigationbar.dart';
+import 'package:mobile/test.dart';
 
 
 class Splash extends StatefulWidget {

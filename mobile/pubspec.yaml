@@ -21,6 +21,8 @@ dependencies:
   dio: ^5.11.1
   flutter_bloc: ^9.1.1
   flutter_secure_storage: ^10.3.4
+  flutter_local_notifications: ^19.5.0
+ 
 
 dev_dependencies:
   flutter_test:
@@ -36,8 +38,12 @@ flutter:
     - assets/fonts/
     - assets/images/
     - assets/images/onboarding_screen/
-    - assets/images/icons/
-    - assets/json/icd11.json
+    - assets/images/icons/auth/
+    - assets/images/icons/navigationbar/
+    - assets/images/icons/homescreen/
+    - assets/images/icons/notifications/notificationcard/
+    - assets/images/icons/notifications/
+    - assets/json/icd11.json 
 
   fonts:
     - family: Vazirmatin
