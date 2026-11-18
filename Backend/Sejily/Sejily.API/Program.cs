@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Sejily.API.Data;
+using Sejily.API.Infrastructure;
 using Sejily.API.Models.Entities;
 using Sejily.API.Services;
 using System.Text;
@@ -120,7 +121,11 @@ public class Program
     });
         });
 
+        builder.Services.AddSingleton<IDiseaseRecordProvider, DemoDiseaseRecordProvider>();
+        builder.Services.AddSingleton<IDiseaseClassifier, DemoDiseaseClassifier>();
+
         builder.Services.AddScoped<IDependentService, DependentService>();
+        builder.Services.AddScoped<IDiseaseRecordService, DiseaseRecordService>();
         builder.Services.AddScoped<IPatientHealthService, PatientHealthService>();
         builder.Services.AddScoped<ITokenService, TokenService>();
         builder.Services.AddScoped<IAccountSwitchingService, AccountSwitchingService>();
