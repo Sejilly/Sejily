@@ -15,7 +15,8 @@ public class PatientDiseaseConfiguration : IEntityTypeConfiguration<PatientDisea
         builder.HasIndex(patientDisease => new
         {
             patientDisease.PatientId,
-            patientDisease.DiseaseId
+            patientDisease.DiseaseId,
+            patientDisease.IsFamilyDisease
         }).IsUnique().HasFilter("[MedicalEncounterId] IS NULL");
 
         builder.HasIndex(patientDisease => new

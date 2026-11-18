@@ -4,9 +4,9 @@ namespace Sejily.API.DTOs.PatientHealthData;
 
 public class UpdatePatientHealthDataRequest
 {
-    public List<string> Diseases { get; set; } = [];
-    public List<string> Allergies { get; set; } = [];
-    public List<string> FamilyDiseases { get; set; } = [];
-    public List<string> Medications { get; set; } = [];
+    public List<string> DiseaseIcdCodes { get; set; } = [];
+    public List<string> AllergyIcdCodes { get; set; } = [];
+    public List<string> FamilyDiseaseIcdCodes { get; set; } = [];
+    public List<string> MedicationIds { get; set; } = [];
     public BloodType? BloodType { get; set; }
 }

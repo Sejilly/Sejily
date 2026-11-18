@@ -9,31 +9,36 @@ public enum SaveHealthProfileStatus
 {
     Saved,
     RequestNotFound,   // missing, expired, already used, or not this caller's
-    Invalid            // invalid or unknown disease entry
+    Invalid            // unknown disease id
 }
 
 public record SaveHealthProfileResult(
     SaveHealthProfileStatus Status,
     IEnumerable<string>? Errors = null);
 
-internal sealed record PatientDiseaseEntries(
-        IReadOnlyDictionary<string, Disease> PersonalDiseases,
-        IReadOnlyDictionary<string, Disease> FamilyDiseases,
-        IReadOnlyList<string> Errors);
+public interface IPatientHealthService
+{
+    // Adds the token to the context WITHOUT saving: the caller saves it in the
+    // same SaveChanges/transaction that creates the patient.
+    Guid AddSetupRequest(int patientUserId, int? guardianUserId);
+
+    // guardianUserId = null  -> a patient finishing their own registration
+    // guardianUserId = value -> that guardian finishing a dependent's registration
+    Task<SaveHealthProfileResult> SaveAsync(
+        int? guardianUserId, CompleteHealthProfileRequest request);
+}
 
 public class PatientHealthService : IPatientHealthService
 {
     private static readonly TimeSpan SetupLifetime = TimeSpan.FromMinutes(30);
 
     private readonly SejilyDbContext _context;
-    private readonly IDiseaseRecordService _diseaseRecordService;
+    private readonly IHostEnvironment _environment;
 
-    public PatientHealthService(
-        SejilyDbContext context,
-        IDiseaseRecordService diseaseRecordService)
+    public PatientHealthService(SejilyDbContext context, IHostEnvironment environment)
     {
         _context = context;
-        _diseaseRecordService = diseaseRecordService;
+        _environment = environment;
     }
 
     public Guid AddSetupRequest(int patientUserId, int? guardianUserId)
@@ -54,7 +59,15 @@ public class PatientHealthService : IPatientHealthService
     public async Task<SaveHealthProfileResult> SaveAsync(
         int? guardianUserId, CompleteHealthProfileRequest request)
     {
-        var setup = await FindSetupRequestAsync(guardianUserId, request.RequestId);
+        var now = DateTime.UtcNow;
+
+        // Same answer for "missing", "expired", "used" and "someone else's", so
+        // a guardian's token cannot be used anonymously and vice versa.
+        var setup = await _context.PatientHealthSetupRequests
+            .FirstOrDefaultAsync(r =>
+                r.RequestId == request.RequestId &&
+                r.GuardianUserId == guardianUserId &&
+                r.ExpiresAtUtc > now);
 
         if (setup == null)
         {
@@ -63,16 +76,71 @@ public class PatientHealthService : IPatientHealthService
                 new[] { "Invalid or expired request." });
         }
 
-        var diseaseEntries = await ResolveDiseaseEntriesAsync(request);
-        if (diseaseEntries.Errors.Count > 0)
+        // Same rules as PUT api/PatientHealthData: allergies are stored as disease
+        // rows too, and an unknown ICD code / medication id is only tolerated in
+        // Development.
+        var personalCodes = Normalize(
+            (request.DiseaseIcdCodes ?? []).Concat(request.AllergyIcdCodes ?? []));
+        var familyCodes = Normalize(request.FamilyDiseaseIcdCodes);
+        var allCodes = personalCodes.Concat(familyCodes)
+            .Distinct(StringComparer.OrdinalIgnoreCase).ToArray();
+
+        var matchedDiseases = await _context.Diseases
+            .Where(d => allCodes.Contains(d.IcdCode))
+            .ToListAsync();
+
+        var unresolved = allCodes
+            .Where(code => matchedDiseases.Count(d =>
+                string.Equals(d.IcdCode, code, StringComparison.OrdinalIgnoreCase)) != 1)
+            .ToArray();
+
+        if (!_environment.IsDevelopment() && unresolved.Length > 0)
         {
             return new SaveHealthProfileResult(
                 SaveHealthProfileStatus.Invalid,
-                diseaseEntries.Errors);
+                unresolved.Select(code =>
+                    $"ICD code '{code}' is missing or ambiguous; provide a unique code in the catalog."));
         }
 
-        var patient = await GetPatientAsync(setup.PatientUserId);
-        UpdatePatientHealthData(patient, request, diseaseEntries);
+        // Medications are validated but not stored: a medication usage needs a
+        // medical encounter and prescription details (same as the existing endpoint).
+        var medicationIds = Normalize(request.MedicationIds);
+        var matchedMedicationIds = await _context.Medications
+            .Where(m => medicationIds.Contains(m.AtcCode))
+            .Select(m => m.AtcCode)
+            .ToListAsync();
+
+        var unresolvedMedicationIds = medicationIds
+            .Where(id => matchedMedicationIds.Count(found =>
+                string.Equals(found, id, StringComparison.OrdinalIgnoreCase)) != 1)
+            .ToArray();
+
+        if (!_environment.IsDevelopment() && unresolvedMedicationIds.Length > 0)
+        {
+            return new SaveHealthProfileResult(
+                SaveHealthProfileStatus.Invalid,
+                unresolvedMedicationIds.Select(id =>
+                    $"Medication identifier '{id}' is missing or ambiguous in the medication catalog."));
+        }
+
+        var patient = await _context.Patients
+            .FirstAsync(p => p.UserId == setup.PatientUserId);
+
+        if (request.BloodType.HasValue)
+        {
+            patient.BloodType = request.BloodType;
+        }
+
+        foreach (var disease in matchedDiseases)
+        {
+            _context.Set<PatientDisease>().Add(new PatientDisease
+            {
+                PatientId = patient.UserId,
+                DiseaseId = disease.DiseaseId,
+                IsFamilyDisease = familyCodes.Contains(
+                    disease.IcdCode, StringComparer.OrdinalIgnoreCase)
+            });
+        }
 
         // Single use: the token is deleted together with the data it protects.
         _context.PatientHealthSetupRequests.Remove(setup);
@@ -82,125 +150,9 @@ public class PatientHealthService : IPatientHealthService
         return new SaveHealthProfileResult(SaveHealthProfileStatus.Saved);
     }
 
-    private async Task<PatientHealthSetupRequest?> FindSetupRequestAsync(
-        int? guardianUserId, Guid requestId)
-    {
-        var now = DateTime.UtcNow;
-        return await _context.PatientHealthSetupRequests
-            .FirstOrDefaultAsync(r =>
-                r.RequestId == requestId &&
-                r.GuardianUserId == guardianUserId &&
-                r.ExpiresAtUtc > now);
-    }
-
-    private async Task<PatientDiseaseEntries> ResolveDiseaseEntriesAsync(
-        CompleteHealthProfileRequest request)
-    {
-        var personalEntries = NormalizeEntries(
-            (request.Diseases ?? []).Concat(request.Allergies ?? []));
-        
-        var familyEntries = NormalizeEntries(request.FamilyDiseases);
-        
-        var resolution = await _diseaseRecordService.EnsureRecordsAsync(
-            personalEntries.Concat(familyEntries));
-
-        var personalDiseases = new Dictionary<string, Disease>(
-            StringComparer.OrdinalIgnoreCase);
-        var familyDiseases = new Dictionary<string, Disease>(
-            StringComparer.OrdinalIgnoreCase);
-
-        if (resolution.Errors.Count == 0)
-        {
-            foreach (var entry in personalEntries)
-            {
-                var disease = resolution.DiseasesByEntry[entry];
-                personalDiseases.TryAdd(entry, disease);
-            }
-
-            foreach (var entry in familyEntries)
-            {
-                var disease = resolution.DiseasesByEntry[entry];
-                familyDiseases.TryAdd(entry, disease);
-            }
-        }
-
-        return new PatientDiseaseEntries(personalDiseases, familyDiseases, resolution.Errors);
-    }
-
-    private async Task<Patient> GetPatientAsync(int patientUserId) =>
-        await _context.Patients
-            .Include(p => p.Diseases)
-                .ThenInclude(d => d.Disease)
-            .Include(p => p.FamilyDiseases)
-                .ThenInclude(d => d.Disease)
-            .FirstAsync(p => p.UserId == patientUserId);
-
-    private static void UpdatePatientHealthData(
-        Patient patient,
-        CompleteHealthProfileRequest request,
-        PatientDiseaseEntries diseaseEntries)
-    {
-        if (request.BloodType.HasValue)
-        {
-            patient.BloodType = request.BloodType;
-        }
-
-        foreach (var medication in NormalizeEntries(request.Medications))
-        {
-            patient.PatientEntryMedications.Add(medication);
-        }
-
-        AddPersonalDiseases(patient, diseaseEntries.PersonalDiseases);
-        AddFamilyDiseases(patient, diseaseEntries.FamilyDiseases);
-    }
-
-    private static void AddPersonalDiseases(
-        Patient patient,
-        IReadOnlyDictionary<string, Disease> diseases)
-    {
-        foreach (var (entry, disease) in diseases)
-        {
-            if (!patient.Diseases.Any(existing =>
-                    existing.MedicalEncounterId is null &&
-                    existing.Disease.IcdCode == disease.IcdCode &&
-                    existing.Disease.IcdVersion == disease.IcdVersion))
-            {
-                patient.Diseases.Add(new PatientDisease
-                {
-                    PatientId = patient.UserId,
-                    Disease = disease,
-                    DiseaseEntryName = entry
-                });
-            }
-        }
-    }
-
-    private static void AddFamilyDiseases(
-        Patient patient,
-        IReadOnlyDictionary<string, Disease> diseases)
-    {
-        foreach (var (entry, disease) in diseases)
-        {
-            if (!patient.FamilyDiseases.Any(existing =>
-                    existing.Disease.IcdCode == disease.IcdCode &&
-                    existing.Disease.IcdVersion == disease.IcdVersion))
-            {
-                patient.FamilyDiseases.Add(new PatientFamilyDisease
-                {
-                    PatientId = patient.UserId,
-                    Disease = disease,
-                    DiseaseEntryName = entry,
-                    FamilyRelationship = Models.Enums.RelationshipType.Other
-                });
-            }
-        }
-    }
-
-    private static List<string> NormalizeEntries(IEnumerable<string>? entries) =>
-        (entries ?? [])
-            .Where(entry => !string.IsNullOrWhiteSpace(entry))
-            .Select(entry => entry.Trim())
+    private static string[] Normalize(IEnumerable<string>? codes) =>
+        (codes ?? []).Where(code => !string.IsNullOrWhiteSpace(code))
+            .Select(code => code.Trim())
             .Distinct(StringComparer.OrdinalIgnoreCase)
-            .ToList();
-
+            .ToArray();
 }
