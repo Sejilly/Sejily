@@ -211,7 +211,7 @@ class _OTPState extends State<OTP> {
                                                     child:Padding(
                                                       padding: const EdgeInsets.only(right: 8,left: 16,top: 12,bottom: 12),
                                                       child: Row(children: [
-                                                        SvgPicture.asset("assets/images/icons/error-circle.svg"),SizedBox(width: 8,),
+                                                        SvgPicture.asset("assets/images/icons/auth/error-circle.svg"),SizedBox(width: 8,),
                                                         Flexible(
                                                           child: Text.rich(TextSpan(text:
                                                           cubit.state is ResendOtpCooldown?
@@ -287,7 +287,7 @@ class _OTPState extends State<OTP> {
                             right: 4,
                            child:IconButton(onPressed: (){
                             Navigator.pop(context);
-                           }, icon: SvgPicture.asset("assets/images/icons/eva_arrow-back-outline.svg")))
+                           }, icon: SvgPicture.asset("assets/images/icons/auth/eva_arrow-back-outline.svg")))
         ])),
       ),
     );}));

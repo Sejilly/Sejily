@@ -81,7 +81,7 @@ class _CarddState extends State<Cardd> {
                                                     child:Padding(
                                                       padding: const EdgeInsets.only(right: 8,left: 16,top: 12,bottom: 12),
                                                       child: Row(children: [
-                                                        SvgPicture.asset("assets/images/icons/error-circle.svg"),SizedBox(width: 8,),
+                                                        SvgPicture.asset("assets/images/icons/auth/error-circle.svg"),SizedBox(width: 8,),
                                                         Flexible(
                                                           child: Text.rich(TextSpan(text:  widget.error,
                                                           style: TextStyle(color: Color(0xffDC2626)))),
@@ -118,7 +118,7 @@ class _CarddState extends State<Cardd> {
                         right: 4,
                        child:IconButton(onPressed: (){
                         Navigator.pop(context);
-                       }, icon: SvgPicture.asset("assets/images/icons/eva_arrow-back-outline.svg")))
+                       }, icon: SvgPicture.asset("assets/images/icons/auth/eva_arrow-back-outline.svg")))
 ]));
   }
 }

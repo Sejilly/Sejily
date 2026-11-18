@@ -27,7 +27,7 @@ class SuccessProcess extends StatelessWidget {
                   children: [ 
                      Text(title,style: TextStyle(fontSize: 18,fontWeight: FontWeight.w600),),
                     const SizedBox(height: 32,),
-                    SvgPicture.asset("assets/images/icons/checkmark-circle-sparkle-24-regular.svg"),
+                    SvgPicture.asset("assets/images/icons/auth/checkmark-circle-sparkle-24-regular.svg"),
                     const SizedBox(height: 32,),
                     Text.rich(
                       textAlign: TextAlign.center,

@@ -123,12 +123,12 @@ class _DropdownState extends State<Dropdown> {
                       filled: true,
                       fillColor: Color(0xffffffff),
                       suffixIcon: 
-                      isopen? Row( mainAxisAlignment:MainAxisAlignment.end,mainAxisSize: MainAxisSize.min,children: [Container(width: 1,height: 24,color: Color(0xffCBD5E1),),SizedBox(width: 16,),SvgPicture.asset("assets/images/icons/ant-design_caret-up-filled.svg"),SizedBox(width: 16,)],):
+                      isopen? Row( mainAxisAlignment:MainAxisAlignment.end,mainAxisSize: MainAxisSize.min,children: [Container(width: 1,height: 24,color: Color(0xffCBD5E1),),SizedBox(width: 16,),SvgPicture.asset("assets/images/icons/auth/ant-design_caret-up-filled.svg"),SizedBox(width: 16,)],):
                       widget.isVerified?Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16,vertical: 12),
-                        child: SvgPicture.asset("assets/images/icons/truegreen.svg"),
+                        child: SvgPicture.asset("assets/images/icons/auth/truegreen.svg"),
                       ):
-                      Row( mainAxisAlignment:MainAxisAlignment.end,mainAxisSize: MainAxisSize.min,children: [Container(width: 1,height: 24,color: Color(0xffCBD5E1),),SizedBox(width: 16,),SvgPicture.asset("assets/images/icons/dropdown.svg"),SizedBox(width: 16,)],),
+                      Row( mainAxisAlignment:MainAxisAlignment.end,mainAxisSize: MainAxisSize.min,children: [Container(width: 1,height: 24,color: Color(0xffCBD5E1),),SizedBox(width: 16,),SvgPicture.asset("assets/images/icons/auth/dropdown.svg"),SizedBox(width: 16,)],),
                        focusedBorder:OutlineInputBorder(
                         borderSide:  BorderSide(color: Color(widget.isVerified?0xff059669 :widget.selected||isopen? 0xff2B6CB0:0xffCBD5E1)),
                         borderRadius: BorderRadius.circular(8)

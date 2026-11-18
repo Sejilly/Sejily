@@ -190,7 +190,7 @@ class _MultiselectfieldState extends State<Multiselectfield> {
                         padding: const EdgeInsets.only(right: 2,bottom: 0,top: 0),
                         child: Row(
                           children: [
-                            SvgPicture.asset(isselect?"assets/images/icons/isselect.svg":"assets/images/icons/noselect.svg"),
+                            SvgPicture.asset(isselect?"assets/images/icons/auth/isselect.svg":"assets/images/icons/auth/noselect.svg"),
                             SizedBox(width: 8,),
                             Flexible(
                               child: Text.rich(
@@ -314,7 +314,7 @@ class _MultiselectfieldState extends State<Multiselectfield> {
                                 children: [
                                   SizedBox(width: 10,),
                                    if( select.isEmpty&&!foucss&&widget.result==null)
-                                  SvgPicture.asset('assets/images/icons/akar-icons_search.svg'),
+                                  SvgPicture.asset('assets/images/icons/auth/akar-icons_search.svg'),
                                    if( select.isEmpty&&!foucss&&widget.result==null)SizedBox(width: 10,),
                                   if(select.isNotEmpty)
                                   Row(
@@ -330,7 +330,7 @@ class _MultiselectfieldState extends State<Multiselectfield> {
                                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                      
                                      backgroundColor: Color(0xff2B6CB0).withOpacity(.35),
-                                     deleteIcon: SvgPicture.asset("assets/images/icons/delete.svg"),
+                                     deleteIcon: SvgPicture.asset("assets/images/icons/auth/delete.svg"),
                                      onDeleted:()=> toggle(item),
                                      shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(50),
@@ -357,7 +357,7 @@ class _MultiselectfieldState extends State<Multiselectfield> {
                                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                      
                                      backgroundColor: Color(0xff2B6CB0).withOpacity(.35),
-                                     deleteIcon: SvgPicture.asset("assets/images/icons/delete.svg"),
+                                     deleteIcon: SvgPicture.asset("assets/images/icons/auth/delete.svg"),
                                      onDeleted:(){
 
                                       setState(() {

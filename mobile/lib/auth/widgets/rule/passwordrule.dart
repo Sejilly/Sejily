@@ -31,19 +31,19 @@ class _PasswordruleState extends State<Passwordrule> {
             Column(
               children: [
                 Row(children: [
-                  SvgPicture.asset("assets/images/icons/true.svg",colorFilter: ColorFilter.mode(Colorlength, BlendMode.srcIn),),const SizedBox(width: 4,),
+                  SvgPicture.asset("assets/images/icons/auth/true.svg",colorFilter: ColorFilter.mode(Colorlength, BlendMode.srcIn),),const SizedBox(width: 4,),
                   Text("يجب أن تحتوى على 8 رموز على الأقل.",style: TextStyle(fontSize: 12 ,color:Colorlength ),)
                 ],),
                 Row(children: [
-                  SvgPicture.asset("assets/images/icons/true.svg",colorFilter: ColorFilter.mode(Colorleter, BlendMode.srcIn),),const SizedBox(width: 4,),
+                  SvgPicture.asset("assets/images/icons/auth/true.svg",colorFilter: ColorFilter.mode(Colorleter, BlendMode.srcIn),),const SizedBox(width: 4,),
                   Text("يجب أن تحتوي على حروف.",style: TextStyle(fontSize: 12 ,color:Colorleter ),)
                 ],),
                 Row(children: [
-                  SvgPicture.asset("assets/images/icons/true.svg",colorFilter: ColorFilter.mode(Colornumber, BlendMode.srcIn),),const SizedBox(width: 4,),
+                  SvgPicture.asset("assets/images/icons/auth/true.svg",colorFilter: ColorFilter.mode(Colornumber, BlendMode.srcIn),),const SizedBox(width: 4,),
                   Text("يجب أن تحتوي على أرقام.",style: TextStyle(fontSize: 12 ,color:Colornumber ),)
                 ],),
                 Row(children: [
-                  SvgPicture.asset("assets/images/icons/true.svg",colorFilter: ColorFilter.mode(Colorspecialchar, BlendMode.srcIn),),const SizedBox(width: 4,),
+                  SvgPicture.asset("assets/images/icons/auth/true.svg",colorFilter: ColorFilter.mode(Colorspecialchar, BlendMode.srcIn),),const SizedBox(width: 4,),
                   Text("يجب أن تحتوي على رمز خاص واحد على الأقل .",style: TextStyle(fontSize: 12 ,color:Colorspecialchar ),)
                 ],),
               ],

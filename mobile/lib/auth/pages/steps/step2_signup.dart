@@ -37,7 +37,7 @@ class _Step2State extends State<Step2> {
               }
               return null;
             },
-              icon:"assets/images/icons/carbon_phone-incoming.svg",
+              icon:"assets/images/icons/auth/carbon_phone-incoming.svg",
               isicon: true,
               ),
         Texttfild(

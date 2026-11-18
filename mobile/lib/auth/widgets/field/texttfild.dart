@@ -119,17 +119,17 @@ class _TexttfildState extends State<Texttfild> {
                     filled: true,
                     fillColor: Color(0xffffffff),
                     suffixIcon:widget.ispassword? IconButton(onPressed: ( ){setState(() { hidden= !hidden;
-                    });}, icon: SvgPicture.asset(hidden?"assets/images/icons/close_eye-slash.svg":"assets/images/icons/bi_eye.svg",colorFilter: ColorFilter.mode(Color(haserror?0xffB91C1C:0xff334155), BlendMode.srcIn),)):
+                    });}, icon: SvgPicture.asset(hidden?"assets/images/icons/auth/close_eye-slash.svg":"assets/images/icons/auth/bi_eye.svg",colorFilter: ColorFilter.mode(Color(haserror?0xffB91C1C:0xff334155), BlendMode.srcIn),)):
                     haserror?Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16,vertical: 10),
-                      child: SvgPicture.asset("assets/images/icons/clarity_error-standard-solid.svg",width: 18,),
+                      child: SvgPicture.asset("assets/images/icons/auth/clarity_error-standard-solid.svg",width: 18,),
                     ):null,
                     
                     prefixIcon:widget.isicon? Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                       const SizedBox(width: 16,),
-                      SvgPicture.asset("assets/images/icons/calender.svg",colorFilter: ColorFilter.mode( Color(iconColor), BlendMode.srcIn),),const SizedBox(width: 10,),Container(width: 1.25,height: 24,color: const Color(0xffCBD5E1),),const SizedBox(width: 10,)] ,):null,
+                      SvgPicture.asset(widget.icon!,colorFilter: ColorFilter.mode( Color(iconColor), BlendMode.srcIn),),const SizedBox(width: 10,),Container(width: 1.25,height: 24,color: const Color(0xffCBD5E1),),const SizedBox(width: 10,)] ,):null,
                       focusedBorder:OutlineInputBorder(
                       borderSide: BorderSide(color:  Color(widget.haserror?0xffB91C1C :0xff2B6CB0)),
                       borderRadius: BorderRadius.circular(8)
