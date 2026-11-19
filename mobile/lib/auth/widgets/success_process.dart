@@ -15,6 +15,7 @@ class SuccessProcess extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 24,vertical: 59),
         child: Container(
         width: double.infinity,
+        height: double.infinity,
           decoration: BoxDecoration(color:Color(0xffffffff),borderRadius:BorderRadius.circular(12)),
           child:  Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
