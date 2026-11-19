@@ -19,7 +19,7 @@ class _SplashState extends State<Splash> {
     super.initState();
     Future.delayed(const Duration(seconds: 3),(){
      if(!mounted)return;
-     Navigator.pushReplacement(context,MaterialPageRoute(builder: (context)=>Navigationbar()));
+     Navigator.pushReplacement(context,MaterialPageRoute(builder: (context)=>onboarding_Screen()));
     });
   }
   @override
