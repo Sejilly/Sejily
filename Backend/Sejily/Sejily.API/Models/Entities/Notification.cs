@@ -14,8 +14,8 @@ public class Notification
 
     public NotificationType Type { get; set; }
 
-    // Opens the request page when tapped
-    public int RequestId { get; set; }
+    // Opens the request page when tapped. Null for types not tied to a request.
+    public int? RequestId { get; set; }
 
     public DateTime CreatedAt { get; set; }
 
@@ -26,5 +26,5 @@ public class Notification
 
     public User RecipientUser { get; set; } = null!;
     public Patient? SubjectPatient { get; set; }
-    public AccessRequest Request { get; set; } = null!;
+    public AccessRequest? Request { get; set; }
 }

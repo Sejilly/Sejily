@@ -715,7 +715,7 @@ namespace Sejily.API.Migrations
                     b.Property<int>("RecipientUserId")
                         .HasColumnType("int");
 
-                    b.Property<int>("RequestId")
+                    b.Property<int?>("RequestId")
                         .HasColumnType("int");
 
                     b.Property<int?>("SubjectPatientId")
@@ -1395,8 +1395,7 @@ namespace Sejily.API.Migrations
                     b.HasOne("Sejily.API.Models.Entities.AccessRequest", "Request")
                         .WithMany()
                         .HasForeignKey("RequestId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("Sejily.API.Models.Entities.Patient", "SubjectPatient")
                         .WithMany()

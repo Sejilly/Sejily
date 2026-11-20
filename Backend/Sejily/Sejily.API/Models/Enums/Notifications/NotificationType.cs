@@ -8,5 +8,10 @@ public enum NotificationType
     RequestExpired = 4,
     AccessClosed = 5,
     AccessExpired = 6,
-    AccessExtended = 7
+    AccessExtended = 7,
+
+    // Reserved: created by other features, not by F6. Mobile already handles them.
+    LabResult = 8,
+    GuardianLinked = 9,
+    MedicalVisit = 10
 }
