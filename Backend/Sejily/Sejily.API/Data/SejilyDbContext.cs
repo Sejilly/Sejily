@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Sejily.API.Models.Entities;
@@ -39,6 +39,12 @@ public class SejilyDbContext : IdentityDbContext<User, IdentityRole<int>, int>
     public DbSet<Access> Accesses { get; set; }
 
     public DbSet<EmergencyReview> EmergencyReviews { get; set; }
+
+    public DbSet<Notification> Notifications { get; set; }
+
+    public DbSet<DeviceToken> DeviceTokens { get; set; }
+
+    public DbSet<AuditLog> AuditLogs { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
