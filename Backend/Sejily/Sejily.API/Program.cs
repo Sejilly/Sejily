@@ -70,6 +70,12 @@ public class Program
             options.AddPolicy("DoctorOnly", p =>
                 p.RequireClaim("AccountType", "Doctor"));
 
+            options.AddPolicy("VerifiedDoctor", p =>
+            {
+                p.RequireClaim("AccountType", "Doctor");
+                p.AddRequirements(new Sejily.API.Authorization.VerifiedDoctorRequirement());
+            });
+
             options.AddPolicy("PersonalAccountOnly", p =>
             {
                 p.RequireClaim("AccountType", "Patient");
@@ -125,6 +131,7 @@ public class Program
         builder.Services.AddScoped<ITokenService, TokenService>();
         builder.Services.AddScoped<IAccountSwitchingService, AccountSwitchingService>();
         builder.Services.AddScoped<IDoctorWorkplaceService, DoctorWorkplaceService>();
+        builder.Services.AddScoped<Microsoft.AspNetCore.Authorization.IAuthorizationHandler, Sejily.API.Authorization.VerifiedDoctorHandler>();
 
         // builder.Services.AddHttpClient<IOtpSmsSender, SmsMisrOtpSmsSender>();
         builder.Services.AddScoped<IOtpSmsSender, ConsoleOtpSmsSender>();

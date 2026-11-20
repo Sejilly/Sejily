@@ -31,6 +31,17 @@ public class DoctorWorkPlacesController : ControllerBase
         return workplaces is null ? NotFound("Doctor not found.") : Ok(workplaces);
     }
 
+    [HttpGet]
+    public async Task<IActionResult> GetWorkPlaces()
+    {
+        if (!TryGetDoctorUserId(out var doctorId))
+        {
+            return Unauthorized();
+        }
+
+        return Ok(await _workplaceService.GetWorkplacesAsync(doctorId));
+    }
+
     private bool TryGetDoctorUserId(out int doctorId)
     {
         var value = User.FindFirstValue(ClaimTypes.NameIdentifier)

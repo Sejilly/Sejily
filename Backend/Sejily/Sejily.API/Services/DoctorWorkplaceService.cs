@@ -24,31 +24,81 @@ public class DoctorWorkplaceService : IDoctorWorkplaceService
             return null;
         }
 
-        var workplaces = workPlaces.Select(workPlace => new Workplace
+        var hasAnyLink = await _context.Set<DoctorWorkplace>().AnyAsync(dw => dw.DoctorId == doctorId);
+        var linked = new List<(Workplace Workplace, bool IsPrimary)>();
+        var seenInThisRequest = new HashSet<int>();
+
+        foreach (var input in workPlaces)
         {
-            Name = workPlace.Name,
-            Type = (Models.Enums.MedicalWorkplaceType)workPlace.Type!.Value,
-            Address = workPlace.Address,
-            LicenseNumber = workPlace.LicenseNumber,
-            Doctors = new List<DoctorWorkplace>
+            var license = input.LicenseNumber.Trim();
+
+            // Identity key = LicenseNumber. Duplicates may already exist in old data,
+            // so take the oldest one deterministically. Existing data always wins.
+            var workplace = await _context.Workplaces
+                .Where(w => w.LicenseNumber == license)
+                .OrderBy(w => w.WorkplaceId)
+                .FirstOrDefaultAsync();
+
+            if (workplace is null)
             {
-                new()
+                workplace = new Workplace
+                {
+                    Name = input.Name,
+                    Type = (Models.Enums.MedicalWorkplaceType)input.Type!.Value,
+                    Address = input.Address,
+                    LicenseNumber = license
+                };
+                _context.Workplaces.Add(workplace);
+                await _context.SaveChangesAsync();
+            }
+
+            if (!seenInThisRequest.Add(workplace.WorkplaceId))
+            {
+                continue;
+            }
+
+            var link = await _context.Set<DoctorWorkplace>().FirstOrDefaultAsync(dw =>
+                dw.DoctorId == doctorId && dw.WorkplaceId == workplace.WorkplaceId);
+
+            if (link is null)
+            {
+                link = new DoctorWorkplace
                 {
                     DoctorId = doctorId,
+                    WorkplaceId = workplace.WorkplaceId,
                     JoinedAt = DateTime.UtcNow,
-                    IsPrimary = false
-                }
+                    IsPrimary = !hasAnyLink
+                };
+                _context.Set<DoctorWorkplace>().Add(link);
+                await _context.SaveChangesAsync();
+                hasAnyLink = true;
             }
-        }).ToList();
 
-        _context.Workplaces.AddRange(workplaces);
-        await _context.SaveChangesAsync();
+            linked.Add((workplace, link.IsPrimary));
+        }
 
-        return workplaces.Select(workplace => new DoctorWorkplaceResponse(
-            workplace.WorkplaceId,
-            workplace.Name,
-            workplace.Type,
-            workplace.Address,
-            workplace.LicenseNumber)).ToList();
+        return linked.Select(x => new DoctorWorkplaceResponse(
+            x.Workplace.WorkplaceId,
+            x.Workplace.Name,
+            x.Workplace.Type,
+            x.Workplace.Address,
+            x.Workplace.LicenseNumber,
+            x.IsPrimary)).ToList();
+    }
+
+    public async Task<IReadOnlyList<DoctorWorkplaceResponse>> GetWorkplacesAsync(int doctorId)
+    {
+        return await _context.Set<DoctorWorkplace>()
+            .Where(dw => dw.DoctorId == doctorId)
+            .OrderByDescending(dw => dw.IsPrimary)
+            .ThenBy(dw => dw.WorkplaceId)
+            .Select(dw => new DoctorWorkplaceResponse(
+                dw.Workplace.WorkplaceId,
+                dw.Workplace.Name,
+                dw.Workplace.Type,
+                dw.Workplace.Address,
+                dw.Workplace.LicenseNumber,
+                dw.IsPrimary))
+            .ToListAsync();
     }
 }

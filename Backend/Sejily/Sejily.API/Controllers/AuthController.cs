@@ -186,7 +186,8 @@ public class AuthController : ControllerBase
                 SyndicateCardNumber = request.SyndicateCardNumber,
                 MedicalLicenseNumber = request.MedicalLicenseNumber,
                 Specialization = request.Specialization,
-                IsVerified = false
+                IsVerified = true,
+                VerifiedAt = DateTime.UtcNow
             };
 
             _context.Doctors.Add(doctor);
