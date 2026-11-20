@@ -34,6 +34,12 @@ public class SejilyDbContext : IdentityDbContext<User, IdentityRole<int>, int>
     public DbSet<MedicalEncounter> MedicalEncounters { get; set; }
     public DbSet<Medication> Medications { get; set; }
 
+    public DbSet<AccessRequest> AccessRequests { get; set; }
+
+    public DbSet<Access> Accesses { get; set; }
+
+    public DbSet<EmergencyReview> EmergencyReviews { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
