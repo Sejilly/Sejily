@@ -154,7 +154,7 @@ class _GuardianSignupState extends State<GuardianSignup> {
                                                       child:Padding(
                                                         padding: const EdgeInsets.only(right: 8,left: 16,top: 12,bottom: 12),
                                                         child: Row(children: [
-                                                          SvgPicture.asset("assets/images/icons/error-circle.svg"),SizedBox(width: 8,),
+                                                          SvgPicture.asset("assets/images/icons/auth/error-circle.svg"),SizedBox(width: 8,),
                                                           Flexible(
                                                             child: Text.rich(TextSpan(
                                                               text:
@@ -176,7 +176,7 @@ class _GuardianSignupState extends State<GuardianSignup> {
 
                                 Padding(
                                   padding: const EdgeInsets.symmetric(horizontal: 16),
-                                  child: Buttonn(isloading: state is verificationkinshiploading,text: currentindex==2?"إنشاء الحساب":state is verificationkinshiploading?"جاري التحقق":"التالي",width: 313,onPressed: (){
+                                  child: Buttonn(isloading: state is verificationkinshiploading,text: currentindex==2?"إنشاء الحساب":state is verificationkinshiploading?"جاري التحقق":"التالي",width: double.infinity,onPressed: (){
                                    setState(() {
                                     isSubmitted=true;
                                    });
@@ -232,7 +232,7 @@ class _GuardianSignupState extends State<GuardianSignup> {
                     });}
                     else if(currentindex==0){
                       Navigator.pop(context);
-                    }}, icon: SvgPicture.asset("assets/images/icons/eva_arrow-back-outline.svg")))
+                    }}, icon: SvgPicture.asset("assets/images/icons/auth/eva_arrow-back-outline.svg")))
                 ],
               ),
             ),

@@ -33,6 +33,7 @@ class _SignUpProcess_1State extends State<SignUpProcess> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    debugPrint('SignUpProcess initState');
     selectedItemsLists=List.generate(3, (_)=>null);
     controllertext=List.generate(13, (_)=>TextEditingController());
     _formkey=List.generate(3, (_)=> GlobalKey<FormState>()) ;
@@ -69,7 +70,7 @@ class _SignUpProcess_1State extends State<SignUpProcess> {
     }
   },
    child:  BlocBuilder<Cubiteauth,Stateauth>(builder: (context,state){
-    
+    debugPrint('SignUpProcess BUILD index=$currentindex');
        var cubit=BlocProvider.of<Cubiteauth>(context);
          List<Widget>  steps=[Step1(guardian: false,loading: state is RegLooding,haserror:state is Regerrordublicatedid ,selectdate:selectdate,controllertext: controllertext,isSubmitted: isSubmitted,),Step2(isloading: state is RegLooding,isSubmitted: isSubmitted,controllertext: controllertext,),Step3(Medicines: Medicines,selectedItemsLists: selectedItemsLists,isSubmitted:isSubmitted ,controllertext: controllertext)];
 
@@ -132,7 +133,7 @@ class _SignUpProcess_1State extends State<SignUpProcess> {
                                                       child:Padding(
                                                         padding: const EdgeInsets.only(right: 8,left: 16,top: 12,bottom: 12),
                                                         child: Row(children: [
-                                                          SvgPicture.asset("assets/images/icons/error-circle.svg"),SizedBox(width: 8,),
+                                                          SvgPicture.asset("assets/images/icons/auth/error-circle.svg"),SizedBox(width: 8,),
                                                           Flexible(
                                                             child: Text.rich(TextSpan(text:cubit.state is Regexpierd?  "انتهت صلاحية طلب التسجيل أو أصبح غير صالح، يرجى إعادة المحاولة من البداية":  'حدث خطا ما حاول مجددا',
                                                             style: TextStyle(color: Color(0xffDC2626)))),
@@ -148,7 +149,7 @@ class _SignUpProcess_1State extends State<SignUpProcess> {
                                 
                                 Padding(
                                   padding: const EdgeInsets.symmetric(horizontal: 16),
-                                  child: Buttonn(text: currentindex==2?"إنشاء الحساب":"التالي",width: 313,onPressed: (){
+                                  child: Buttonn(text: currentindex==2?"إنشاء الحساب":"التالي",width:double.infinity,onPressed: (){
                                     if (cubit.state is RegLooding) return;
                                    setState(() {
                                     isSubmitted=true;
@@ -205,7 +206,7 @@ class _SignUpProcess_1State extends State<SignUpProcess> {
                     });}
                     else if(currentindex==0){
                       Navigator.pop(context);
-                    }}, icon: SvgPicture.asset("assets/images/icons/eva_arrow-back-outline.svg")))
+                    }}, icon: SvgPicture.asset("assets/images/icons/auth/eva_arrow-back-outline.svg")))
                 ],
               ),
             ),

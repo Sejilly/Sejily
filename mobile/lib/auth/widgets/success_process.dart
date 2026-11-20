@@ -14,7 +14,8 @@ class SuccessProcess extends StatelessWidget {
     return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24,vertical: 59),
         child: Container(
-          width: 345,
+        width: double.infinity,
+        height: double.infinity,
           decoration: BoxDecoration(color:Color(0xffffffff),borderRadius:BorderRadius.circular(12)),
           child:  Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -27,7 +28,7 @@ class SuccessProcess extends StatelessWidget {
                   children: [ 
                      Text(title,style: TextStyle(fontSize: 18,fontWeight: FontWeight.w600),),
                     const SizedBox(height: 32,),
-                    SvgPicture.asset("assets/images/icons/checkmark-circle-sparkle-24-regular.svg"),
+                    SvgPicture.asset("assets/images/icons/auth/checkmark-circle-sparkle-24-regular.svg"),
                     const SizedBox(height: 32,),
                     Text.rich(
                       textAlign: TextAlign.center,
