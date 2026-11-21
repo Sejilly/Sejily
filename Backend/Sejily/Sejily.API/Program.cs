@@ -8,6 +8,7 @@ using Sejily.API.Models.Entities;
 using Sejily.API.Services;
 using System.Text;
 using System.Text.Json.Serialization;
+using System.Threading.Channels;
 namespace Sejily.API;
 
 public class Program
@@ -18,9 +19,14 @@ public class Program
         var builder = WebApplication.CreateBuilder(args);
 
         // 2. Register DbContext
-        builder.Services.AddDbContext<SejilyDbContext>(options =>
+        // F6 (T16): scoped interceptor resolved from the SAME scope as the request's
+        // services, so it sees the request's PendingPushCollector (plan decision D3)
+        builder.Services.AddScoped<Sejily.API.Services.Notifications.PendingPushCollector>();
+        builder.Services.AddScoped<Sejily.API.Services.Notifications.PushOnCommitInterceptor>();
+        builder.Services.AddDbContext<SejilyDbContext>((sp, options) =>
             options.UseSqlServer(
-                builder.Configuration.GetConnectionString("DefaultConnection")));
+                builder.Configuration.GetConnectionString("DefaultConnection"))
+                .AddInterceptors(sp.GetRequiredService<Sejily.API.Services.Notifications.PushOnCommitInterceptor>()));
 
         // 3. Register ASP.NET Core Identity
         builder.Services
@@ -149,6 +155,16 @@ public class Program
         // F6 (T11): device-token register/remove
         builder.Services.AddScoped<Sejily.API.Services.Notifications.IDeviceTokenService,
             Sejily.API.Services.Notifications.DeviceTokenService>();
+        // F6 (T15): notification creation for Dev 1 / Dev 2 (D2: no SaveChanges here)
+        builder.Services.AddScoped<Sejily.API.Services.Notifications.INotificationService,
+            Sejily.API.Services.Notifications.NotificationService>();
+        // F6 (T16/T18): push queue + background dispatcher
+        builder.Services.AddSingleton<Channel<Sejily.API.Services.Notifications.PushJob>>(
+            Channel.CreateUnbounded<Sejily.API.Services.Notifications.PushJob>());
+        builder.Services.AddHostedService<Sejily.API.Services.Notifications.PushDispatchService>();
+        // F6 (T17): default sender until Firebase is configured (T20 swaps it)
+        builder.Services.AddScoped<Sejily.API.Services.Notifications.IPushSender,
+            Sejily.API.Services.Notifications.NullPushSender>();
         // 7. Build the application
 
 
