@@ -139,6 +139,9 @@ public class Program
         builder.Services.AddSingleton(TimeProvider.System);
         builder.Services.Configure<Sejily.API.Settings.NotificationSettings>(
             builder.Configuration.GetSection(Sejily.API.Settings.NotificationSettings.SectionName));
+        // F6 (T05): temporary pass-through until Dev 1's NameMasker is merged
+        builder.Services.AddScoped<Sejily.API.Services.Notifications.INameMasker,
+            Sejily.API.Services.Notifications.PassThroughNameMasker>();
         // 7. Build the application
 
 
