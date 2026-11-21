@@ -1,5 +1,5 @@
 using System.ComponentModel.DataAnnotations;
-using Sejily.API.DTOs.PatientHealthData;
+using Sejily.API.Application.Features.PatientHealthDataEntry;
 
 namespace Sejily.API.DTOs.Health;
 
