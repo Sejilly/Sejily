@@ -19,6 +19,7 @@ public class NullPushSender : IPushSender
 
     public Task<PushSendResult> SendAsync(
         string deviceToken, string title, string body,
+        IReadOnlyDictionary<string, string> data,
         CancellationToken cancellationToken = default)
     {
         _logger.LogWarning(

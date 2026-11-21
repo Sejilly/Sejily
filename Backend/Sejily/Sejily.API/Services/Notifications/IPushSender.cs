@@ -8,10 +8,15 @@ namespace Sejily.API.Services.Notifications;
 public interface IPushSender
 {
     /// <summary>Sends the push; returns the outcome instead of throwing.</summary>
+    /// <param name="data">
+    /// Custom key/value payload (spec section 8): notificationId, type, requestId.
+    /// All values are strings (FCM requirement); requestId is "" when null.
+    /// </param>
     Task<PushSendResult> SendAsync(
         string deviceToken,
         string title,
         string body,
+        IReadOnlyDictionary<string, string> data,
         CancellationToken cancellationToken = default);
 }
 
@@ -22,8 +27,9 @@ public enum PushSendResult
     Sent,
 
     /// <summary>
-    /// FCM reported the token as unregistered / invalid argument — the dispatcher
-    /// deletes the DeviceToken row (spec criterion 10).
+    /// FCM reported the token as unregistered — the dispatcher deletes the
+    /// DeviceToken row (spec criterion 10). InvalidArgument is NOT included: it can
+    /// also mean a malformed message, which would wrongly delete healthy tokens.
     /// </summary>
     InvalidToken,
 

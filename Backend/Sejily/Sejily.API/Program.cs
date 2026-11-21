@@ -23,10 +23,13 @@ public class Program
         // services, so it sees the request's PendingPushCollector (plan decision D3)
         builder.Services.AddScoped<Sejily.API.Services.Notifications.PendingPushCollector>();
         builder.Services.AddScoped<Sejily.API.Services.Notifications.PushOnCommitInterceptor>();
+        builder.Services.AddScoped<Sejily.API.Services.Notifications.PushOnSaveInterceptor>();
         builder.Services.AddDbContext<SejilyDbContext>((sp, options) =>
             options.UseSqlServer(
                 builder.Configuration.GetConnectionString("DefaultConnection"))
-                .AddInterceptors(sp.GetRequiredService<Sejily.API.Services.Notifications.PushOnCommitInterceptor>()));
+                .AddInterceptors(
+                    sp.GetRequiredService<Sejily.API.Services.Notifications.PushOnCommitInterceptor>(),
+                    sp.GetRequiredService<Sejily.API.Services.Notifications.PushOnSaveInterceptor>()));
 
         // 3. Register ASP.NET Core Identity
         builder.Services

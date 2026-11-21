@@ -79,6 +79,7 @@ public class PushDispatchService : BackgroundService
             .Select(n => new PushRow
             {
                 Type = n.Type,
+                RequestId = n.RequestId,
                 RecipientUserId = n.RecipientUserId,
                 SubjectPatientId = n.SubjectPatientId,
                 RecipientIsDoctor = n.RecipientUser.AccountType == AccountType.Doctor,
@@ -120,6 +121,15 @@ public class PushDispatchService : BackgroundService
             LabType = null
         });
 
+        // Spec section 8: data payload the app uses to open the request page.
+        // All values are strings; requestId is "" when the notification has none.
+        var data = new Dictionary<string, string>
+        {
+            ["notificationId"] = notificationId.ToString(System.Globalization.CultureInfo.InvariantCulture),
+            ["type"] = row.Type.ToString(),
+            ["requestId"] = row.RequestId?.ToString(System.Globalization.CultureInfo.InvariantCulture) ?? string.Empty
+        };
+
         var tokens = await db.DeviceTokens
             .AsNoTracking()
             .Where(d => d.UserId == row.RecipientUserId)
@@ -130,7 +140,7 @@ public class PushDispatchService : BackgroundService
         {
             try
             {
-                var result = await sender.SendAsync(device.Token, title, body, cancellationToken);
+                var result = await sender.SendAsync(device.Token, title, body, data, cancellationToken);
 
                 if (result == PushSendResult.InvalidToken)
                 {
@@ -155,6 +165,7 @@ public class PushDispatchService : BackgroundService
     private sealed class PushRow
     {
         public Models.Enums.Notifications.NotificationType Type { get; set; }
+        public int? RequestId { get; set; }
         public int RecipientUserId { get; set; }
         public int? SubjectPatientId { get; set; }
         public bool RecipientIsDoctor { get; set; }

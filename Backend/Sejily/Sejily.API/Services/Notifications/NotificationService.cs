@@ -81,6 +81,7 @@ public class NotificationService : INotificationService
         // Decision D2: the row is saved by the CALLER's SaveChanges (its Id is
         // filled then); the interceptor only enqueues pushes for rows that got an
         // Id, so a rolled-back transaction removes both row and push.
-        _collector.Add(notification);
+        // Remember the explicit transaction (if any) so only ITS commit releases the push.
+        _collector.Add(notification, _db.Database.CurrentTransaction?.TransactionId);
     }
 }

@@ -29,30 +29,30 @@ public class PushOnCommitInterceptor : DbTransactionInterceptor
     }
 
     public override void TransactionCommitted(DbTransaction transaction, TransactionEndEventData eventData) =>
-        Flush();
+        Flush(eventData.TransactionId);
 
     public override Task TransactionCommittedAsync(
         DbTransaction transaction, TransactionEndEventData eventData,
         CancellationToken cancellationToken = default)
     {
-        Flush();
+        Flush(eventData.TransactionId);
         return Task.CompletedTask;
     }
 
     public override void TransactionRolledBack(DbTransaction transaction, TransactionEndEventData eventData) =>
-        _collector.Clear();
+        _collector.Clear(eventData.TransactionId);
 
     public override Task TransactionRolledBackAsync(
         DbTransaction transaction, TransactionEndEventData eventData,
         CancellationToken cancellationToken = default)
     {
-        _collector.Clear();
+        _collector.Clear(eventData.TransactionId);
         return Task.CompletedTask;
     }
 
-    private void Flush()
+    private void Flush(Guid committedTransactionId)
     {
-        foreach (var notification in _collector.Drain())
+        foreach (var notification in _collector.Drain(committedTransactionId))
         {
             if (notification.NotificationId == 0)
             {

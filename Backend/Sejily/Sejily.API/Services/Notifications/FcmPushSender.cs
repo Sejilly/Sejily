@@ -26,7 +26,7 @@ public class FcmPushSender : IPushSender
     // FirebaseAdmin allows ONE FirebaseApp per process per name; the first
     // constructed sender initializes it and later senders just reuse it.
     private static readonly object InitLock = new();
-    private static bool _appInitialized;
+   private static FirebaseApp? _app;
 
     public FcmPushSender(IConfiguration configuration, ILogger<FcmPushSender> logger)
     {
@@ -39,17 +39,23 @@ public class FcmPushSender : IPushSender
 
     public async Task<PushSendResult> SendAsync(
         string deviceToken, string title, string body,
+        IReadOnlyDictionary<string, string> data,
         CancellationToken cancellationToken = default)
     {
         var message = new Message
         {
             Token = deviceToken,
-            Notification = new Notification { Title = title, Body = body }
+            Notification = new Notification { Title = title, Body = body },
+            // Spec section 8: notificationId, type, requestId (all strings). The
+            // mobile app reads requestId from here to open the request page.
+            Data = new Dictionary<string, string>(data)
         };
 
         try
         {
-            await FirebaseMessaging.DefaultInstance.SendAsync(message, cancellationToken);
+            // The app is created with a NAME, so FirebaseMessaging.DefaultInstance
+            // (the unnamed [DEFAULT] app) would be null. Always use the named app.
+            await FirebaseMessaging.GetMessaging(_app!).SendAsync(message, cancellationToken);
             return PushSendResult.Sent;
         }
         catch (FirebaseMessagingException ex)
@@ -77,36 +83,35 @@ public class FcmPushSender : IPushSender
     }
 
     /// <summary>
-    /// Error mapping (T20): Unregistered and InvalidArguments mean the token is
-    /// unusable (criterion 10); everything else is transient. Internal static so
-    /// the unit tests cover the mapping without real Firebase calls.
+    /// Error mapping (T20): ONLY Unregistered means the token is dead (criterion 10).
+    /// InvalidArgument can also mean a malformed message (empty body, bad data), so it
+    /// must NOT delete a healthy token: it is treated as a failure and logged.
+    /// Internal static so unit tests cover the mapping without real Firebase calls.
     /// </summary>
     internal static PushSendResult Map(MessagingErrorCode? errorCode) => errorCode switch
     {
         MessagingErrorCode.Unregistered => PushSendResult.InvalidToken,
-        MessagingErrorCode.InvalidArgument => PushSendResult.InvalidToken,
         _ => PushSendResult.Failed
     };
 
     private static void EnsureAppInitialized(string serviceAccountPath)
     {
-        if (_appInitialized)
+        if (_app != null)
         {
             return;
         }
 
         lock (InitLock)
         {
-            if (_appInitialized)
+            if (_app != null)
             {
                 return;
             }
 
-            FirebaseApp.Create(new AppOptions
+            _app = FirebaseApp.Create(new AppOptions
             {
                 Credential = GoogleCredential.FromFile(serviceAccountPath)
             }, AppName);
-            _appInitialized = true;
         }
     }
 }
