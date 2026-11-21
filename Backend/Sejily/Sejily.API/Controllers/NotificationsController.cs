@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using Sejily.API.DTOs.Notifications;
 using Sejily.API.Extensions;
 using Sejily.API.Services.Notifications;
@@ -22,12 +23,15 @@ public class NotificationsController : ControllerBase
     private readonly INotificationQueries _queries;
     private readonly NotificationSettings _settings;
 
+    // Review fix 1: Program.cs registers NotificationSettings only via
+    // Configure<NotificationSettings>(...), so the resolvable type is
+    // IOptions<NotificationSettings> — inject that and read .Value.
     public NotificationsController(
         INotificationQueries queries,
-        NotificationSettings settings)
+        IOptions<NotificationSettings> settingsOptions)
     {
         _queries = queries;
-        _settings = settings;
+        _settings = settingsOptions.Value;
     }
 
     // GET api/notifications?limit=20&cursor=&unreadOnly=false

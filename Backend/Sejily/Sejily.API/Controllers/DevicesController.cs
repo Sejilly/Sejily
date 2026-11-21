@@ -37,8 +37,10 @@ public class DevicesController : ControllerBase
             return Unauthorized();
         }
 
+        // Review fix 3: Platform is nullable after validation; [Required] +
+        // [EnumDataType] guarantee a defined value here.
         await _deviceTokens.RegisterAsync(
-            userId, request.Token, request.Platform, cancellationToken);
+            userId, request.Token, request.Platform!.Value, cancellationToken);
 
         return NoContent();
     }

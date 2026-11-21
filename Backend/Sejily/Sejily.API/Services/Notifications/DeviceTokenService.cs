@@ -1,3 +1,4 @@
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Sejily.API.Data;
 using Sejily.API.Models.Entities;
@@ -45,11 +46,13 @@ public class DeviceTokenService : IDeviceTokenService
             {
                 await _db.SaveChangesAsync(cancellationToken);
             }
-            catch (DbUpdateException)
+            catch (DbUpdateException ex) when (IsUniqueIndexViolation(ex))
             {
                 // Unique-index race (plan section 3.6): another request inserted
                 // the same token first. Reload (detached, so we see their row),
                 // then move it to the current user like the "another user" case.
+                // Review fix 5: ONLY a unique-index violation is treated as the
+                // race; any other failure (e.g. FK violation) is rethrown as-is.
                 _db.ChangeTracker.Clear();
                 var raced = await _db.DeviceTokens
                     .SingleAsync(d => d.Token == token, cancellationToken);
@@ -89,4 +92,13 @@ public class DeviceTokenService : IDeviceTokenService
         _db.DeviceTokens.Remove(existing);
         await _db.SaveChangesAsync(cancellationToken);
     }
+
+    /// <summary>
+    /// Review fix 5: true ONLY for a unique-index violation (SQL Server error
+    /// 2601 duplicate key row / 2627 duplicate key constraint) — the token race.
+    /// Any other failure (FK violation, timeout, …) must surface unchanged.
+    /// </summary>
+    internal static bool IsUniqueIndexViolation(DbUpdateException ex) =>
+        ex.InnerException is SqlException sql
+        && (sql.Number == 2601 || sql.Number == 2627);
 }

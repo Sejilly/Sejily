@@ -6,7 +6,10 @@ namespace Sejily.API.DTOs.Notifications;
 /// <summary>
 /// POST /api/devices body (plan section 2; spec section 5):
 /// token (Required, max 512 — same length as the DeviceToken column) and
-/// platform. An invalid platform string fails model binding =&gt; 400 automatically.
+/// platform. Review fix 3: Platform is NULLABLE with [EnumDataType] so a missing
+/// platform, an unknown name or an undefined numeric value (99, 0) all fail
+/// validation =&gt; 400 ProblemDetails, instead of binding to an undefined enum
+/// value and being stored. Lowercase names ("android") still bind.
 /// </summary>
 public class RegisterDeviceRequest
 {
@@ -15,5 +18,6 @@ public class RegisterDeviceRequest
     public string Token { get; set; } = string.Empty;
 
     [Required]
-    public DevicePlatform Platform { get; set; }
+    [EnumDataType(typeof(DevicePlatform))]
+    public DevicePlatform? Platform { get; set; }
 }

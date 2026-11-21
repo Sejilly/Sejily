@@ -131,7 +131,11 @@ public class NotificationQueries : INotificationQueries
                 Title = title,
                 Body = body,
                 IsRead = row.IsRead,
-                CreatedAt = row.CreatedAt,
+                // Review fix 2: rows read from SQL Server arrive with Kind =
+                // Unspecified; force UTC so JSON serializes ISO-8601 with the
+                // "Z" suffix (spec section 4.1). The cursor does the same in
+                // NotificationCursor.Encode.
+                CreatedAt = DateTime.SpecifyKind(row.CreatedAt, DateTimeKind.Utc),
                 RequestId = row.RequestId,
                 SubjectPatientId = row.SubjectPatientId
             });
