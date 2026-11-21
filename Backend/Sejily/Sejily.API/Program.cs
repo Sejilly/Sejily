@@ -146,6 +146,9 @@ public class Program
         builder.Services.AddScoped<Sejily.API.Services.Notifications.NotificationComposer>();
         builder.Services.AddScoped<Sejily.API.Services.Notifications.INotificationQueries,
             Sejily.API.Services.Notifications.NotificationQueries>();
+        // F6 (T11): device-token register/remove
+        builder.Services.AddScoped<Sejily.API.Services.Notifications.IDeviceTokenService,
+            Sejily.API.Services.Notifications.DeviceTokenService>();
         // 7. Build the application
 
 
