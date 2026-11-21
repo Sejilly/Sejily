@@ -142,6 +142,10 @@ public class Program
         // F6 (T05): temporary pass-through until Dev 1's NameMasker is merged
         builder.Services.AddScoped<Sejily.API.Services.Notifications.INameMasker,
             Sejily.API.Services.Notifications.PassThroughNameMasker>();
+        // F6 (T07): read-side notification queries
+        builder.Services.AddScoped<Sejily.API.Services.Notifications.NotificationComposer>();
+        builder.Services.AddScoped<Sejily.API.Services.Notifications.INotificationQueries,
+            Sejily.API.Services.Notifications.NotificationQueries>();
         // 7. Build the application
 
 
