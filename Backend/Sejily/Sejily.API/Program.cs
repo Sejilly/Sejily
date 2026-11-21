@@ -162,9 +162,22 @@ public class Program
         builder.Services.AddSingleton<Channel<Sejily.API.Services.Notifications.PushJob>>(
             Channel.CreateUnbounded<Sejily.API.Services.Notifications.PushJob>());
         builder.Services.AddHostedService<Sejily.API.Services.Notifications.PushDispatchService>();
-        // F6 (T17): default sender until Firebase is configured (T20 swaps it)
-        builder.Services.AddScoped<Sejily.API.Services.Notifications.IPushSender,
-            Sejily.API.Services.Notifications.NullPushSender>();
+        // F6 (T17/T20): real FCM sender only when the service account exists (D7);
+        // otherwise NullPushSender and every request still succeeds (criterion 9).
+        // The path lives in user-secrets / environment — never in the repo.
+        var firebaseServiceAccount = builder.Configuration[
+            Sejily.API.Services.Notifications.FcmPushSender.ConfigKey];
+        if (!string.IsNullOrWhiteSpace(firebaseServiceAccount)
+            && File.Exists(firebaseServiceAccount))
+        {
+            builder.Services.AddScoped<Sejily.API.Services.Notifications.IPushSender,
+                Sejily.API.Services.Notifications.FcmPushSender>();
+        }
+        else
+        {
+            builder.Services.AddScoped<Sejily.API.Services.Notifications.IPushSender,
+                Sejily.API.Services.Notifications.NullPushSender>();
+        }
         // 7. Build the application
 
 
