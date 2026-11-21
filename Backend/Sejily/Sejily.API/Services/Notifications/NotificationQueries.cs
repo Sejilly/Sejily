@@ -18,15 +18,18 @@ public class NotificationQueries : INotificationQueries
     private readonly SejilyDbContext _db;
     private readonly INameMasker _nameMasker;
     private readonly NotificationComposer _composer;
+    private readonly TimeProvider _timeProvider;
 
     public NotificationQueries(
         SejilyDbContext db,
         INameMasker nameMasker,
-        NotificationComposer composer)
+        NotificationComposer composer,
+        TimeProvider timeProvider)
     {
         _db = db;
         _nameMasker = nameMasker;
         _composer = composer;
+        _timeProvider = timeProvider;
     }
 
     public async Task<NotificationListResponse> ListAsync(
@@ -147,6 +150,54 @@ public class NotificationQueries : INotificationQueries
             Items = items,
             NextCursor = nextCursor
         };
+    }
+
+    // ================= T08: unread-count / read / read-all / delete (plan 3.5) =================
+
+    public Task<int> CountUnreadAsync(int userId, CancellationToken cancellationToken = default) =>
+        _db.Notifications.CountAsync(
+            n => n.RecipientUserId == userId && n.DeletedAt == null && !n.IsRead,
+            cancellationToken);
+
+    public async Task<NotificationUpdateResult> MarkReadAsync(
+        int userId, int notificationId, CancellationToken cancellationToken = default)
+    {
+        // ExecuteUpdate touches 0 rows when the id is unknown, not mine, or already
+        // soft-deleted => NotFound (404 in the controller). Repeating read on an
+        // already-read row is safe: it just writes the same value (criterion 4).
+        var rows = await _db.Notifications
+            .Where(n => n.NotificationId == notificationId
+                     && n.RecipientUserId == userId
+                     && n.DeletedAt == null)
+            .ExecuteUpdateAsync(setters => setters.SetProperty(n => n.IsRead, true),
+                cancellationToken);
+
+        return rows == 0 ? NotificationUpdateResult.NotFound : NotificationUpdateResult.Success;
+    }
+
+    public async Task MarkAllReadAsync(int userId, CancellationToken cancellationToken = default)
+    {
+        // Repeat-safe: unread-only predicate, so a second call updates nothing.
+        await _db.Notifications
+            .Where(n => n.RecipientUserId == userId && n.DeletedAt == null && !n.IsRead)
+            .ExecuteUpdateAsync(setters => setters.SetProperty(n => n.IsRead, true),
+                cancellationToken);
+    }
+
+    public async Task<NotificationUpdateResult> DeleteAsync(
+        int userId, int notificationId, CancellationToken cancellationToken = default)
+    {
+        // Soft delete only (DeletedAt); the request is never touched (criterion 5).
+        // Already-deleted rows return NotFound (open question 2 default: 404).
+        var deletedAt = _timeProvider.GetUtcNow().UtcDateTime;
+        var rows = await _db.Notifications
+            .Where(n => n.NotificationId == notificationId
+                     && n.RecipientUserId == userId
+                     && n.DeletedAt == null)
+            .ExecuteUpdateAsync(setters => setters.SetProperty(n => n.DeletedAt, deletedAt),
+                cancellationToken);
+
+        return rows == 0 ? NotificationUpdateResult.NotFound : NotificationUpdateResult.Success;
     }
 
     /// <summary>Projection row used inside ListAsync (kept private to this service).</summary>
