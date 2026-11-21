@@ -1,7 +1,7 @@
-import { ROUTES } from "../../lib/routes";
-import { ButtonLink } from "@/components/auth-ui/Button";
-import FormAlert from "@/components/auth-ui/FormAlert";
-import SubmitButton from "@/components/auth-ui/SubmitButton";
+import { ROUTES } from "@/lib/routes";
+import { ButtonLink } from "@/features/auth/components/ui/Button";
+import FormAlert from "@/features/auth/components/ui/FormAlert";
+import SubmitButton from "@/features/auth/components/ui/SubmitButton";
 
 type Props = { loading: boolean; formError: string };
 

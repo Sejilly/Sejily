@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import FormFooter from "../login/FormFooter";
+import FormFooter from "@/features/auth/components/login/FormFooter";
 
 type Props = { header: ReactNode; children: ReactNode };
 

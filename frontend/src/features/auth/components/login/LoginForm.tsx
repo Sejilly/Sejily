@@ -1,6 +1,6 @@
-import FormHeader from "./FormHeader";
-import FormContent from "./FormContent";
-import FormFooter from "./FormFooter";
+import FormHeader from "@/features/auth/components/login/FormHeader";
+import FormContent from "@/features/auth/components/login/FormContent";
+import FormFooter from "@/features/auth/components/login/FormFooter";
 
 function LoginForm() {
     return (

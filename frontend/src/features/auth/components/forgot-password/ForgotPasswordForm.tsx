@@ -2,10 +2,10 @@
 
 import { useState, type SyntheticEvent } from "react";
 import { useRouter } from "next/navigation";
-import ForgotPasswordFields from "./ForgotPasswordFields";
-import ForgotPasswordActions from "./ForgotPasswordActions";
-import { useFormFields } from "../../lib/useFormFields";
-import { requestPasswordReset } from "../../lib/auth";
+import ForgotPasswordFields from "@/features/auth/components/forgot-password/ForgotPasswordFields";
+import ForgotPasswordActions from "@/features/auth/components/forgot-password/ForgotPasswordActions";
+import { useFormFields } from "@/features/auth/lib/useFormFields";
+import { requestPasswordReset } from "@/features/auth/lib/auth";
 import {
     phoneLiveError,
     GENERIC_ERROR,
@@ -13,9 +13,9 @@ import {
     TOO_MANY_ERROR,
     validateNationalId,
     validatePhone,
-} from "../../lib/validators";
-import { ROUTES } from "../../lib/routes";
-import { saveResetFlow } from "../../lib/resetFlow";
+} from "@/features/auth/lib/validators";
+import { ROUTES } from "@/lib/routes";
+import { saveResetFlow } from "@/features/auth/lib/resetFlow";
 
 export default function ForgotPasswordForm() {
     const router = useRouter();

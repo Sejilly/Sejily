@@ -1,9 +1,10 @@
 import Image from "next/image";
-import Background from "@/components/auth-ui/Background";
-import Logo from "@/components/auth-ui/Logo";
-import { ButtonLink } from "@/components/auth-ui/Button";
+import Background from "@/features/auth/components/ui/Background";
+import Logo from "@/features/auth/components/ui/Logo";
+import { ButtonLink } from "@/features/auth/components/ui/Button";
+import { ROUTES } from "@/lib/routes";
 
-function success() {
+function SuccessPage() {
     return (
         <div className="relative flex h-screen items-center justify-center bg-surface px-4 py-24 sm:px-8 lg:px-20">
             <Background />
@@ -18,11 +19,11 @@ function success() {
                 <div className="flex w-full flex-col items-center gap-6">
                     <Image
                         src="/Sejily/success.svg"
-                        alt="success-icon"
-                        width={132}
-                        height={132}
+                        alt="علامة نجاح التحقق"
+                        width={96}
+                        height={96}
                         priority
-                        className="h-24 w-24 sm:h-33 sm:w-33"
+                        className="sm:h-33 sm:w-33"
                     />
                     <div className="flex w-full flex-col gap-3 text-center text-ink sm:gap-4">
                         <h3 className="text-lg font-semibold leading-7 sm:text-xl">
@@ -35,7 +36,7 @@ function success() {
                 </div>
 
                 <div className="flex w-full justify-center">
-                    <ButtonLink variant="primary" href="/">
+                    <ButtonLink variant="primary" href={ROUTES.login}>
                         الانتقال إلى الصفحة الرئيسية
                     </ButtonLink>
                 </div>
@@ -44,4 +45,4 @@ function success() {
     );
 }
 
-export default success;
+export default SuccessPage;

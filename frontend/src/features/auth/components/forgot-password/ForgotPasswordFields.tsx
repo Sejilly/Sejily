@@ -1,6 +1,6 @@
-import TextField from "@/components/auth-ui/TextField";
-import PhoneField from "@/components/auth-ui/PhoneField";
-import { toEnglishDigits } from "../../lib/validators";
+import TextField from "@/features/auth/components/ui/TextField";
+import PhoneField from "@/features/auth/components/ui/PhoneField";
+import { toEnglishDigits } from "@/features/auth/lib/validators";
 
 export type ForgotField = "nationalId" | "phone";
 

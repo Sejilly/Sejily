@@ -1,5 +1,5 @@
 
-import { apiFetch, ApiError } from "./api/client";
+import { apiFetch, ApiError } from "@/lib/api/client";
 
 const ACCOUNT_TYPE = "Doctor";
 

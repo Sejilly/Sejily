@@ -3,13 +3,13 @@
 import { useEffect, useState, type SyntheticEvent } from "react";
 import { useRouter } from "next/navigation";
 
-import PasswordField from "@/components/auth-ui/PasswordField";
-import FormAlert from "@/components/auth-ui/FormAlert";
-import SubmitButton from "@/components/auth-ui/SubmitButton";
-import PasswordRules from "@/components/auth-ui/PasswordRules";
+import PasswordField from "@/features/auth/components/ui/PasswordField";
+import FormAlert from "@/features/auth/components/ui/FormAlert";
+import SubmitButton from "@/features/auth/components/ui/SubmitButton";
+import PasswordRules from "@/features/auth/components/ui/PasswordRules";
 
-import { useFormFields } from "../../lib/useFormFields";
-import { resetPassword } from "../../lib/auth";
+import { useFormFields } from "@/features/auth/lib/useFormFields";
+import { resetPassword } from "@/features/auth/lib/auth";
 
 import {
     GENERIC_ERROR,
@@ -18,14 +18,14 @@ import {
     RESET_SESSION_EXPIRED_ERROR,
     validateConfirmPassword,
     validatePassword,
-} from "../../lib/validators";
+} from "@/features/auth/lib/validators";
 
-import { ROUTES } from "../../lib/routes";
+import { ROUTES } from "@/lib/routes";
 import {
     clearResetFlow,
     readResetFlow,
     type ResetFlow,
-} from "../../lib/resetFlow";
+} from "@/features/auth/lib/resetFlow";
 
 export default function ResetPasswordForm() {
     const router = useRouter();
@@ -166,8 +166,6 @@ export default function ResetPasswordForm() {
                                 e.currentTarget.parentElement?.contains(nextTarget)
                             );
 
-                        // لا ننفذ الخروج الفعلي لو التركيز انتقل
-                        // إلى أيقونة العين داخل الحقل.
                         if (stayedInsideField) return;
 
                         onBlur("password", value);

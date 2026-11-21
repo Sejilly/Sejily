@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { BsEye, BsEyeSlash } from "react-icons/bs";
-import TextField, { type TextFieldProps } from "./TextField";
+import TextField, { type TextFieldProps } from "@/features/auth/components/ui/TextField";
 
 type PasswordFieldProps = Omit<
     TextFieldProps,
@@ -43,7 +43,7 @@ export default function PasswordField(props: PasswordFieldProps) {
                         aria-pressed={show}
                         className={`shrink-0 transition-colors ${
                             hasError
-                                ? "text-[#DC2626]"
+                                ? "text-be-error"
                                 : show
                                     ? "text-[#334155]"
                                     : "text-[#64748B] hover:text-ink"

@@ -47,7 +47,7 @@ export default function TextField({
                         aria-hidden
                         className={`flex shrink-0 items-center gap-2.5 transition-colors ${
                             hasError
-                                ? "text-[#DC2626]"
+                                ? "text-be-error"
                                 : "text-[#64748B] group-focus-within:text-[#2B6CB0]"
                         }`}
                     >
@@ -68,7 +68,7 @@ export default function TextField({
                         <BsExclamationCircleFill
                             aria-hidden
                             size={24}
-                            className="shrink-0 text-[#DC2626]"
+                            className="shrink-0 text-be-error"
                         />
                     ))}
             </div>

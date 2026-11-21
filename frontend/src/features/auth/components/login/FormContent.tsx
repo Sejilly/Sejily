@@ -3,11 +3,11 @@
 import { useState, type SyntheticEvent } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import FormButtons from "./FormButtons";
-import FormInputs from "./FormInputs";
-import FormAlert from "@/components/auth-ui/FormAlert";
-import { useFormFields } from "../../lib/useFormFields";
-import { login } from "../../lib/auth";
+import FormButtons from "@/features/auth/components/login/FormButtons";
+import FormInputs from "@/features/auth/components/login/FormInputs";
+import FormAlert from "@/features/auth/components/ui/FormAlert";
+import { useFormFields } from "@/features/auth/lib/useFormFields";
+import { login } from "@/features/auth/lib/auth";
 import {
     GENERIC_ERROR,
     NETWORK_ERROR,
@@ -15,8 +15,8 @@ import {
     WRONG_PASSWORD_ERROR,
     validateLoginPassword,
     validateNationalId,
-} from "@/lib/validators";
-import { ROUTES } from "../../lib/routes";
+} from "@/features/auth/lib/validators";
+import { ROUTES } from "@/lib/routes";
 
 function FormContent() {
     const router = useRouter();
