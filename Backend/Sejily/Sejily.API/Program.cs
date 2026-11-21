@@ -135,6 +135,10 @@ public class Program
 
         // builder.Services.AddHttpClient<IOtpSmsSender, SmsMisrOtpSmsSender>();
         builder.Services.AddScoped<IOtpSmsSender, ConsoleOtpSmsSender>();
+        // F6 (T02): shared clock + notification settings bound from configuration
+        builder.Services.AddSingleton(TimeProvider.System);
+        builder.Services.Configure<Sejily.API.Settings.NotificationSettings>(
+            builder.Configuration.GetSection(Sejily.API.Settings.NotificationSettings.SectionName));
         // 7. Build the application
 
 
