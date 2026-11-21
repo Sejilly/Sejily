@@ -46,9 +46,26 @@ public class SejilyDbContext : IdentityDbContext<User, IdentityRole<int>, int>
 
     public DbSet<AuditLog> AuditLogs { get; set; }
 
+    protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
+    {
+        base.ConfigureConventions(configurationBuilder);
+
+        // All DateTime columns are UTC. Reads come back flagged as UTC so the API emits "Z".
+        configurationBuilder.Properties<DateTime>().HaveConversion<UtcDateTimeConverter>();
+        configurationBuilder.Properties<DateTime?>().HaveConversion<NullableUtcDateTimeConverter>();
+    }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(SejilyDbContext).Assembly);
+
+        // Birth dates are calendar dates, not moments in time: never treat them as UTC instants.
+        foreach (var property in modelBuilder.Model.GetEntityTypes()
+                     .SelectMany(e => e.GetProperties())
+                     .Where(p => p.Name == "DateOfBirth"))
+        {
+            property.SetValueConverter((Microsoft.EntityFrameworkCore.Storage.ValueConversion.ValueConverter?)null);
+        }
     }
 }
