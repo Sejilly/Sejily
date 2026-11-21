@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { Button } from "./Button";
+import { Button } from "@/features/auth/components/ui/Button";
 
 type Props = {
     loading: boolean;

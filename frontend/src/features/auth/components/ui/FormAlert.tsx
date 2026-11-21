@@ -14,7 +14,7 @@ export default function FormAlert({
             <MdErrorOutline
                 aria-hidden
                 size={22}
-                className="shrink-0 text-[#DC2626]"
+                className="shrink-0 text-be-error"
             />
 
             <p className="flex-1 text-right text-xs leading-5 text-danger">

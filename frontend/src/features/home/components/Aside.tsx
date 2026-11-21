@@ -1,5 +1,5 @@
-import Logo from "@/components/auth-ui/Logo";
-import Content from "./Content";
+import Logo from "@/features/auth/components/ui/Logo";
+import Content from "@/features/home/components/Content";
 
 function Aside() {
     return (

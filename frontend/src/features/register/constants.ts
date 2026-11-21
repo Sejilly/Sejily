@@ -16,6 +16,8 @@ export const SPECIALTIES = [
   "عظام",
   "أسنان",
   "صيدلة",
+  "أشعة",
+  "تحاليل",
 ].map((l) => ({ value: l, label: l }));
 
 /*export const WORKPLACE_TYPES = [

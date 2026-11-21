@@ -1,7 +1,7 @@
 "use client";
 
 import type { ChangeEvent, ClipboardEvent, KeyboardEvent } from "react";
-import { toEnglishDigits } from "../../lib/validators";
+import { toEnglishDigits } from "@/features/auth/lib/validators";
 
 type Props = {
     digits: string[];

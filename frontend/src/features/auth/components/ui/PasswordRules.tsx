@@ -1,6 +1,6 @@
 "use client";
 
-import { getPasswordRules } from "../../lib/validators";
+import { getPasswordRules } from "@/features/auth/lib/validators";
 
 type Props = {
     password: string;

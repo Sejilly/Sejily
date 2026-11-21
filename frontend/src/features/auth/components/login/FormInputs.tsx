@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
-import TextField from "@/components/auth-ui/TextField";
-import PasswordField from "@/components/auth-ui/PasswordField";
-import { toEnglishDigits } from "../../lib/validators";
+import TextField from "@/features/auth/components/ui/TextField";
+import PasswordField from "@/features/auth/components/ui/PasswordField";
+import { toEnglishDigits } from "@/features/auth/lib/validators";
 
 export type LoginField = "nationalId" | "password";
 

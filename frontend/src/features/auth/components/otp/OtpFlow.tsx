@@ -2,12 +2,12 @@
 
 import { useEffect, useState, type SyntheticEvent } from "react";
 import { useRouter } from "next/navigation";
-import AuthCard from "../auth/AuthCard";
-import AuthIntro from "../auth/AuthIntro";
-import OtpInputs, { focusOtpBox } from "./OtpInputs";
-import OtpActions from "./OtpActions";
-import { resendOtp, verifyOtp } from "../../lib/auth";
-import { formatTime, useCountdown } from "../../lib/useCountdown";
+import AuthCard from "@/features/auth/components/layout/AuthCard";
+import AuthIntro from "@/features/auth/components/layout/AuthIntro";
+import OtpInputs, { focusOtpBox } from "@/features/auth/components/otp/OtpInputs";
+import OtpActions from "@/features/auth/components/otp/OtpActions";
+import { resendOtp, verifyOtp } from "@/features/auth/lib/auth";
+import { formatTime, useCountdown } from "@/features/auth/lib/useCountdown";
 import {
     GENERIC_ERROR,
     NETWORK_ERROR,
@@ -16,9 +16,9 @@ import {
     OTP_INVALID_ERROR,
     RESEND_WAIT_ERROR,
     TOO_MANY_ERROR,
-} from "../../lib/validators";
-import { ROUTES } from "../../lib/routes";
-import { readResetFlow, saveResetFlow, type ResetFlow } from "../../lib/resetFlow";
+} from "@/features/auth/lib/validators";
+import { ROUTES } from "@/lib/routes";
+import { readResetFlow, saveResetFlow, type ResetFlow } from "@/features/auth/lib/resetFlow";
 
 const OTP_LENGTH = 6;
 const EXPIRY_SECONDS = 300;

@@ -1,6 +1,6 @@
-import { ButtonLink } from "@/components/auth-ui/Button";
-import SubmitButton from "@/components/auth-ui/SubmitButton";
-import TextDivider from "@/components/auth-ui/TextDivider";
+import { ButtonLink } from "@/features/auth/components/ui/Button";
+import SubmitButton from "@/features/auth/components/ui/SubmitButton";
+import TextDivider from "@/features/auth/components/ui/TextDivider";
 import { ROUTES } from "@/lib/routes";
 
 function FormButtons({ loading = false }: { loading?: boolean }) {

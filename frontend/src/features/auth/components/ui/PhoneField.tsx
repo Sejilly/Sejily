@@ -1,4 +1,4 @@
-import TextField, { type TextFieldProps } from "./TextField";
+import TextField, { type TextFieldProps } from "@/features/auth/components/ui/TextField";
 import { FiPhoneIncoming } from "react-icons/fi";
 
 type PhoneFieldProps = Omit<TextFieldProps, "type" | "leading" | "trailing">;
