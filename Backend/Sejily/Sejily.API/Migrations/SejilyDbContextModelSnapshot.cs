@@ -212,17 +212,12 @@ namespace Sejily.API.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("DiseaseId"));
 
-                    b.Property<string>("IcdCode")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<string>("IcdUri")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("IcdVersion")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<bool>("IsAllergy")
+                        .HasColumnType("bit");
 
                     b.Property<bool>("IsChronic")
                         .HasColumnType("bit");
@@ -240,9 +235,6 @@ namespace Sejily.API.Migrations
                     b.HasKey("DiseaseId");
 
                     b.HasAlternateKey("IcdUri");
-
-                    b.HasIndex("IcdVersion", "IcdCode")
-                        .IsUnique();
 
                     b.ToTable("Diseases");
                 });
@@ -495,6 +487,10 @@ namespace Sejily.API.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+                    b.PrimitiveCollection<string>("PatientEntryMedications")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("UserId");
 
                     b.HasIndex("HealthCardNumber")
@@ -512,14 +508,15 @@ namespace Sejily.API.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PatientDiseaseId"));
 
+                    b.Property<string>("DiseaseEntryName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("DiseaseId")
                         .HasColumnType("int");
 
                     b.Property<int?>("DiseaseStatus")
                         .HasColumnType("int");
-
-                    b.Property<bool>("IsFamilyDisease")
-                        .HasColumnType("bit");
 
                     b.Property<int?>("MedicalEncounterId")
                         .HasColumnType("int");
@@ -533,7 +530,7 @@ namespace Sejily.API.Migrations
 
                     b.HasIndex("MedicalEncounterId");
 
-                    b.HasIndex("PatientId", "DiseaseId", "IsFamilyDisease")
+                    b.HasIndex("PatientId", "DiseaseId")
                         .IsUnique()
                         .HasFilter("[MedicalEncounterId] IS NULL");
 
@@ -542,6 +539,28 @@ namespace Sejily.API.Migrations
                         .HasFilter("[MedicalEncounterId] IS NOT NULL");
 
                     b.ToTable("PatientDisease");
+                });
+
+            modelBuilder.Entity("Sejily.API.Models.Entities.PatientFamilyDisease", b =>
+                {
+                    b.Property<int>("PatientId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("DiseaseId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("DiseaseEntryName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("FamilyRelationship")
+                        .HasColumnType("int");
+
+                    b.HasKey("PatientId", "DiseaseId");
+
+                    b.HasIndex("DiseaseId");
+
+                    b.ToTable("PatientFamilyDisease");
                 });
 
             modelBuilder.Entity("Sejily.API.Models.Entities.PatientHealthSetupRequest", b =>
@@ -785,6 +804,36 @@ namespace Sejily.API.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Sejily.API.Models.Entities.Disease", b =>
+                {
+                    b.OwnsOne("Sejily.API.Models.DiseaseIcdCode", "IcdCode", b1 =>
+                        {
+                            b1.Property<int>("DiseaseId")
+                                .HasColumnType("int");
+
+                            b1.Property<string>("Code")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(450)");
+
+                            b1.Property<string>("Version")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(450)");
+
+                            b1.HasKey("DiseaseId");
+
+                            b1.HasIndex("Version", "Code")
+                                .IsUnique();
+
+                            b1.ToTable("Diseases");
+
+                            b1.WithOwner()
+                                .HasForeignKey("DiseaseId");
+                        });
+
+                    b.Navigation("IcdCode")
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Sejily.API.Models.Entities.Doctor", b =>
                 {
                     b.HasOne("Sejily.API.Models.Entities.User", "User")
@@ -986,6 +1035,25 @@ namespace Sejily.API.Migrations
                     b.Navigation("Patient");
                 });
 
+            modelBuilder.Entity("Sejily.API.Models.Entities.PatientFamilyDisease", b =>
+                {
+                    b.HasOne("Sejily.API.Models.Entities.Disease", "Disease")
+                        .WithMany()
+                        .HasForeignKey("DiseaseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Sejily.API.Models.Entities.Patient", "Patient")
+                        .WithMany("FamilyDiseases")
+                        .HasForeignKey("PatientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Disease");
+
+                    b.Navigation("Patient");
+                });
+
             modelBuilder.Entity("Sejily.API.Models.Entities.Doctor", b =>
                 {
                     b.Navigation("Encounters");
@@ -1005,6 +1073,8 @@ namespace Sejily.API.Migrations
                     b.Navigation("Dependents");
 
                     b.Navigation("Diseases");
+
+                    b.Navigation("FamilyDiseases");
 
                     b.Navigation("Guardians");
 

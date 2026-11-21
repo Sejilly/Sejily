@@ -3,7 +3,10 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Sejily.API.Application.Features.DependencyInjection;
+using Sejily.API.Application.Repositories.DependencyInjection;
 using Sejily.API.Data;
+using Sejily.API.Infrastructure.Diseases.JsonProviders.DependencyInjection;
 using Sejily.API.Models.Entities;
 using Sejily.API.Services;
 using System.Text;
@@ -157,6 +160,11 @@ public class Program
                       .WithHeaders("Content-Type", "Authorization")
                       .WithMethods("GET", "POST", "PUT", "PATCH", "DELETE"));
         });
+
+        builder.Services
+            .AddDiseaseJsonProviders()
+            .AddRepositories()
+            .AddApplicationFeatures();
 
         builder.Services.AddHostedService<
    PatientRegistrationCleanupService>();

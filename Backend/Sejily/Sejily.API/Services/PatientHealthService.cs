@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Sejily.API.Application.Features.PatientHealthDataEntry;
 using Sejily.API.Data;
 using Sejily.API.DTOs.Health;
 using Sejily.API.Models.Entities;
@@ -28,17 +29,18 @@ public interface IPatientHealthService
         int? guardianUserId, CompleteHealthProfileRequest request);
 }
 
-public class PatientHealthService : IPatientHealthService
+internal class PatientHealthService : IPatientHealthService
 {
     private static readonly TimeSpan SetupLifetime = TimeSpan.FromMinutes(30);
 
     private readonly SejilyDbContext _context;
-    private readonly IHostEnvironment _environment;
-
-    public PatientHealthService(SejilyDbContext context, IHostEnvironment environment)
+    private readonly AddPatientHealthData _patientHealthDataAdder;
+    public PatientHealthService(
+        SejilyDbContext context,
+        AddPatientHealthData patientHealthDataAdder)
     {
         _context = context;
-        _environment = environment;
+        _patientHealthDataAdder = patientHealthDataAdder;
     }
 
     public Guid AddSetupRequest(int patientUserId, int? guardianUserId)
@@ -76,71 +78,7 @@ public class PatientHealthService : IPatientHealthService
                 new[] { "Invalid or expired request." });
         }
 
-        // Same rules as PUT api/PatientHealthData: allergies are stored as disease
-        // rows too, and an unknown ICD code / medication id is only tolerated in
-        // Development.
-        var personalCodes = Normalize(
-            (request.DiseaseIcdCodes ?? []).Concat(request.AllergyIcdCodes ?? []));
-        var familyCodes = Normalize(request.FamilyDiseaseIcdCodes);
-        var allCodes = personalCodes.Concat(familyCodes)
-            .Distinct(StringComparer.OrdinalIgnoreCase).ToArray();
-
-        var matchedDiseases = await _context.Diseases
-            .Where(d => allCodes.Contains(d.IcdCode))
-            .ToListAsync();
-
-        var unresolved = allCodes
-            .Where(code => matchedDiseases.Count(d =>
-                string.Equals(d.IcdCode, code, StringComparison.OrdinalIgnoreCase)) != 1)
-            .ToArray();
-
-        if (!_environment.IsDevelopment() && unresolved.Length > 0)
-        {
-            return new SaveHealthProfileResult(
-                SaveHealthProfileStatus.Invalid,
-                unresolved.Select(code =>
-                    $"ICD code '{code}' is missing or ambiguous; provide a unique code in the catalog."));
-        }
-
-        // Medications are validated but not stored: a medication usage needs a
-        // medical encounter and prescription details (same as the existing endpoint).
-        var medicationIds = Normalize(request.MedicationIds);
-        var matchedMedicationIds = await _context.Medications
-            .Where(m => medicationIds.Contains(m.AtcCode))
-            .Select(m => m.AtcCode)
-            .ToListAsync();
-
-        var unresolvedMedicationIds = medicationIds
-            .Where(id => matchedMedicationIds.Count(found =>
-                string.Equals(found, id, StringComparison.OrdinalIgnoreCase)) != 1)
-            .ToArray();
-
-        if (!_environment.IsDevelopment() && unresolvedMedicationIds.Length > 0)
-        {
-            return new SaveHealthProfileResult(
-                SaveHealthProfileStatus.Invalid,
-                unresolvedMedicationIds.Select(id =>
-                    $"Medication identifier '{id}' is missing or ambiguous in the medication catalog."));
-        }
-
-        var patient = await _context.Patients
-            .FirstAsync(p => p.UserId == setup.PatientUserId);
-
-        if (request.BloodType.HasValue)
-        {
-            patient.BloodType = request.BloodType;
-        }
-
-        foreach (var disease in matchedDiseases)
-        {
-            _context.Set<PatientDisease>().Add(new PatientDisease
-            {
-                PatientId = patient.UserId,
-                DiseaseId = disease.DiseaseId,
-                IsFamilyDisease = familyCodes.Contains(
-                    disease.IcdCode, StringComparer.OrdinalIgnoreCase)
-            });
-        }
+        await _patientHealthDataAdder.Process(setup.PatientUserId, request);
 
         // Single use: the token is deleted together with the data it protects.
         _context.PatientHealthSetupRequests.Remove(setup);
@@ -150,9 +88,4 @@ public class PatientHealthService : IPatientHealthService
         return new SaveHealthProfileResult(SaveHealthProfileStatus.Saved);
     }
 
-    private static string[] Normalize(IEnumerable<string>? codes) =>
-        (codes ?? []).Where(code => !string.IsNullOrWhiteSpace(code))
-            .Select(code => code.Trim())
-            .Distinct(StringComparer.OrdinalIgnoreCase)
-            .ToArray();
 }

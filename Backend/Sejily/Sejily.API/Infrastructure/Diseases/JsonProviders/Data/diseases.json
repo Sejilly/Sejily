@@ -1,0 +1,1202 @@
+[
+  {
+    "icdCode": {
+      "code": "1D80",
+      "version": "11"
+    },
+    "icdUri": "http://id.who.int/icd/entity/1208294714",
+    "title": "Mumps",
+    "titleAr": null,
+    "isGenetic": false,
+    "isChronic": false,
+    "isAllergy": false
+  },
+  {
+    "icdCode": {
+      "code": "1D80.0",
+      "version": "11"
+    },
+    "icdUri": "http://id.who.int/icd/entity/2082214683",
+    "title": "Mumps without complication",
+    "titleAr": null,
+    "isGenetic": false,
+    "isChronic": false,
+    "isAllergy": false
+  },
+  {
+    "icdCode": {
+      "code": "1D80.1",
+      "version": "11"
+    },
+    "icdUri": "http://id.who.int/icd/entity/333831364",
+    "title": "Orchitis due to mumps virus",
+    "titleAr": null,
+    "isGenetic": false,
+    "isChronic": false,
+    "isAllergy": false
+  },
+  {
+    "icdCode": {
+      "code": "1D80.2",
+      "version": "11"
+    },
+    "icdUri": "http://id.who.int/icd/entity/1991119186",
+    "title": "Meningitis due to mumps virus",
+    "titleAr": null,
+    "isGenetic": false,
+    "isChronic": false,
+    "isAllergy": false
+  },
+  {
+    "icdCode": {
+      "code": "1D80.3",
+      "version": "11"
+    },
+    "icdUri": "http://id.who.int/icd/entity/33767855",
+    "title": "Encephalitis due to mumps virus",
+    "titleAr": null,
+    "isGenetic": false,
+    "isChronic": false,
+    "isAllergy": false
+  },
+  {
+    "icdCode": {
+      "code": "1D80.4",
+      "version": "11"
+    },
+    "icdUri": "http://id.who.int/icd/entity/1732807739",
+    "title": "Pancreatitis due to mumps virus",
+    "titleAr": null,
+    "isGenetic": false,
+    "isChronic": false,
+    "isAllergy": false
+  },
+  {
+    "icdCode": {
+      "code": "1D81",
+      "version": "11"
+    },
+    "icdUri": "http://id.who.int/icd/entity/760139952",
+    "title": "Infectious mononucleosis",
+    "titleAr": null,
+    "isGenetic": false,
+    "isChronic": false,
+    "isAllergy": false
+  },
+  {
+    "icdCode": {
+      "code": "1D81.0",
+      "version": "11"
+    },
+    "icdUri": "http://id.who.int/icd/entity/109125699",
+    "title": "Mononucleosis due to Epstein-Barr virus",
+    "titleAr": null,
+    "isGenetic": false,
+    "isChronic": false,
+    "isAllergy": false
+  },
+  {
+    "icdCode": {
+      "code": "1D81.1",
+      "version": "11"
+    },
+    "icdUri": "http://id.who.int/icd/entity/1784076753",
+    "title": "Mononucleosis due to cytomegalovirus",
+    "titleAr": null,
+    "isGenetic": false,
+    "isChronic": false,
+    "isAllergy": false
+  },
+  {
+    "icdCode": {
+      "code": "1D82",
+      "version": "11"
+    },
+    "icdUri": "http://id.who.int/icd/entity/1017662917",
+    "title": "Cytomegaloviral disease",
+    "titleAr": null,
+    "isGenetic": false,
+    "isChronic": false,
+    "isAllergy": false
+  },
+  {
+    "icdCode": {
+      "code": "1D82.0",
+      "version": "11"
+    },
+    "icdUri": "http://id.who.int/icd/entity/1999221102",
+    "title": "Cytomegaloviral hepatitis",
+    "titleAr": null,
+    "isGenetic": false,
+    "isChronic": false,
+    "isAllergy": false
+  },
+  {
+    "icdCode": {
+      "code": "1D82.1",
+      "version": "11"
+    },
+    "icdUri": "http://id.who.int/icd/entity/59040145",
+    "title": "Cytomegaloviral pancreatitis",
+    "titleAr": null,
+    "isGenetic": false,
+    "isChronic": false,
+    "isAllergy": false
+  },
+  {
+    "icdCode": {
+      "code": "1D83",
+      "version": "11"
+    },
+    "icdUri": "http://id.who.int/icd/entity/637134348",
+    "title": "Epidemic myalgia",
+    "titleAr": null,
+    "isGenetic": false,
+    "isChronic": false,
+    "isAllergy": false
+  },
+  {
+    "icdCode": {
+      "code": "1D84",
+      "version": "11"
+    },
+    "icdUri": "http://id.who.int/icd/entity/157616931",
+    "title": "Viral conjunctivitis",
+    "titleAr": null,
+    "isGenetic": false,
+    "isChronic": false,
+    "isAllergy": false
+  },
+  {
+    "icdCode": {
+      "code": "1D84.0",
+      "version": "11"
+    },
+    "icdUri": "http://id.who.int/icd/entity/1094028194",
+    "title": "Conjunctivitis due to adenovirus",
+    "titleAr": null,
+    "isGenetic": false,
+    "isChronic": false,
+    "isAllergy": false
+  },
+  {
+    "icdCode": {
+      "code": "1D84.1",
+      "version": "11"
+    },
+    "icdUri": "http://id.who.int/icd/entity/1356011211",
+    "title": "Acute epidemic haemorrhagic conjunctivitis",
+    "titleAr": null,
+    "isGenetic": false,
+    "isChronic": false,
+    "isAllergy": false
+  },
+  {
+    "icdCode": {
+      "code": "1D85",
+      "version": "11"
+    },
+    "icdUri": "http://id.who.int/icd/entity/874478433",
+    "title": "Viral carditis",
+    "titleAr": null,
+    "isGenetic": false,
+    "isChronic": false,
+    "isAllergy": false
+  },
+  {
+    "icdCode": {
+      "code": "1D85.0",
+      "version": "11"
+    },
+    "icdUri": "http://id.who.int/icd/entity/1485671112",
+    "title": "Dilated cardiomyopathy secondary to viral myocarditis",
+    "titleAr": null,
+    "isGenetic": false,
+    "isChronic": false,
+    "isAllergy": false
+  },
+  {
+    "icdCode": {
+      "code": "1D85.1",
+      "version": "11"
+    },
+    "icdUri": "http://id.who.int/icd/entity/51885381",
+    "title": "Acute viral carditis",
+    "titleAr": null,
+    "isGenetic": false,
+    "isChronic": false,
+    "isAllergy": false
+  },
+  {
+    "icdCode": {
+      "code": "1D85.2",
+      "version": "11"
+    },
+    "icdUri": "http://id.who.int/icd/entity/326802563",
+    "title": "Chronic viral carditis",
+    "titleAr": null,
+    "isGenetic": false,
+    "isChronic": false,
+    "isAllergy": false
+  },
+  {
+    "icdCode": {
+      "code": "1D85.3",
+      "version": "11"
+    },
+    "icdUri": "http://id.who.int/icd/entity/233520745",
+    "title": "Aseptic myocarditis of newborn",
+    "titleAr": null,
+    "isGenetic": false,
+    "isChronic": false,
+    "isAllergy": false
+  },
+  {
+    "icdCode": {
+      "code": "1D85.4",
+      "version": "11"
+    },
+    "icdUri": "http://id.who.int/icd/entity/856497185",
+    "title": "Coxsackie carditis",
+    "titleAr": null,
+    "isGenetic": false,
+    "isChronic": false,
+    "isAllergy": false
+  },
+  {
+    "icdCode": {
+      "code": "1D86",
+      "version": "11"
+    },
+    "icdUri": "http://id.who.int/icd/entity/555874229",
+    "title": "Viral haemorrhagic fever, not elsewhere classified",
+    "titleAr": null,
+    "isGenetic": false,
+    "isChronic": false,
+    "isAllergy": false
+  },
+  {
+    "icdCode": {
+      "code": "1D90",
+      "version": "11"
+    },
+    "icdUri": "http://id.who.int/icd/entity/511743818",
+    "title": "Adenovirus infection of unspecified site",
+    "titleAr": null,
+    "isGenetic": false,
+    "isChronic": false,
+    "isAllergy": false
+  },
+  {
+    "icdCode": {
+      "code": "1D91",
+      "version": "11"
+    },
+    "icdUri": "http://id.who.int/icd/entity/2076924640",
+    "title": "Enterovirus infection of unspecified site",
+    "titleAr": null,
+    "isGenetic": false,
+    "isChronic": false,
+    "isAllergy": false
+  },
+  {
+    "icdCode": {
+      "code": "1D92",
+      "version": "11"
+    },
+    "icdUri": "http://id.who.int/icd/entity/258345505",
+    "title": "Coronavirus infection, unspecified site",
+    "titleAr": null,
+    "isGenetic": false,
+    "isChronic": false,
+    "isAllergy": false
+  },
+  {
+    "icdCode": {
+      "code": "1D93",
+      "version": "11"
+    },
+    "icdUri": "http://id.who.int/icd/entity/1781385141",
+    "title": "Parvovirus infection of unspecified site",
+    "titleAr": null,
+    "isGenetic": false,
+    "isChronic": false,
+    "isAllergy": false
+  },
+  {
+    "icdCode": {
+      "code": "1A00",
+      "version": "11"
+    },
+    "icdUri": "http://id.who.int/icd/entity/257068234",
+    "title": "Cholera",
+    "titleAr": null,
+    "isGenetic": false,
+    "isChronic": false,
+    "isAllergy": false
+  },
+  {
+    "icdCode": {
+      "code": "1A01",
+      "version": "11"
+    },
+    "icdUri": "http://id.who.int/icd/entity/416025325",
+    "title": "Intestinal infection due to other Vibrio",
+    "titleAr": null,
+    "isGenetic": false,
+    "isChronic": false,
+    "isAllergy": false
+  },
+  {
+    "icdCode": {
+      "code": "1A02",
+      "version": "11"
+    },
+    "icdUri": "http://id.who.int/icd/entity/2080365623",
+    "title": "Intestinal infections due to Shigella",
+    "titleAr": null,
+    "isGenetic": false,
+    "isChronic": false,
+    "isAllergy": false
+  },
+  {
+    "icdCode": {
+      "code": "1A03",
+      "version": "11"
+    },
+    "icdUri": "http://id.who.int/icd/entity/344162786",
+    "title": "Intestinal infections due to Escherichia coli",
+    "titleAr": null,
+    "isGenetic": false,
+    "isChronic": false,
+    "isAllergy": false
+  },
+  {
+    "icdCode": {
+      "code": "1A03.0",
+      "version": "11"
+    },
+    "icdUri": "http://id.who.int/icd/entity/2099226249",
+    "title": "Enteropathogenic Escherichia coli infection",
+    "titleAr": null,
+    "isGenetic": false,
+    "isChronic": false,
+    "isAllergy": false
+  },
+  {
+    "icdCode": {
+      "code": "1A03.1",
+      "version": "11"
+    },
+    "icdUri": "http://id.who.int/icd/entity/408185629",
+    "title": "Enterotoxigenic Escherichia coli infection",
+    "titleAr": null,
+    "isGenetic": false,
+    "isChronic": false,
+    "isAllergy": false
+  },
+  {
+    "icdCode": {
+      "code": "1A03.2",
+      "version": "11"
+    },
+    "icdUri": "http://id.who.int/icd/entity/1828273122",
+    "title": "Enteroinvasive Escherichia coli infection",
+    "titleAr": null,
+    "isGenetic": false,
+    "isChronic": false,
+    "isAllergy": false
+  },
+  {
+    "icdCode": {
+      "code": "1A03.3",
+      "version": "11"
+    },
+    "icdUri": "http://id.who.int/icd/entity/162723448",
+    "title": "Enterohaemorrhagic Escherichia coli infection",
+    "titleAr": null,
+    "isGenetic": false,
+    "isChronic": false,
+    "isAllergy": false
+  },
+  {
+    "icdCode": {
+      "code": "1A04",
+      "version": "11"
+    },
+    "icdUri": "http://id.who.int/icd/entity/250688797",
+    "title": "Intestinal infections due to Clostridioides difficile",
+    "titleAr": null,
+    "isGenetic": false,
+    "isChronic": false,
+    "isAllergy": false
+  },
+  {
+    "icdCode": {
+      "code": "1A05",
+      "version": "11"
+    },
+    "icdUri": "http://id.who.int/icd/entity/1000894786",
+    "title": "Intestinal infections due to Yersinia enterocolitica",
+    "titleAr": null,
+    "isGenetic": false,
+    "isChronic": false,
+    "isAllergy": false
+  },
+  {
+    "icdCode": {
+      "code": "1A06",
+      "version": "11"
+    },
+    "icdUri": "http://id.who.int/icd/entity/794462570",
+    "title": "Gastroenteritis due to Campylobacter",
+    "titleAr": null,
+    "isGenetic": false,
+    "isChronic": false,
+    "isAllergy": false
+  },
+  {
+    "icdCode": {
+      "code": "1A07",
+      "version": "11"
+    },
+    "icdUri": "http://id.who.int/icd/entity/1528414070",
+    "title": "Typhoid fever",
+    "titleAr": null,
+    "isGenetic": false,
+    "isChronic": false,
+    "isAllergy": false
+  },
+  {
+    "icdCode": {
+      "code": "1A07.0",
+      "version": "11"
+    },
+    "icdUri": "http://id.who.int/icd/entity/364534567",
+    "title": "Typhoid peritonitis",
+    "titleAr": null,
+    "isGenetic": false,
+    "isChronic": false,
+    "isAllergy": false
+  },
+  {
+    "icdCode": {
+      "code": "1A08",
+      "version": "11"
+    },
+    "icdUri": "http://id.who.int/icd/entity/1780040028",
+    "title": "Paratyphoid fever",
+    "titleAr": null,
+    "isGenetic": false,
+    "isChronic": false,
+    "isAllergy": false
+  },
+  {
+    "icdCode": {
+      "code": "1A09",
+      "version": "11"
+    },
+    "icdUri": "http://id.who.int/icd/entity/515117475",
+    "title": "Infections due to other Salmonella",
+    "titleAr": null,
+    "isGenetic": false,
+    "isChronic": false,
+    "isAllergy": false
+  },
+  {
+    "icdCode": {
+      "code": "1A09.0",
+      "version": "11"
+    },
+    "icdUri": "http://id.who.int/icd/entity/1520312138",
+    "title": "Enteritis due to Salmonella -TEST",
+    "titleAr": null,
+    "isGenetic": false,
+    "isChronic": false,
+    "isAllergy": false
+  },
+  {
+    "icdCode": {
+      "code": "1A10",
+      "version": "11"
+    },
+    "icdUri": "http://id.who.int/icd/entity/1642556936",
+    "title": "Foodborne staphylococcal intoxication",
+    "titleAr": null,
+    "isGenetic": false,
+    "isChronic": false,
+    "isAllergy": false
+  },
+  {
+    "icdCode": {
+      "code": "1A11",
+      "version": "11"
+    },
+    "icdUri": "http://id.who.int/icd/entity/78422942",
+    "title": "Botulism",
+    "titleAr": null,
+    "isGenetic": false,
+    "isChronic": false,
+    "isAllergy": false
+  },
+  {
+    "icdCode": {
+      "code": "1A11.0",
+      "version": "11"
+    },
+    "icdUri": "http://id.who.int/icd/entity/2033726602",
+    "title": "Foodborne intoxication by botulinum toxin",
+    "titleAr": null,
+    "isGenetic": false,
+    "isChronic": false,
+    "isAllergy": false
+  },
+  {
+    "icdCode": {
+      "code": "1A11.1",
+      "version": "11"
+    },
+    "icdUri": "http://id.who.int/icd/entity/1393712712",
+    "title": "Other forms of botulism",
+    "titleAr": null,
+    "isGenetic": false,
+    "isChronic": false,
+    "isAllergy": false
+  },
+  {
+    "icdCode": {
+      "code": "1A12",
+      "version": "11"
+    },
+    "icdUri": "http://id.who.int/icd/entity/1879176035",
+    "title": "Foodborne Clostridium perfringens intoxication",
+    "titleAr": null,
+    "isGenetic": false,
+    "isChronic": false,
+    "isAllergy": false
+  },
+  {
+    "icdCode": {
+      "code": "1A13",
+      "version": "11"
+    },
+    "icdUri": "http://id.who.int/icd/entity/1722068323",
+    "title": "Foodborne Bacillus cereus intoxication",
+    "titleAr": null,
+    "isGenetic": false,
+    "isChronic": false,
+    "isAllergy": false
+  },
+  {
+    "icdCode": {
+      "code": "1A20",
+      "version": "11"
+    },
+    "icdUri": "http://id.who.int/icd/entity/749414717",
+    "title": "Enteritis due to Adenovirus",
+    "titleAr": null,
+    "isGenetic": false,
+    "isChronic": false,
+    "isAllergy": false
+  },
+  {
+    "icdCode": {
+      "code": "1A21",
+      "version": "11"
+    },
+    "icdUri": "http://id.who.int/icd/entity/1185210745",
+    "title": "Gastroenteritis due to Astrovirus",
+    "titleAr": null,
+    "isGenetic": false,
+    "isChronic": false,
+    "isAllergy": false
+  },
+  {
+    "icdCode": {
+      "code": "1A22",
+      "version": "11"
+    },
+    "icdUri": "http://id.who.int/icd/entity/840750347",
+    "title": "Gastroenteritis due to Rotavirus",
+    "titleAr": null,
+    "isGenetic": false,
+    "isChronic": false,
+    "isAllergy": false
+  },
+  {
+    "icdCode": {
+      "code": "1A23",
+      "version": "11"
+    },
+    "icdUri": "http://id.who.int/icd/entity/1465325727",
+    "title": "Enteritis due to Norovirus",
+    "titleAr": null,
+    "isGenetic": false,
+    "isChronic": false,
+    "isAllergy": false
+  },
+  {
+    "icdCode": {
+      "code": "1A24",
+      "version": "11"
+    },
+    "icdUri": "http://id.who.int/icd/entity/1519125035",
+    "title": "Intestinal infections due to Cytomegalovirus",
+    "titleAr": null,
+    "isGenetic": false,
+    "isChronic": false,
+    "isAllergy": false
+  },
+  {
+    "icdCode": {
+      "code": "1A30",
+      "version": "11"
+    },
+    "icdUri": "http://id.who.int/icd/entity/2090337975",
+    "title": "Infections due to Balantidium coli",
+    "titleAr": null,
+    "isGenetic": false,
+    "isChronic": false,
+    "isAllergy": false
+  },
+  {
+    "icdCode": {
+      "code": "1A31",
+      "version": "11"
+    },
+    "icdUri": "http://id.who.int/icd/entity/433310499",
+    "title": "Giardiasis",
+    "titleAr": null,
+    "isGenetic": false,
+    "isChronic": false,
+    "isAllergy": false
+  },
+  {
+    "icdCode": {
+      "code": "1A32",
+      "version": "11"
+    },
+    "icdUri": "http://id.who.int/icd/entity/1837013982",
+    "title": "Cryptosporidiosis",
+    "titleAr": null,
+    "isGenetic": false,
+    "isChronic": false,
+    "isAllergy": false
+  },
+  {
+    "icdCode": {
+      "code": "1A33",
+      "version": "11"
+    },
+    "icdUri": "http://id.who.int/icd/entity/137713224",
+    "title": "Cystoisosporiasis",
+    "titleAr": null,
+    "isGenetic": false,
+    "isChronic": false,
+    "isAllergy": false
+  },
+  {
+    "icdCode": {
+      "code": "1A33.0",
+      "version": "11"
+    },
+    "icdUri": "http://id.who.int/icd/entity/1058992628",
+    "title": "Cystoisosporiasis of small intestine",
+    "titleAr": null,
+    "isGenetic": false,
+    "isChronic": false,
+    "isAllergy": false
+  },
+  {
+    "icdCode": {
+      "code": "1A33.1",
+      "version": "11"
+    },
+    "icdUri": "http://id.who.int/icd/entity/883510242",
+    "title": "Cystoisosporiasis of colon",
+    "titleAr": null,
+    "isGenetic": false,
+    "isChronic": false,
+    "isAllergy": false
+  },
+  {
+    "icdCode": {
+      "code": "1A34",
+      "version": "11"
+    },
+    "icdUri": "http://id.who.int/icd/entity/261748740",
+    "title": "Sarcocystosis",
+    "titleAr": null,
+    "isGenetic": false,
+    "isChronic": false,
+    "isAllergy": false
+  },
+  {
+    "icdCode": {
+      "code": "1A35",
+      "version": "11"
+    },
+    "icdUri": "http://id.who.int/icd/entity/1184241320",
+    "title": "Blastocystosis",
+    "titleAr": null,
+    "isGenetic": false,
+    "isChronic": false,
+    "isAllergy": false
+  },
+  {
+    "icdCode": {
+      "code": "1A36",
+      "version": "11"
+    },
+    "icdUri": "http://id.who.int/icd/entity/435671752",
+    "title": "Amoebiasis",
+    "titleAr": null,
+    "isGenetic": false,
+    "isChronic": false,
+    "isAllergy": false
+  },
+  {
+    "icdCode": {
+      "code": "1A36.0",
+      "version": "11"
+    },
+    "icdUri": "http://id.who.int/icd/entity/1727029934",
+    "title": "Intestinal infections due to Entamoeba",
+    "titleAr": null,
+    "isGenetic": false,
+    "isChronic": false,
+    "isAllergy": false
+  },
+  {
+    "icdCode": {
+      "code": "1A36.00",
+      "version": "11"
+    },
+    "icdUri": "http://id.who.int/icd/entity/1616956984",
+    "title": "Acute amoebiasis",
+    "titleAr": null,
+    "isGenetic": false,
+    "isChronic": false,
+    "isAllergy": false
+  },
+  {
+    "icdCode": {
+      "code": "1A36.01",
+      "version": "11"
+    },
+    "icdUri": "http://id.who.int/icd/entity/349019849",
+    "title": "Amoeboma of intestine",
+    "titleAr": null,
+    "isGenetic": false,
+    "isChronic": false,
+    "isAllergy": false
+  },
+  {
+    "icdCode": {
+      "code": "1A36.1",
+      "version": "11"
+    },
+    "icdUri": "http://id.who.int/icd/entity/1777228366",
+    "title": "Extraintestinal infections due to Entamoeba",
+    "titleAr": null,
+    "isGenetic": false,
+    "isChronic": false,
+    "isAllergy": false
+  },
+  {
+    "icdCode": {
+      "code": "1A36.10",
+      "version": "11"
+    },
+    "icdUri": "http://id.who.int/icd/entity/1730350429",
+    "title": "Amoebic liver abscess",
+    "titleAr": null,
+    "isGenetic": false,
+    "isChronic": false,
+    "isAllergy": false
+  },
+  {
+    "icdCode": {
+      "code": "1A36.11",
+      "version": "11"
+    },
+    "icdUri": "http://id.who.int/icd/entity/40419529",
+    "title": "Amoebic lung abscess",
+    "titleAr": null,
+    "isGenetic": false,
+    "isChronic": false,
+    "isAllergy": false
+  },
+  {
+    "icdCode": {
+      "code": "1A36.12",
+      "version": "11"
+    },
+    "icdUri": "http://id.who.int/icd/entity/328097188",
+    "title": "Cutaneous amoebiasis",
+    "titleAr": null,
+    "isGenetic": false,
+    "isChronic": false,
+    "isAllergy": false
+  },
+  {
+    "icdCode": {
+      "code": "1A40",
+      "version": "11"
+    },
+    "icdUri": "http://id.who.int/icd/entity/1688127370",
+    "title": "Gastroenteritis or colitis without specification of infectious agent",
+    "titleAr": null,
+    "isGenetic": false,
+    "isChronic": false,
+    "isAllergy": false
+  },
+  {
+    "icdCode": {
+      "code": "1A40.0",
+      "version": "11"
+    },
+    "icdUri": "http://id.who.int/icd/entity/1160271562",
+    "title": "Gastroenteritis or colitis without specification of origin",
+    "titleAr": null,
+    "isGenetic": false,
+    "isChronic": false,
+    "isAllergy": false
+  },
+  {
+    "icdCode": {
+      "code": "1A60",
+      "version": "11"
+    },
+    "icdUri": "http://id.who.int/icd/entity/587996426",
+    "title": "Congenital syphilis",
+    "titleAr": null,
+    "isGenetic": false,
+    "isChronic": false,
+    "isAllergy": false
+  },
+  {
+    "icdCode": {
+      "code": "1A60.0",
+      "version": "11"
+    },
+    "icdUri": "http://id.who.int/icd/entity/395565060",
+    "title": "Early congenital syphilis, symptomatic",
+    "titleAr": null,
+    "isGenetic": false,
+    "isChronic": false,
+    "isAllergy": false
+  },
+  {
+    "icdCode": {
+      "code": "1A60.1",
+      "version": "11"
+    },
+    "icdUri": "http://id.who.int/icd/entity/1926763926",
+    "title": "Early congenital syphilis, latent",
+    "titleAr": null,
+    "isGenetic": false,
+    "isChronic": false,
+    "isAllergy": false
+  },
+  {
+    "icdCode": {
+      "code": "1A60.2",
+      "version": "11"
+    },
+    "icdUri": "http://id.who.int/icd/entity/1665042685",
+    "title": "Late congenital syphilitic oculopathy",
+    "titleAr": null,
+    "isGenetic": false,
+    "isChronic": false,
+    "isAllergy": false
+  },
+  {
+    "icdCode": {
+      "code": "1A60.3",
+      "version": "11"
+    },
+    "icdUri": "http://id.who.int/icd/entity/282073961",
+    "title": "Late congenital neurosyphilis",
+    "titleAr": null,
+    "isGenetic": false,
+    "isChronic": false,
+    "isAllergy": false
+  },
+  {
+    "icdCode": {
+      "code": "1A60.4",
+      "version": "11"
+    },
+    "icdUri": "http://id.who.int/icd/entity/2132718683",
+    "title": "Other late congenital syphilis, symptomatic",
+    "titleAr": null,
+    "isGenetic": false,
+    "isChronic": false,
+    "isAllergy": false
+  },
+  {
+    "icdCode": {
+      "code": "1A60.5",
+      "version": "11"
+    },
+    "icdUri": "http://id.who.int/icd/entity/20350466",
+    "title": "Late congenital syphilis, latent",
+    "titleAr": null,
+    "isGenetic": false,
+    "isChronic": false,
+    "isAllergy": false
+  },
+  {
+    "icdCode": {
+      "code": "1A61",
+      "version": "11"
+    },
+    "icdUri": "http://id.who.int/icd/entity/1179111584",
+    "title": "Early syphilis",
+    "titleAr": null,
+    "isGenetic": false,
+    "isChronic": false,
+    "isAllergy": false
+  },
+  {
+    "icdCode": {
+      "code": "1A61.0",
+      "version": "11"
+    },
+    "icdUri": "http://id.who.int/icd/entity/191565955",
+    "title": "Primary genital syphilis",
+    "titleAr": null,
+    "isGenetic": false,
+    "isChronic": false,
+    "isAllergy": false
+  },
+  {
+    "icdCode": {
+      "code": "1A61.1",
+      "version": "11"
+    },
+    "icdUri": "http://id.who.int/icd/entity/1847647511",
+    "title": "Primary anal syphilis",
+    "titleAr": null,
+    "isGenetic": false,
+    "isChronic": false,
+    "isAllergy": false
+  },
+  {
+    "icdCode": {
+      "code": "1A61.2",
+      "version": "11"
+    },
+    "icdUri": "http://id.who.int/icd/entity/445484522",
+    "title": "Primary syphilis of other sites",
+    "titleAr": null,
+    "isGenetic": false,
+    "isChronic": false,
+    "isAllergy": false
+  },
+  {
+    "icdCode": {
+      "code": "1A61.3",
+      "version": "11"
+    },
+    "icdUri": "http://id.who.int/icd/entity/2143699068",
+    "title": "Secondary syphilis of skin or mucous membranes",
+    "titleAr": null,
+    "isGenetic": false,
+    "isChronic": false,
+    "isAllergy": false
+  },
+  {
+    "icdCode": {
+      "code": "1A61.4",
+      "version": "11"
+    },
+    "icdUri": "http://id.who.int/icd/entity/204002280",
+    "title": "Secondary syphilis of other sites",
+    "titleAr": null,
+    "isGenetic": false,
+    "isChronic": false,
+    "isAllergy": false
+  },
+  {
+    "icdCode": {
+      "code": "1A61.5",
+      "version": "11"
+    },
+    "icdUri": "http://id.who.int/icd/entity/1768103550",
+    "title": "Latent early syphilis",
+    "titleAr": null,
+    "isGenetic": false,
+    "isChronic": false,
+    "isAllergy": false
+  },
+  {
+    "icdCode": {
+      "code": "1A62",
+      "version": "11"
+    },
+    "icdUri": "http://id.who.int/icd/entity/854229089",
+    "title": "Late syphilis",
+    "titleAr": null,
+    "isGenetic": false,
+    "isChronic": false,
+    "isAllergy": false
+  },
+  {
+    "icdCode": {
+      "code": "1A62.0",
+      "version": "11"
+    },
+    "icdUri": "http://id.who.int/icd/entity/2118246468",
+    "title": "Neurosyphilis",
+    "titleAr": null,
+    "isGenetic": false,
+    "isChronic": false,
+    "isAllergy": false
+  },
+  {
+    "icdCode": {
+      "code": "1A62.00",
+      "version": "11"
+    },
+    "icdUri": "http://id.who.int/icd/entity/453651926",
+    "title": "Asymptomatic neurosyphilis",
+    "titleAr": null,
+    "isGenetic": false,
+    "isChronic": false,
+    "isAllergy": false
+  },
+  {
+    "icdCode": {
+      "code": "1A62.01",
+      "version": "11"
+    },
+    "icdUri": "http://id.who.int/icd/entity/1873247529",
+    "title": "Symptomatic late neurosyphilis",
+    "titleAr": null,
+    "isGenetic": false,
+    "isChronic": false,
+    "isAllergy": false
+  },
+  {
+    "icdCode": {
+      "code": "1A62.1",
+      "version": "11"
+    },
+    "icdUri": "http://id.who.int/icd/entity/183283901",
+    "title": "Cardiovascular late syphilis",
+    "titleAr": null,
+    "isGenetic": false,
+    "isChronic": false,
+    "isAllergy": false
+  },
+  {
+    "icdCode": {
+      "code": "1A62.2",
+      "version": "11"
+    },
+    "icdUri": "http://id.who.int/icd/entity/1883423833",
+    "title": "Symptomatic late syphilis of other sites",
+    "titleAr": null,
+    "isGenetic": false,
+    "isChronic": false,
+    "isAllergy": false
+  },
+  {
+    "icdCode": {
+      "code": "1A62.20",
+      "version": "11"
+    },
+    "icdUri": "http://id.who.int/icd/entity/551528014",
+    "title": "Ocular late syphilis",
+    "titleAr": null,
+    "isGenetic": false,
+    "isChronic": false,
+    "isAllergy": false
+  },
+  {
+    "icdCode": {
+      "code": "1A62.21",
+      "version": "11"
+    },
+    "icdUri": "http://id.who.int/icd/entity/2063826056",
+    "title": "Late syphilis involving the musculoskeletal system",
+    "titleAr": null,
+    "isGenetic": false,
+    "isChronic": false,
+    "isAllergy": false
+  },
+  {
+    "icdCode": {
+      "code": "1A62.22",
+      "version": "11"
+    },
+    "icdUri": "http://id.who.int/icd/entity/1934471301",
+    "title": "Late syphilis of skin or mucous membranes",
+    "titleAr": null,
+    "isGenetic": false,
+    "isChronic": false,
+    "isAllergy": false
+  },
+  {
+    "icdCode": {
+      "code": "1A63",
+      "version": "11"
+    },
+    "icdUri": "http://id.who.int/icd/entity/370440252",
+    "title": "Latent syphilis, unspecified as early or late",
+    "titleAr": null,
+    "isGenetic": false,
+    "isChronic": false,
+    "isAllergy": false
+  },
+  {
+    "icdCode": {
+      "code": "1A70",
+      "version": "11"
+    },
+    "icdUri": "http://id.who.int/icd/entity/1977691885",
+    "title": "Gonococcal genitourinary infection",
+    "titleAr": null,
+    "isGenetic": false,
+    "isChronic": false,
+    "isAllergy": false
+  },
+  {
+    "icdCode": {
+      "code": "1A70.0",
+      "version": "11"
+    },
+    "icdUri": "http://id.who.int/icd/entity/762120574",
+    "title": "Gonococcal infection of lower genitourinary tract without periurethral or accessory gland abscess",
+    "titleAr": null,
+    "isGenetic": false,
+    "isChronic": false,
+    "isAllergy": false
+  },
+  {
+    "icdCode": {
+      "code": "1A70.00",
+      "version": "11"
+    },
+    "icdUri": "http://id.who.int/icd/entity/1112016389",
+    "title": "Gonorrhoea of penis",
+    "titleAr": null,
+    "isGenetic": false,
+    "isChronic": false,
+    "isAllergy": false
+  },
+  {
+    "icdCode": {
+      "code": "1A70.1",
+      "version": "11"
+    },
+    "icdUri": "http://id.who.int/icd/entity/1210500328",
+    "title": "Gonococcal infection of lower genitourinary tract with periurethral or accessory gland abscess",
+    "titleAr": null,
+    "isGenetic": false,
+    "isChronic": false,
+    "isAllergy": false
+  }
+]
