@@ -26,7 +26,13 @@ public static class NotificationCursor
 {
     public static string Encode(DateTime createdAtIndexUtc, int notificationId)
     {
-        var payload = $"{createdAtIndexUtc:O}|{notificationId}";
+        // Rows read back from SQL Server arrive with Kind = Unspecified (datetime2
+        // stores no timezone), but F6 keeps every instant in UTC. Force the UTC
+        // kind so the "O" format always emits the "Z" suffix Decode requires.
+        var utc = createdAtIndexUtc.Kind == DateTimeKind.Utc
+            ? createdAtIndexUtc
+            : DateTime.SpecifyKind(createdAtIndexUtc, DateTimeKind.Utc);
+        var payload = $"{utc:O}|{notificationId}";
         return Base64Url.EncodeToString(Encoding.UTF8.GetBytes(payload));
     }
 
