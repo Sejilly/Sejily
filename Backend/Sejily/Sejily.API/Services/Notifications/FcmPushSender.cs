@@ -84,7 +84,7 @@ public class FcmPushSender : IPushSender
     internal static PushSendResult Map(MessagingErrorCode? errorCode) => errorCode switch
     {
         MessagingErrorCode.Unregistered => PushSendResult.InvalidToken,
-        MessagingErrorCode.InvalidArguments => PushSendResult.InvalidToken,
+        MessagingErrorCode.InvalidArgument => PushSendResult.InvalidToken,
         _ => PushSendResult.Failed
     };
 
