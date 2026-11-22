@@ -3,9 +3,9 @@ using Sejily.API.DTOs.Notifications;
 namespace Sejily.API.Services.Notifications;
 
 /// <summary>
-/// Result of a notification update (read / delete). NotFound covers "not mine",
-/// unknown id and already-deleted — the controller reports them all as 404 so
-/// ids cannot be probed (spec section 5).
+/// Result of marking a notification as read or deleting it.
+/// NotFound is used for three cases: the id doesn't exist, it belongs to someone else, or it was
+/// already deleted. All three are answered with 404 so nobody can guess other users' ids.
 /// </summary>
 public enum NotificationUpdateResult
 {
@@ -14,15 +14,15 @@ public enum NotificationUpdateResult
 }
 
 /// <summary>
-/// T07/T08 read-side queries for the current user's notifications (plan section 3.5).
-/// "Current user" = GetLoggedInUserId(); every query filters by RecipientUserId and
-/// DeletedAt == null. limit/cursor validation happens in the controller.
+/// Reads and updates the CURRENT user's notifications. Every method filters by RecipientUserId
+/// (only my notifications) and DeletedAt == null (ignore deleted ones).
 /// </summary>
 public interface INotificationQueries
 {
     /// <summary>
-    /// Newest-first page (Created DESC, Id DESC, plan decision D6), soft-deleted
-    /// rows always excluded. unreadOnly keeps unread rows only.
+    /// Returns one page of notifications, newest first. "cursor" is the bookmark returned by the
+    /// previous page (null for the first page). Deleted notifications never appear.
+    /// If unreadOnly is true, only unread notifications are returned.
     /// </summary>
     Task<NotificationListResponse> ListAsync(
         int userId,
@@ -35,8 +35,8 @@ public interface INotificationQueries
     Task<int> CountUnreadAsync(int userId, CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Marks ONE notification as read; repeat-safe (spec acceptance criterion 4).
-    /// Returns NotFound when the row is not the user's, unknown or soft-deleted.
+    /// Marks ONE notification as read. Calling it twice is fine.
+    /// Returns NotFound if it isn't mine, doesn't exist, or was deleted.
     /// </summary>
     Task<NotificationUpdateResult> MarkReadAsync(
         int userId, int notificationId, CancellationToken cancellationToken = default);
@@ -45,8 +45,8 @@ public interface INotificationQueries
     Task MarkAllReadAsync(int userId, CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Soft delete (DeletedAt only; the request is never touched, acceptance
-    /// criterion 5). Already-deleted rows return NotFound (open question 2 default).
+    /// Soft delete: only sets DeletedAt. The row stays in the table and the access request is not touched.
+    /// Returns NotFound if it isn't mine, doesn't exist, or is already deleted.
     /// </summary>
     Task<NotificationUpdateResult> DeleteAsync(
         int userId, int notificationId, CancellationToken cancellationToken = default);

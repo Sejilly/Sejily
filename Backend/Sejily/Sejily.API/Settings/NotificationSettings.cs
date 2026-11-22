@@ -1,10 +1,7 @@
 namespace Sejily.API.Settings;
 
 /// <summary>
-/// F6 notifications settings (T02). Bound from the "Notifications" configuration
-/// section. Time constants that belong to the request/access statuses themselves
-/// (48h, 24h, 90s, 3 months) live with the shared status expression (Dev 1 / Dev 2),
-/// NOT here; this class only holds limits for the notifications/devices feature.
+/// Limits for the notifications feature, read from the "Notifications" section of appsettings.json.
 /// </summary>
 public class NotificationSettings
 {
@@ -16,6 +13,6 @@ public class NotificationSettings
     /// <summary>Maximum accepted page size; larger requests return 400.</summary>
     public int MaxLimit { get; set; } = 50;
 
-    /// <summary>Maximum FCM device-token length (RegisterDeviceRequest token max).</summary>
+    /// <summary>Maximum length of a device token (same as the DeviceTokens.Token column).</summary>
     public int MaxTokenLength { get; set; } = 512;
 }

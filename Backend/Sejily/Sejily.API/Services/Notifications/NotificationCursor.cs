@@ -5,8 +5,8 @@ using System.Text;
 namespace Sejily.API.Services.Notifications;
 
 /// <summary>
-/// Thrown when a notification list cursor cannot be decoded (missing, garbage or
-/// tampered). Controllers map it to 400 ProblemDetails (spec section 5).
+/// Thrown when the cursor sent by the app can't be understood (empty, random text, or edited).
+/// The controller turns it into a 400 Bad Request.
 /// </summary>
 public class InvalidNotificationCursorException : Exception
 {
@@ -16,19 +16,20 @@ public class InvalidNotificationCursorException : Exception
 }
 
 /// <summary>
-/// T06: opaque pagination cursor (plan decision D6).
-/// Wire format: Base64Url of "{CreatedAt:O}|{NotificationId}", e.g.
-/// "2026-11-17T09:30:00.0000000Z|1042". The client never parses it; the list
-/// query decodes it into the keyset predicate
-/// (CreatedAt &lt; c) OR (CreatedAt = c AND Id &lt; id), ordered CreatedAt DESC, Id DESC.
+/// A cursor is a bookmark for paging. Instead of "page 2", the app says "continue after the last
+/// notification I saw". It is made of that notification's time and id.
+///
+/// Example: the last notification seen was id 1042, created at 2026-11-17 09:30 UTC.
+/// Encode turns that into the text "2026-11-17T09:30:00.0000000Z|1042" and then into Base64Url
+/// (letters and digits only), so the app treats it as an opaque string.
+/// Decode does the reverse. The id is included because two notifications can share the same time.
 /// </summary>
 public static class NotificationCursor
 {
     public static string Encode(DateTime createdAtIndexUtc, int notificationId)
     {
-        // Rows read back from SQL Server arrive with Kind = Unspecified (datetime2
-        // stores no timezone), but F6 keeps every instant in UTC. Force the UTC
-        // kind so the "O" format always emits the "Z" suffix Decode requires.
+        // Dates read from SQL Server carry no timezone flag. We always store UTC, so mark it as UTC;
+        // otherwise the text would miss the trailing "Z" that Decode requires.
         var utc = createdAtIndexUtc.Kind == DateTimeKind.Utc
             ? createdAtIndexUtc
             : DateTime.SpecifyKind(createdAtIndexUtc, DateTimeKind.Utc);

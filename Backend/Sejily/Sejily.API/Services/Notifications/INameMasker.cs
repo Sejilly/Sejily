@@ -1,11 +1,10 @@
 namespace Sejily.API.Services.Notifications;
 
 /// <summary>
-/// Shared name masking used when a patient's name is shown to a doctor
-/// (spec section 4; doctor names shown to patients stay real). The real
-/// masking rule is owned by Dev 1 (see spec open question 3); this
-/// abstraction exists so Dev 3 code (T07 queries, push dispatcher) can be
-/// written against it before Dev 1's implementation lands.
+/// Hides part of a patient's name when it is shown to a doctor. The exact format is decided by the
+/// real implementation, which belongs to the access-request feature; this interface lets the
+/// notification code use it without knowing how it works.
+/// Doctor names shown to patients are never masked.
 /// </summary>
 public interface INameMasker
 {

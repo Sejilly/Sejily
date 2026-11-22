@@ -7,12 +7,10 @@ using Microsoft.Extensions.Logging;
 namespace Sejily.API.Services.Notifications;
 
 /// <summary>
-/// T20: real FCM sender (plan decision D7). Uses FirebaseAdmin with the
-/// service-account JSON from `Firebase:ServiceAccountPath` (user-secrets / env
-/// — NEVER committed). Registered INSTEAD of NullPushSender only when the file
-/// exists (Program.cs factory). Spec criterion 10 lives here: FCM errors
-/// Unregistered / InvalidArguments map to InvalidToken so the dispatcher
-/// deletes the device token.
+/// Sends a push notification to one phone through Firebase Cloud Messaging (FCM).
+/// It connects to Firebase with the service-account JSON file whose path is stored in the
+/// configuration key "Firebase:ServiceAccountPath" (kept in user-secrets, never committed to git).
+/// Program.cs uses this class only when that file exists; otherwise it uses NullPushSender.
 /// </summary>
 public class FcmPushSender : IPushSender
 {
@@ -23,8 +21,8 @@ public class FcmPushSender : IPushSender
 
     private readonly ILogger<FcmPushSender> _logger;
 
-    // FirebaseAdmin allows ONE FirebaseApp per process per name; the first
-    // constructed sender initializes it and later senders just reuse it.
+    // Firebase allows only one app per name in the whole process, so the first sender creates it
+    // and every later sender reuses it.
     private static readonly object InitLock = new();
    private static FirebaseApp? _app;
 
@@ -34,7 +32,7 @@ public class FcmPushSender : IPushSender
         EnsureAppInitialized(
             configuration[ConfigKey]
             ?? throw new InvalidOperationException(
-                $"{ConfigKey} is not configured; use NullPushSender (decision D7)."));
+                $"{ConfigKey} is not configured; use NullPushSender instead."));
     }
 
     public async Task<PushSendResult> SendAsync(
@@ -46,15 +44,15 @@ public class FcmPushSender : IPushSender
         {
             Token = deviceToken,
             Notification = new Notification { Title = title, Body = body },
-            // Spec section 8: notificationId, type, requestId (all strings). The
-            // mobile app reads requestId from here to open the request page.
+            // Extra key/value data sent with the push. The mobile app reads "requestId" from here to open
+            // the right request page when the user taps the notification.
             Data = new Dictionary<string, string>(data)
         };
 
         try
         {
-            // The app is created with a NAME, so FirebaseMessaging.DefaultInstance
-            // (the unnamed [DEFAULT] app) would be null. Always use the named app.
+            // Use the app we created by name. FirebaseMessaging.DefaultInstance would look for an unnamed
+            // default app, which we never create.
             await FirebaseMessaging.GetMessaging(_app!).SendAsync(message, cancellationToken);
             return PushSendResult.Sent;
         }
@@ -71,8 +69,8 @@ public class FcmPushSender : IPushSender
             }
             else
             {
-                // Transient (quota, outage) — keep the token; REST is the source
-                // of truth and there are no retries in v1 (plan section 3.3).
+                // A temporary problem (Firebase outage, quota...). Keep the token and only log it;
+                // the notification is still available through the REST API.
                 _logger.LogWarning(ex,
                     "FCM send failed ({ErrorCode}); keeping the token.",
                     ex.MessagingErrorCode);
@@ -83,10 +81,11 @@ public class FcmPushSender : IPushSender
     }
 
     /// <summary>
-    /// Error mapping (T20): ONLY Unregistered means the token is dead (criterion 10).
-    /// InvalidArgument can also mean a malformed message (empty body, bad data), so it
-    /// must NOT delete a healthy token: it is treated as a failure and logged.
-    /// Internal static so unit tests cover the mapping without real Firebase calls.
+    /// Decides what to do with a token after Firebase rejects it.
+    /// Only "Unregistered" (for example the app was uninstalled) means the token is dead and should be
+    /// deleted. "InvalidArgument" is NOT treated that way, because it can also mean our message was
+    /// malformed, and we must not delete healthy tokens because of that.
+    /// Internal so tests can call it without contacting Firebase.
     /// </summary>
     internal static PushSendResult Map(MessagingErrorCode? errorCode) => errorCode switch
     {

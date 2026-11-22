@@ -6,11 +6,12 @@ using Microsoft.Extensions.Logging;
 namespace Sejily.API.Services.Notifications;
 
 /// <summary>
-/// T16: releases pending pushes on transaction commit (plan decision D3).
-/// Registered as a SCOPED service and resolved inside the AddDbContext lambda,
-/// so its PendingPushCollector is the SAME instance the NotificationService of
-/// the current request used. Commit => one PushJob per saved row; rollback =>
-/// the collector is cleared and nothing is enqueued.
+/// An EF Core "interceptor": code that EF calls automatically when something happens to a transaction.
+/// Here we listen for COMMIT and ROLLBACK:
+///  - Commit: the data is safely saved, so move the waiting pushes into the queue to be sent.
+///  - Rollback: the data was cancelled, so throw the waiting pushes away (no push is sent).
+/// This is why the code that creates notifications never has to send pushes itself.
+/// (A save that needs no transaction is handled by PushOnSaveInterceptor.)
 /// </summary>
 public class PushOnCommitInterceptor : DbTransactionInterceptor
 {
@@ -56,7 +57,7 @@ public class PushOnCommitInterceptor : DbTransactionInterceptor
         {
             if (notification.NotificationId == 0)
             {
-                // The row was never saved (plan section 3.2) — nothing to push.
+                // This row was never saved (it has no Id yet), so there is nothing to push.
                 _logger.LogWarning(
                     "Skipping push for a {Type} notification that was never saved (Id == 0).",
                     notification.Type);

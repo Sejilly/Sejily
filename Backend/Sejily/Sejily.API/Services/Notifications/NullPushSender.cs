@@ -3,10 +3,9 @@ using Microsoft.Extensions.Logging;
 namespace Sejily.API.Services.Notifications;
 
 /// <summary>
-/// T17: default sender used when Firebase is not configured (plan decision D7):
-/// local dev and tests run without push, and every request still succeeds
-/// (spec criterion 9). T20 swaps this registration for FcmPushSender only when
-/// the service account exists.
+/// Stand-in used when Firebase is not set up (for example on a developer's machine).
+/// It sends nothing and only writes a warning in the log, so the API still works.
+/// Program.cs uses FcmPushSender instead when the Firebase service-account file exists.
 /// </summary>
 public class NullPushSender : IPushSender
 {

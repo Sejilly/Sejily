@@ -9,8 +9,8 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>620c2674-96a5-4493-9ed5-9a95a3244ace</UserSecretsId>
-    <!-- Review fix 4: a new NotificationType value must break the build if the
-         composer switches are not extended (CS8509 is otherwise only a warning). -->
+    <!-- If a new NotificationType value is added and NotificationComposer is not updated,
+         the build fails (CS8509 is normally only a warning). -->
     <WarningsAsErrors>CS8509</WarningsAsErrors>
   </PropertyGroup>
 

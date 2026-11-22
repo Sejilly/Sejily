@@ -7,10 +7,9 @@ using Sejily.API.Models.Enums.Notifications;
 namespace Sejily.API.Services.Notifications;
 
 /// <summary>
-/// T11: upsert/move/delete per plan section 3.6, including the unique-index race.
-/// The unique index is on Token, so two simultaneous registers of one token
-/// cannot both insert — the loser catches DbUpdateException, reloads and moves
-/// the winner's row to its own user.
+/// Saves and removes the "addresses" (FCM tokens) we use to send push notifications.
+/// A token identifies one phone or browser. One user can have many tokens (phone + tablet),
+/// but a token belongs to only ONE user at a time.
 /// </summary>
 public class DeviceTokenService : IDeviceTokenService
 {
@@ -48,11 +47,10 @@ public class DeviceTokenService : IDeviceTokenService
             }
             catch (DbUpdateException ex) when (IsUniqueIndexViolation(ex))
             {
-                // Unique-index race (plan section 3.6): another request inserted
-                // the same token first. Reload (detached, so we see their row),
-                // then move it to the current user like the "another user" case.
-                // Review fix 5: ONLY a unique-index violation is treated as the
-                // race; any other failure (e.g. FK violation) is rethrown as-is.
+                // Two requests registered the same new token at the same moment and the other one won
+                // (the unique index on Token rejected our insert). Reload the row that now exists and
+                // give it to the current user. Only this "duplicate key" error is handled here;
+                // any other database error is thrown again.
                 _db.ChangeTracker.Clear();
                 var raced = await _db.DeviceTokens
                     .SingleAsync(d => d.Token == token, cancellationToken);
@@ -66,8 +64,8 @@ public class DeviceTokenService : IDeviceTokenService
 
         if (existing.UserId != userId)
         {
-            // Shared phone after logout/login: the token moves to the current
-            // user (spec section 6, criterion 11).
+            // This token was registered by another user. Example: a shared phone where Mona logged out and
+            // Ahmed logged in. Move the token to the current user so Mona's notifications stop arriving here.
             existing.UserId = userId;
         }
 
@@ -84,8 +82,8 @@ public class DeviceTokenService : IDeviceTokenService
 
         if (existing == null)
         {
-            // Absent or foreign: nothing to remove; the endpoint still returns 204
-            // (plan section 3.6).
+            // Nothing to remove (the token doesn't exist or belongs to someone else).
+            // That is fine: the endpoint still answers 204 (success).
             return;
         }
 
@@ -94,9 +92,9 @@ public class DeviceTokenService : IDeviceTokenService
     }
 
     /// <summary>
-    /// Review fix 5: true ONLY for a unique-index violation (SQL Server error
-    /// 2601 duplicate key row / 2627 duplicate key constraint) — the token race.
-    /// Any other failure (FK violation, timeout, …) must surface unchanged.
+    /// True only for "duplicate key" errors from SQL Server (error numbers 2601 and 2627), which
+    /// happen when two requests insert the same token at the same time.
+    /// Any other database error (timeout, foreign key...) must not be treated as this case.
     /// </summary>
     internal static bool IsUniqueIndexViolation(DbUpdateException ex) =>
         ex.InnerException is SqlException sql

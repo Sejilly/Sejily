@@ -8,13 +8,11 @@ using Sejily.API.Settings;
 
 namespace Sejily.API.Controllers;
 
-// T09: the five notification endpoints from spec section 5.
-//  - No role policy (plan decision D8): doctors AND patients/guardians call these;
-//    while acting as a dependent the notifications are still the logged-in
-//    guardian's (identity = GetLoggedInUserId()).
-//  - Data is always the current user's own; another user's id is reported as 404,
-//    never 403, so ids cannot be probed (spec section 5).
-//  - Errors use ProblemDetails (CLAUDE.md: new F6 endpoints use ProblemDetails).
+// The notification endpoints. Any logged-in user (doctor, patient or guardian) can call them, and
+// each user only ever sees their own notifications. We use GetLoggedInUserId(): when a guardian is
+// acting as a dependent, the notifications still belong to the guardian who actually logged in.
+// If a notification isn't yours we answer 404 (not 403), so nobody can discover other users' ids.
+// Errors are returned as ProblemDetails (the standard JSON error format).
 [ApiController]
 [Route("api/notifications")]
 [Authorize]
@@ -23,9 +21,7 @@ public class NotificationsController : ControllerBase
     private readonly INotificationQueries _queries;
     private readonly NotificationSettings _settings;
 
-    // Review fix 1: Program.cs registers NotificationSettings only via
-    // Configure<NotificationSettings>(...), so the resolvable type is
-    // IOptions<NotificationSettings> — inject that and read .Value.
+    // IOptions<NotificationSettings> gives us the values from the "Notifications" section of appsettings.json.
     public NotificationsController(
         INotificationQueries queries,
         IOptions<NotificationSettings> settingsOptions)
@@ -34,9 +30,8 @@ public class NotificationsController : ControllerBase
         _settings = settingsOptions.Value;
     }
 
-    // GET api/notifications?limit=20&cursor=&unreadOnly=false
-    // Newest first, excludes soft-deleted. limit defaults to DefaultLimit and must
-    // be within 1..MaxLimit (400 otherwise, spec section 5).
+    // GET api/notifications?limit=20&cursor=...&unreadOnly=false
+    // Newest first. limit must be between 1 and MaxLimit (400 otherwise). cursor is the bookmark from the previous page.
     [HttpGet]
     public async Task<IActionResult> List(
         [FromQuery] int? limit,
@@ -75,7 +70,7 @@ public class NotificationsController : ControllerBase
         return Ok(response);
     }
 
-    // GET api/notifications/unread-count — polled by the app every 30-60 s.
+    // GET api/notifications/unread-count: the app asks for this number every 30-60 seconds to show the badge.
     [HttpGet("unread-count")]
     public async Task<IActionResult> UnreadCount(CancellationToken cancellationToken)
     {
@@ -90,8 +85,7 @@ public class NotificationsController : ControllerBase
         });
     }
 
-    // POST api/notifications/{id}/read — marks ONE as read; safe to repeat (204).
-    // 404 when not mine / unknown / soft-deleted (never 403, spec section 5).
+    // POST api/notifications/{id}/read: marks one notification as read. Safe to call twice. 404 if it isn't yours.
     [HttpPost("{id}/read")]
     public async Task<IActionResult> MarkRead(int id, CancellationToken cancellationToken)
     {
@@ -106,8 +100,7 @@ public class NotificationsController : ControllerBase
             : NotFound();
     }
 
-    // POST api/notifications/read-all — marks ALL unread as read; safe to repeat,
-    // the counter becomes 0 (spec section 5).
+    // POST api/notifications/read-all: marks all your unread notifications as read. Safe to call twice.
     [HttpPost("read-all")]
     public async Task<IActionResult> MarkAllRead(CancellationToken cancellationToken)
     {
@@ -120,8 +113,7 @@ public class NotificationsController : ControllerBase
         return NoContent();
     }
 
-    // DELETE api/notifications/{id} — soft delete only; never touches the request
-    // (spec section 5). 404 when not mine / unknown / already deleted.
+    // DELETE api/notifications/{id}: soft delete (hides it; the access request is not affected). 404 if not found.
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id, CancellationToken cancellationToken)
     {

@@ -1,8 +1,8 @@
 namespace Sejily.API.DTOs.Notifications;
 
 /// <summary>
-/// GET /api/notifications response (spec section 5): items newest-first plus the
-/// opaque cursor for the next page; NextCursor is null when the list is finished.
+/// Response of GET /api/notifications: one page of notifications (newest first) and the cursor for
+/// the next page. NextCursor is null when there are no more pages.
 /// </summary>
 public class NotificationListResponse
 {

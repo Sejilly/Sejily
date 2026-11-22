@@ -7,11 +7,11 @@ using Sejily.API.Models.Enums.Notifications;
 namespace Sejily.API.Services.Notifications;
 
 /// <summary>
-/// T07: list query. ONE projection query fetches the notification plus the names
-/// needed for composition (plan section 3.5, no N+1); wording is composed in
-/// memory by NotificationComposer (plan decision D4). Paging is keyset-based
-/// (plan decision D6): (CreatedAt &lt; c) OR (CreatedAt = c AND Id &lt; id),
-/// ordered CreatedAt DESC, Id DESC, taking limit + 1 rows to detect the next page.
+/// Reads the current user's notifications for the REST endpoints.
+/// The list is fetched with ONE database query that also brings the names needed to write each
+/// title and body (doctor, patient, workplace); the text itself is then built in memory by
+/// NotificationComposer.
+/// Paging uses a cursor: "give me the notifications older than the last one I saw", newest first.
 /// </summary>
 public class NotificationQueries : INotificationQueries
 {
@@ -44,8 +44,7 @@ public class NotificationQueries : INotificationQueries
 
         if (!string.IsNullOrEmpty(cursor))
         {
-            // Invalid cursors throw InvalidNotificationCursorException; the
-            // controller maps it to 400 ProblemDetails (spec section 5).
+            // A bad cursor throws InvalidNotificationCursorException; the controller turns it into a 400.
             (var decodedCreatedAt, cursorId) = NotificationCursor.Decode(cursor);
             cursorCreatedAt = decodedCreatedAt;
         }
@@ -82,9 +81,8 @@ public class NotificationQueries : INotificationQueries
                 DoctorName = n.Request != null ? n.Request.Doctor.User.FullName : null,
                 DoctorSpecialization = n.Request != null ? n.Request.Doctor.Specialization : null,
                 WorkplaceName = n.Request != null ? n.Request.Workplace.Name : null,
-                // The record owner whose name is (masked and) shown in doctor-facing
-                // bodies: the request's recipient patient, or the dependent when the
-                // notification is about a guardian's dependent.
+                // The name of the patient the record belongs to (shown masked to doctors): the request's patient,
+                // or the dependent when this notification is about a guardian's dependent.
                 RecordOwnerName = n.Request != null
                     ? n.Request.RecipientPatient.User.FullName
                     : (n.SubjectPatient != null ? n.SubjectPatient.User.FullName : null),
@@ -111,9 +109,8 @@ public class NotificationQueries : INotificationQueries
             {
                 Type = row.Type,
                 RecipientRole = role,
-                // Reserved types (LabResult / GuardianLinked / MedicalVisit) have no
-                // request, so doctor/workplace data is absent; composer wording for
-                // those types never uses it.
+                // Notifications that are not tied to a request (LabResult, GuardianLinked, MedicalVisit) have no
+                // doctor or workplace data; their text never uses it.
                 DoctorName = row.DoctorName ?? string.Empty,
                 DoctorSpecialization = row.DoctorSpecialization ?? string.Empty,
                 MaskedPatientName = row.RecordOwnerName == null
@@ -131,19 +128,17 @@ public class NotificationQueries : INotificationQueries
                 Title = title,
                 Body = body,
                 IsRead = row.IsRead,
-                // Review fix 2: rows read from SQL Server arrive with Kind =
-                // Unspecified; force UTC so JSON serializes ISO-8601 with the
-                // "Z" suffix (spec section 4.1). The cursor does the same in
-                // NotificationCursor.Encode.
+                // SQL Server returns dates without a timezone flag. Mark it as UTC so the JSON ends with "Z"
+                // (example: 2026-11-17T09:30:00Z) and the app converts it to local time correctly.
                 CreatedAt = DateTime.SpecifyKind(row.CreatedAt, DateTimeKind.Utc),
                 RequestId = row.RequestId,
                 SubjectPatientId = row.SubjectPatientId
             });
         }
 
-        // The cursor points at the LAST row of this page; the next page continues
-        // strictly before it (keyset), so paging has no duplicates or gaps even if
-        // new notifications arrive between requests (spec acceptance criterion 2).
+        // The cursor points at the LAST item of this page; the next page continues right after it.
+        // Because it is based on time + id (not a page number), a notification that arrives between two
+        // requests can't cause duplicates or missing items.
         var last = rows.Count > 0 ? rows[^1] : null;
         var nextCursor = hasNextPage && last != null
             ? NotificationCursor.Encode(last.CreatedAt, last.NotificationId)
@@ -156,7 +151,7 @@ public class NotificationQueries : INotificationQueries
         };
     }
 
-    // ================= T08: unread-count / read / read-all / delete (plan 3.5) =================
+    // ---- unread count, mark as read, mark all as read, delete ----
 
     public Task<int> CountUnreadAsync(int userId, CancellationToken cancellationToken = default) =>
         _db.Notifications.CountAsync(
@@ -166,9 +161,8 @@ public class NotificationQueries : INotificationQueries
     public async Task<NotificationUpdateResult> MarkReadAsync(
         int userId, int notificationId, CancellationToken cancellationToken = default)
     {
-        // ExecuteUpdate touches 0 rows when the id is unknown, not mine, or already
-        // soft-deleted => NotFound (404 in the controller). Repeating read on an
-        // already-read row is safe: it just writes the same value (criterion 4).
+        // Updates the row directly in the database. If 0 rows changed, the id doesn't exist, isn't mine,
+        // or was deleted, so we answer "not found". Marking an already-read row again is harmless.
         var rows = await _db.Notifications
             .Where(n => n.NotificationId == notificationId
                      && n.RecipientUserId == userId
@@ -181,7 +175,7 @@ public class NotificationQueries : INotificationQueries
 
     public async Task MarkAllReadAsync(int userId, CancellationToken cancellationToken = default)
     {
-        // Repeat-safe: unread-only predicate, so a second call updates nothing.
+        // Only unread rows are selected, so running it twice changes nothing the second time.
         await _db.Notifications
             .Where(n => n.RecipientUserId == userId && n.DeletedAt == null && !n.IsRead)
             .ExecuteUpdateAsync(setters => setters.SetProperty(n => n.IsRead, true),
@@ -191,8 +185,8 @@ public class NotificationQueries : INotificationQueries
     public async Task<NotificationUpdateResult> DeleteAsync(
         int userId, int notificationId, CancellationToken cancellationToken = default)
     {
-        // Soft delete only (DeletedAt); the request is never touched (criterion 5).
-        // Already-deleted rows return NotFound (open question 2 default: 404).
+        // Soft delete: only fill DeletedAt. The row stays and the request is not touched.
+        // A row that is already deleted returns NotFound.
         var deletedAt = _timeProvider.GetUtcNow().UtcDateTime;
         var rows = await _db.Notifications
             .Where(n => n.NotificationId == notificationId
@@ -204,7 +198,7 @@ public class NotificationQueries : INotificationQueries
         return rows == 0 ? NotificationUpdateResult.NotFound : NotificationUpdateResult.Success;
     }
 
-    /// <summary>Projection row used inside ListAsync (kept private to this service).</summary>
+    /// <summary>The few values read from the database for one notification row.</summary>
     private sealed class NotificationRow
     {
         public int NotificationId { get; set; }

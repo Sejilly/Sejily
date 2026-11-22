@@ -19,8 +19,8 @@ public class Program
         var builder = WebApplication.CreateBuilder(args);
 
         // 2. Register DbContext
-        // F6 (T16): scoped interceptor resolved from the SAME scope as the request's
-        // services, so it sees the request's PendingPushCollector (plan decision D3)
+        // Notifications: the push interceptors are registered as "scoped" (one per request) so they share
+        // the same PendingPushCollector as NotificationService, and they are attached to the DbContext below.
         builder.Services.AddScoped<Sejily.API.Services.Notifications.PendingPushCollector>();
         builder.Services.AddScoped<Sejily.API.Services.Notifications.PushOnCommitInterceptor>();
         builder.Services.AddScoped<Sejily.API.Services.Notifications.PushOnSaveInterceptor>();
@@ -144,30 +144,30 @@ public class Program
 
         // builder.Services.AddHttpClient<IOtpSmsSender, SmsMisrOtpSmsSender>();
         builder.Services.AddScoped<IOtpSmsSender, ConsoleOtpSmsSender>();
-        // F6 (T02): shared clock + notification settings bound from configuration
+        // Clock (so tests can fake the time) and notification limits from appsettings.json
         builder.Services.AddSingleton(TimeProvider.System);
         builder.Services.Configure<Sejily.API.Settings.NotificationSettings>(
             builder.Configuration.GetSection(Sejily.API.Settings.NotificationSettings.SectionName));
-        // F6 (T05): temporary pass-through until Dev 1's NameMasker is merged
+        // TEMPORARY: shows full patient names to doctors. Replace with the real name masker before release.
         builder.Services.AddScoped<Sejily.API.Services.Notifications.INameMasker,
             Sejily.API.Services.Notifications.PassThroughNameMasker>();
-        // F6 (T07): read-side notification queries
+        // Reading notifications (list, count, read, delete)
         builder.Services.AddScoped<Sejily.API.Services.Notifications.NotificationComposer>();
         builder.Services.AddScoped<Sejily.API.Services.Notifications.INotificationQueries,
             Sejily.API.Services.Notifications.NotificationQueries>();
-        // F6 (T11): device-token register/remove
+        // Saving and removing device tokens
         builder.Services.AddScoped<Sejily.API.Services.Notifications.IDeviceTokenService,
             Sejily.API.Services.Notifications.DeviceTokenService>();
-        // F6 (T15): notification creation for Dev 1 / Dev 2 (D2: no SaveChanges here)
+        // Creating notifications (other features call this; it does not call SaveChanges itself)
         builder.Services.AddScoped<Sejily.API.Services.Notifications.INotificationService,
             Sejily.API.Services.Notifications.NotificationService>();
-        // F6 (T16/T18): push queue + background dispatcher
+        // Push queue (one shared Channel) and the background worker that sends the pushes
         builder.Services.AddSingleton<Channel<Sejily.API.Services.Notifications.PushJob>>(
             Channel.CreateUnbounded<Sejily.API.Services.Notifications.PushJob>());
         builder.Services.AddHostedService<Sejily.API.Services.Notifications.PushDispatchService>();
-        // F6 (T17/T20): real FCM sender only when the service account exists (D7);
-        // otherwise NullPushSender and every request still succeeds (criterion 9).
-        // The path lives in user-secrets / environment — never in the repo.
+        // Use the real Firebase sender only if the service-account file exists; otherwise use
+        // NullPushSender (sends nothing) so the API still works. The file path is kept in
+        // user-secrets / environment variables, never in the repo.
         var firebaseServiceAccount = builder.Configuration[
             Sejily.API.Services.Notifications.FcmPushSender.ConfigKey];
         if (!string.IsNullOrWhiteSpace(firebaseServiceAccount)

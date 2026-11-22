@@ -1,8 +1,8 @@
 namespace Sejily.API.DTOs.Notifications;
 
 /// <summary>
-/// GET /api/notifications/unread-count response (spec section 5): the number the
-/// app polls every 30-60 s.
+/// Response of GET /api/notifications/unread-count: how many unread notifications the user has
+/// (the app shows it as the badge number).
 /// </summary>
 public class UnreadCountResponse
 {

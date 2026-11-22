@@ -5,15 +5,15 @@ using Microsoft.Extensions.Logging;
 namespace Sejily.API.Services.Notifications;
 
 /// <summary>
-/// Companion of PushOnCommitInterceptor. EF Core does NOT open a transaction when a
-/// SaveChanges needs only ONE statement (e.g. a caller that only inserts the
-/// notification), so no TransactionCommitted event fires and the push would be lost.
-/// This interceptor covers exactly that case: when a SaveChanges succeeds and the
-/// context has NO explicit transaction, the data is already committed, so the pending
-/// pushes (those without an explicit transaction id) are released. With an explicit
-/// transaction nothing happens here; PushOnCommitInterceptor releases them on Commit.
-/// Draining is idempotent, so a multi-statement SaveChanges (implicit transaction,
-/// already released by the commit event) is not pushed twice.
+/// Companion of PushOnCommitInterceptor, for saves that happen WITHOUT a transaction.
+///
+/// EF does not open a transaction when a SaveChanges needs only one SQL statement (for example when
+/// only the notification is inserted). Then there is no "commit" event, so the commit interceptor
+/// would never send the push.
+///
+/// So after a SaveChanges succeeds and there is no explicit transaction, the data is already
+/// committed and we release the waiting pushes. If there IS an explicit transaction we do nothing
+/// here; PushOnCommitInterceptor sends them when it commits. If the save fails we throw them away.
 /// </summary>
 public class PushOnSaveInterceptor : SaveChangesInterceptor
 {

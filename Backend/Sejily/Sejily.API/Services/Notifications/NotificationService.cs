@@ -6,20 +6,18 @@ using Sejily.API.Models.Enums.Notifications;
 namespace Sejily.API.Services.Notifications;
 
 /// <summary>
-/// T15: NotifyAsync per plan section 3.1 and decision D2:
-///  1. duplicate guard — a row with the same (type, recipient, requestId) makes the
-///     call a no-op; only AccessExtended legitimately repeats for one request and
-///     SKIPS the guard (documented list below);
-///  2. ADD the row to the CALLER's context — never SaveChanges;
-///  3. register a pending push in the scoped collector;
-///  4. does NOT open a transaction (the caller's own one is used).
+/// Creates notifications for other features (see INotificationService).
+/// What NotifyAsync does, in order:
+///  1. Skips it if the same notification already exists (so a retry doesn't notify twice).
+///  2. Adds the notification row to the caller's DbContext. It does NOT call SaveChanges:
+///     the caller saves it together with their own changes.
+///  3. Notes that a push is waiting, to be sent once the save is committed.
 /// </summary>
 public class NotificationService : INotificationService
 {
     /// <summary>
-    /// Types that may legitimately repeat for one request; they skip the duplicate
-    /// guard (plan section 3.1). Currently only AccessExtended (a guardian may
-    /// extend the same access more than once).
+    /// Types that can legitimately happen several times for the same request.
+    /// AccessExtended: an access can be extended more than once, so each extension needs its own notification.
     /// </summary>
     private static readonly IReadOnlyCollection<NotificationType> RepeatableTypes =
         new[] { NotificationType.AccessExtended };
@@ -45,10 +43,9 @@ public class NotificationService : INotificationService
         int? requestId = null,
         CancellationToken cancellationToken = default)
     {
-        // Duplicate guard (plan section 3.1). Only meaningful when requestId is
-        // present; reserved types (no request) always create a row. Check the
-        // caller's uncommitted rows (Local) AND the database (a duplicate from an
-        // earlier, already-saved request).
+        // Duplicate check (only when there is a request id). It looks at rows added in this request but
+        // not saved yet, and at rows already in the database.
+        // Example: the expiry job runs twice; the second run finds the notification and does nothing.
         if (requestId != null && !RepeatableTypes.Contains(type))
         {
             var exists = _db.Notifications.Local.Any(n =>
@@ -78,10 +75,8 @@ public class NotificationService : INotificationService
         };
         _db.Notifications.Add(notification);
 
-        // Decision D2: the row is saved by the CALLER's SaveChanges (its Id is
-        // filled then); the interceptor only enqueues pushes for rows that got an
-        // Id, so a rolled-back transaction removes both row and push.
-        // Remember the explicit transaction (if any) so only ITS commit releases the push.
+        // The row is saved later by the caller's SaveChanges (that is when it gets its Id).
+        // We remember the open transaction (if any) so the push is released only when THAT one commits.
         _collector.Add(notification, _db.Database.CurrentTransaction?.TransactionId);
     }
 }

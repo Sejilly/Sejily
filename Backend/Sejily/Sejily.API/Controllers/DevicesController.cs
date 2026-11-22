@@ -6,14 +6,10 @@ using Sejily.API.Services.Notifications;
 
 namespace Sejily.API.Controllers;
 
-// T12: the two device endpoints from spec section 5.
-//  - No role policy (plan decision D8): doctors AND patients/guardians register
-//    their own push tokens; identity = GetLoggedInUserId().
-//  - POST /api/devices  => 204 (register / move / refresh LastSeenAt), 400 invalid body.
-//  - DELETE /api/devices/{token} => removes ONLY the current user's token;
-//    absent or foreign token still returns 204 (plan section 3.6).
-//  - The token arrives URL-encoded in the path; FCM tokens use only URL-safe
-//    characters (plan section 6, risk table).
+// Endpoints to register and remove the phone's push token. Any logged-in user can call them, and a
+// token is always saved for the logged-in user. Removing a token that doesn't exist or isn't yours
+// still answers 204, because the end result ("this phone has no token for you") is the same.
+// The token comes in the URL; FCM tokens only use URL-safe characters, so they work in the path.
 [ApiController]
 [Route("api/devices")]
 [Authorize]
@@ -26,7 +22,7 @@ public class DevicesController : ControllerBase
         _deviceTokens = deviceTokens;
     }
 
-    // POST api/devices — register or refresh the device token for the current user.
+    // POST api/devices: register this phone's token (or refresh it). 204 on success, 400 if the body is invalid.
     [HttpPost]
     public async Task<IActionResult> Register(
         RegisterDeviceRequest request,
@@ -37,15 +33,15 @@ public class DevicesController : ControllerBase
             return Unauthorized();
         }
 
-        // Review fix 3: Platform is nullable after validation; [Required] +
-        // [EnumDataType] guarantee a defined value here.
+        // Platform is nullable so a missing or invalid value is rejected by validation (400).
+        // After validation it always has a valid value, so ".Value" is safe here.
         await _deviceTokens.RegisterAsync(
             userId, request.Token, request.Platform!.Value, cancellationToken);
 
         return NoContent();
     }
 
-    // DELETE api/devices/{token} — called on logout; removes only my token.
+    // DELETE api/devices/{token}: called on logout; removes only the current user's token.
     [HttpDelete("{token}")]
     public async Task<IActionResult> Delete(string token, CancellationToken cancellationToken)
     {

@@ -1,16 +1,15 @@
 namespace Sejily.API.Services.Notifications;
 
 /// <summary>
-/// T17: one push to one device token. Implementations must NEVER throw for
-/// ordinary failures — they return a PushSendResult; the dispatcher deletes the
-/// token on InvalidToken (spec criterion 10) and keeps going on Failed.
+/// Sends ONE push message to ONE device token.
+/// Implementations should not throw for normal failures; they return a PushSendResult instead.
 /// </summary>
 public interface IPushSender
 {
-    /// <summary>Sends the push; returns the outcome instead of throwing.</summary>
+    /// <summary>Sends the push and returns what happened instead of throwing.</summary>
     /// <param name="data">
-    /// Custom key/value payload (spec section 8): notificationId, type, requestId.
-    /// All values are strings (FCM requirement); requestId is "" when null.
+    /// Extra key/value text for the mobile app: notificationId, type and requestId.
+    /// Firebase only accepts strings; requestId is "" when the notification has no request.
     /// </param>
     Task<PushSendResult> SendAsync(
         string deviceToken,
@@ -20,19 +19,18 @@ public interface IPushSender
         CancellationToken cancellationToken = default);
 }
 
-/// <summary>Outcome of one send attempt (plan section 3.3).</summary>
+/// <summary>What happened when we tried to send one push.</summary>
 public enum PushSendResult
 {
     /// <summary>FCM accepted the message.</summary>
     Sent,
 
     /// <summary>
-    /// FCM reported the token as unregistered — the dispatcher deletes the
-    /// DeviceToken row (spec criterion 10). InvalidArgument is NOT included: it can
-    /// also mean a malformed message, which would wrongly delete healthy tokens.
+    /// Firebase says this token is dead (for example the app was uninstalled).
+    /// The dispatcher deletes it from the DeviceTokens table.
     /// </summary>
     InvalidToken,
 
-    /// <summary>Transient failure (network, Firebase outage) — keep the token.</summary>
+    /// <summary>Temporary failure (network, Firebase outage). Keep the token.</summary>
     Failed
 }

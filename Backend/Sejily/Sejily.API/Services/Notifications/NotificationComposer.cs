@@ -3,8 +3,8 @@ using Sejily.API.Models.Enums.Notifications;
 namespace Sejily.API.Services.Notifications;
 
 /// <summary>
-/// Who receives the notification; drives the wording (plan decision D5).
-/// Guardian = Patient account acting for a dependent.
+/// Who receives the notification. The wording changes with the role.
+/// Guardian = a parent/guardian who is notified about their dependent (child).
 /// </summary>
 public enum NotificationRecipientRole
 {
@@ -14,10 +14,8 @@ public enum NotificationRecipientRole
 }
 
 /// <summary>
-/// Everything the composer needs to render one notification. Values are collected
-/// by the caller (NotificationQueries for rendering, PushDispatchService for push);
-/// patient names shown to a doctor must already be masked by the shared INameMasker
-/// upstream. Doctor names shown to patients are real.
+/// Everything needed to write one notification's text. The caller fills it from the database.
+/// A patient's name shown to a doctor must already be masked; a doctor's name shown to a patient is real.
 /// </summary>
 public sealed class NotificationRenderData
 {
@@ -37,18 +35,18 @@ public sealed class NotificationRenderData
 }
 
 /// <summary>
-/// T04: composes notification text at READ time (never stored, plan decision D4).
-/// Arabic wording comes from spec section 4; push wording for AccessRequested /
-/// EmergencyAccess from spec section 8. Compose lists one branch per
-/// NotificationType with NO default arm: adding a new enum value must break the
-/// build instead of silently rendering wrong text.
+/// Turns (notification type + who receives it + names) into the Arabic title and body.
+/// The text is built every time it is shown and is NOT stored in the database.
+/// Example: type AccessRequested for a patient gives the title "طلب وصول جديد" and the body
+/// "يرغب د. أحمد في الاطلاع على سجلك.".
+/// There is one case per notification type and no "default" case on purpose: if someone adds a
+/// new type and forgets its text, the project fails to build instead of showing wrong text.
 /// </summary>
 public class NotificationComposer
 {
-    /// <summary>Title/body for the REST list (spec section 4 table).</summary>
-    // CS8524 is expected here: it warns about UNNAMED enum values such as
-    // (NotificationType)0. Every NAMED value is covered; the plan forbids a
-    // default arm so that adding a new named value breaks the build (CS8509).
+    /// <summary>Title and body used when notifications are listed through the REST API.</summary>
+    // The compiler warns (CS8524) about "unnamed" enum values such as (NotificationType)0.
+    // Every real value is handled below, so the warning is safe to ignore here.
 #pragma warning disable CS8524
     public (string Title, string Body) Compose(NotificationRenderData d) =>
         d.Type switch
@@ -79,9 +77,9 @@ public class NotificationComposer
 #pragma warning restore CS8524
 
     /// <summary>
-    /// Title/body for the FCM push (spec section 8). Only AccessRequested and
-    /// EmergencyAccess have their own wording; every other type uses the same
-    /// text as the table. Guardian: the dependent's name is added to the title.
+    /// Title and body used for the push message on the phone. Only AccessRequested and EmergencyAccess
+    /// have their own push wording; every other type uses the same text as the list.
+    /// For a guardian, the dependent's name is added to the title.
     /// </summary>
     public (string Title, string Body) ComposePush(NotificationRenderData d) =>
         d.Type switch

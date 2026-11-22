@@ -8,13 +8,15 @@ using Sejily.API.Models.Enums;
 namespace Sejily.API.Services.Notifications;
 
 /// <summary>
-/// T18: background worker that turns committed notifications into pushes
-/// (plan section 3.3). For each job it opens a scope, reloads the notification
-/// with the names needed for wording (ONE query, no N+1), composes the push text
-/// with the SAME NotificationComposer the REST list uses (decision D4) and sends
-/// to every token of the recipient. Invalid tokens are deleted (criterion 10);
-/// every error is logged and swallowed — push failures never affect any request
-/// and there are no retries in v1 (REST is the source of truth).
+/// Background worker that actually sends the pushes. It runs for as long as the app runs.
+///
+/// How it works: when a save is committed, the interceptor drops a PushJob (just the notification
+/// id) into a queue (Channel). This worker takes the jobs from the queue one by one, loads what it
+/// needs from the database, writes the push text, and sends it to every device of the recipient.
+///
+/// It runs separately from the user's request, so a slow or failing Firebase never slows down or
+/// breaks the request. Errors are only logged and there are no retries (the notification is still
+/// available through the REST API).
 /// </summary>
 public class PushDispatchService : BackgroundService
 {
@@ -49,7 +51,7 @@ public class PushDispatchService : BackgroundService
                 }
                 catch (Exception ex)
                 {
-                    // Retries: none in v1 (plan section 3.3) — log and continue.
+                    // Don't crash the worker: log the error and move on to the next job.
                     _logger.LogError(ex,
                         "Push dispatch failed for notification {NotificationId}.",
                         job.NotificationId);
@@ -59,9 +61,9 @@ public class PushDispatchService : BackgroundService
     }
 
     /// <summary>
-    /// Processes one job inside the given scope. Public so T19 can test the
-    /// whole path (compose, send, invalid-token delete, error swallow) without
-    /// running a host.
+    /// Handles ONE job: loads the notification, writes the push text, sends it to all the recipient's
+    /// devices, and deletes the tokens that Firebase says are dead.
+    /// Public so tests can call it directly without starting the whole app.
     /// </summary>
     public async Task HandleJobAsync(
         IServiceProvider services,
@@ -121,8 +123,8 @@ public class PushDispatchService : BackgroundService
             LabType = null
         });
 
-        // Spec section 8: data payload the app uses to open the request page.
-        // All values are strings; requestId is "" when the notification has none.
+        // Extra data sent with the push. When the user taps it, the mobile app reads "requestId" to open
+        // the request page. Firebase only accepts strings ("" when there is no request).
         var data = new Dictionary<string, string>
         {
             ["notificationId"] = notificationId.ToString(System.Globalization.CultureInfo.InvariantCulture),
@@ -144,7 +146,7 @@ public class PushDispatchService : BackgroundService
 
                 if (result == PushSendResult.InvalidToken)
                 {
-                    // Criterion 10: FCM reported the token unregistered/invalid.
+                    // Firebase says the token is dead (for example the app was uninstalled): delete it.
                     await db.DeviceTokens
                         .Where(d => d.DeviceTokenId == device.DeviceTokenId)
                         .ExecuteDeleteAsync(cancellationToken);
@@ -155,13 +157,13 @@ public class PushDispatchService : BackgroundService
             }
             catch (Exception ex)
             {
-                // One broken token must not stop the others (plan section 3.3).
+                // One failing token must not stop the others.
                 _logger.LogError(ex, "Push sender threw for token {DeviceTokenId}.", device.DeviceTokenId);
             }
         }
     }
 
-    /// <summary>Projection row for one push job (kept private to this service).</summary>
+    /// <summary>The few values needed to write the push text for one job.</summary>
     private sealed class PushRow
     {
         public Models.Enums.Notifications.NotificationType Type { get; set; }

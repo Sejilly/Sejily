@@ -4,12 +4,9 @@ using System.ComponentModel.DataAnnotations;
 namespace Sejily.API.DTOs.Notifications;
 
 /// <summary>
-/// POST /api/devices body (plan section 2; spec section 5):
-/// token (Required, max 512 — same length as the DeviceToken column) and
-/// platform. Review fix 3: Platform is NULLABLE with [EnumDataType] so a missing
-/// platform, an unknown name or an undefined numeric value (99, 0) all fail
-/// validation =&gt; 400 ProblemDetails, instead of binding to an undefined enum
-/// value and being stored. Lowercase names ("android") still bind.
+/// Body of POST /api/devices: the phone's push token and its platform ("android", "ios" or "web").
+/// Platform is nullable on purpose: that way a missing or unknown platform fails validation (400)
+/// instead of being saved as a meaningless value. Lower-case names like "android" are accepted.
 /// </summary>
 public class RegisterDeviceRequest
 {
