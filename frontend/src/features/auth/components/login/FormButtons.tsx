@@ -1,0 +1,18 @@
+import { ButtonLink } from "@/features/auth/components/ui/Button";
+import SubmitButton from "@/features/auth/components/ui/SubmitButton";
+import TextDivider from "@/features/auth/components/ui/TextDivider";
+import { ROUTES } from "@/lib/routes";
+
+function FormButtons({ loading = false }: { loading?: boolean }) {
+    return (
+        <div className="flex w-full flex-col items-center justify-center gap-8">
+            <SubmitButton loading={loading} loadingText="جارٍ تسجيل الدخول...">
+                سجل الدخول
+            </SubmitButton>
+            <TextDivider>لا تملك حساب بعد ؟</TextDivider>
+            <ButtonLink href={ROUTES.register}>إنشاء حساب جديد</ButtonLink>
+        </div>
+    );
+}
+
+export default FormButtons;

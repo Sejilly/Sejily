@@ -1,6 +1,6 @@
-import AuthPageShell from "@/components/auth/AuthPageShell";
-import BackHeader from "@/components/auth/BackHeader";
-import OtpFlow from "@/components/otp/OtpFlow";
+import AuthPageShell from "@/features/auth/components/layout/AuthPageShell";
+import BackHeader from "@/features/auth/components/layout/BackHeader";
+import OtpFlow from "@/features/auth/components/otp/OtpFlow";
 import { ROUTES } from "@/lib/routes";
 
 

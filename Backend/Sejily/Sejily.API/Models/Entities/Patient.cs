@@ -17,8 +17,9 @@ public class Patient
     public ICollection<GuardianPatient> Dependents { get; set; } = [];
 
     public ICollection<PatientDisease> Diseases { get; set; } = [];
-    // public ICollection<PatientDisease> FamilyDiseases => _diseases.Where(disease => disease.IsFamilyDisease).ToList();
+    public ICollection<PatientFamilyDisease> FamilyDiseases { get; set; } = [];
 
     public ICollection<MedicalEncounter> MedicalEncounters { get; set; } = [];
     public ICollection<MedicationUsage> Medications { get; set; } = [];
+    public ICollection<string> PatientEntryMedications { get; set; } = [];
 }

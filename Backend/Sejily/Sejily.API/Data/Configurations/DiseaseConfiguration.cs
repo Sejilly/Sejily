@@ -10,12 +10,11 @@ public class DiseaseConfiguration : IEntityTypeConfiguration<Disease>
     {
         builder.HasKey(disease => disease.DiseaseId);
 
-        builder.HasIndex(disease => new
+        builder.OwnsOne(disease => disease.IcdCode, icd =>
         {
-            disease.IcdVersion,
-            disease.IcdCode
-        })
-        .IsUnique();
+            icd.HasIndex(x => new { x.Version, x.Code })
+                .IsUnique();
+        });
 
         builder.HasAlternateKey(disease => disease.IcdUri);
 
