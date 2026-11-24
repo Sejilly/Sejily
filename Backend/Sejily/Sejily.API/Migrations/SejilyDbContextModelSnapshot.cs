@@ -1494,6 +1494,25 @@ namespace Sejily.API.Migrations
                     b.Navigation("Patient");
                 });
 
+            modelBuilder.Entity("Sejily.API.Models.Entities.PatientFamilyDisease", b =>
+                {
+                    b.HasOne("Sejily.API.Models.Entities.Disease", "Disease")
+                        .WithMany()
+                        .HasForeignKey("DiseaseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Sejily.API.Models.Entities.Patient", "Patient")
+                        .WithMany("FamilyDiseases")
+                        .HasForeignKey("PatientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Disease");
+
+                    b.Navigation("Patient");
+                });
+
             modelBuilder.Entity("Sejily.API.Models.Entities.Doctor", b =>
                 {
                     b.Navigation("Encounters");
