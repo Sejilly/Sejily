@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Sejily.API.DTOs.Notifications;
 using Sejily.API.Extensions;
 using Sejily.API.Services.Notifications;
@@ -13,6 +14,7 @@ namespace Sejily.API.Controllers;
 [ApiController]
 [Route("api/devices")]
 [Authorize]
+[EnableRateLimiting(RateLimitingExtensions.Write)]
 public class DevicesController : ControllerBase
 {
     private readonly IDeviceTokenService _deviceTokens;
