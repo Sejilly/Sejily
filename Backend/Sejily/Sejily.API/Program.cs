@@ -11,6 +11,7 @@ using Sejily.API.Models.Entities;
 using Sejily.API.Services;
 using System.Text;
 using System.Text.Json.Serialization;
+using System.Threading.Channels;
 namespace Sejily.API;
 
 public class Program
@@ -21,9 +22,17 @@ public class Program
         var builder = WebApplication.CreateBuilder(args);
 
         // 2. Register DbContext
-        builder.Services.AddDbContext<SejilyDbContext>(options =>
+        // Notifications: the push interceptors are registered as "scoped" (one per request) so they share
+        // the same PendingPushCollector as NotificationService, and they are attached to the DbContext below.
+        builder.Services.AddScoped<Sejily.API.Services.Notifications.PendingPushCollector>();
+        builder.Services.AddScoped<Sejily.API.Services.Notifications.PushOnCommitInterceptor>();
+        builder.Services.AddScoped<Sejily.API.Services.Notifications.PushOnSaveInterceptor>();
+        builder.Services.AddDbContext<SejilyDbContext>((sp, options) =>
             options.UseSqlServer(
-                builder.Configuration.GetConnectionString("DefaultConnection")));
+                builder.Configuration.GetConnectionString("DefaultConnection"))
+                .AddInterceptors(
+                    sp.GetRequiredService<Sejily.API.Services.Notifications.PushOnCommitInterceptor>(),
+                    sp.GetRequiredService<Sejily.API.Services.Notifications.PushOnSaveInterceptor>()));
 
         // 3. Register ASP.NET Core Identity
         builder.Services
@@ -138,6 +147,43 @@ public class Program
 
         // builder.Services.AddHttpClient<IOtpSmsSender, SmsMisrOtpSmsSender>();
         builder.Services.AddScoped<IOtpSmsSender, ConsoleOtpSmsSender>();
+        // Clock (so tests can fake the time) and notification limits from appsettings.json
+        builder.Services.AddSingleton(TimeProvider.System);
+        builder.Services.Configure<Sejily.API.Settings.NotificationSettings>(
+            builder.Configuration.GetSection(Sejily.API.Settings.NotificationSettings.SectionName));
+        // TEMPORARY: shows full patient names to doctors. Replace with the real name masker before release.
+        builder.Services.AddScoped<Sejily.API.Services.Notifications.INameMasker,
+            Sejily.API.Services.Notifications.PassThroughNameMasker>();
+        // Reading notifications (list, count, read, delete)
+        builder.Services.AddScoped<Sejily.API.Services.Notifications.NotificationComposer>();
+        builder.Services.AddScoped<Sejily.API.Services.Notifications.INotificationQueries,
+            Sejily.API.Services.Notifications.NotificationQueries>();
+        // Saving and removing device tokens
+        builder.Services.AddScoped<Sejily.API.Services.Notifications.IDeviceTokenService,
+            Sejily.API.Services.Notifications.DeviceTokenService>();
+        // Creating notifications (other features call this; it does not call SaveChanges itself)
+        builder.Services.AddScoped<Sejily.API.Services.Notifications.INotificationService,
+            Sejily.API.Services.Notifications.NotificationService>();
+        // Push queue (one shared Channel) and the background worker that sends the pushes
+        builder.Services.AddSingleton<Channel<Sejily.API.Services.Notifications.PushJob>>(
+            Channel.CreateUnbounded<Sejily.API.Services.Notifications.PushJob>());
+        builder.Services.AddHostedService<Sejily.API.Services.Notifications.PushDispatchService>();
+        // Use the real Firebase sender only if the service-account file exists; otherwise use
+        // NullPushSender (sends nothing) so the API still works. The file path is kept in
+        // user-secrets / environment variables, never in the repo.
+        var firebaseServiceAccount = builder.Configuration[
+            Sejily.API.Services.Notifications.FcmPushSender.ConfigKey];
+        if (!string.IsNullOrWhiteSpace(firebaseServiceAccount)
+            && File.Exists(firebaseServiceAccount))
+        {
+            builder.Services.AddScoped<Sejily.API.Services.Notifications.IPushSender,
+                Sejily.API.Services.Notifications.FcmPushSender>();
+        }
+        else
+        {
+            builder.Services.AddScoped<Sejily.API.Services.Notifications.IPushSender,
+                Sejily.API.Services.Notifications.NullPushSender>();
+        }
         // 7. Build the application
 
 
