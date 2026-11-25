@@ -233,6 +233,9 @@ public class Program
 
         builder.Services.AddHostedService<
    PatientRegistrationCleanupService>();
+        // Emergency escalation: closes unanswered emergency reviews when their windows end
+        builder.Services.AddHostedService<
+   Sejily.API.Services.Emergency.EmergencyEscalationJob>();
         var app = builder.Build();
 
         using (var scope = app.Services.CreateScope())
