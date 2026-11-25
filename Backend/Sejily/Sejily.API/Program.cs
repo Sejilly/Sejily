@@ -164,6 +164,9 @@ public class Program
         // keeps them append-only
         builder.Services.AddScoped<Sejily.API.Services.Audit.IAuditService,
             Sejily.API.Services.Audit.AuditService>();
+        // Emergency access confirmation page
+        builder.Services.AddScoped<Sejily.API.Services.Emergency.IEmergencyReviewService,
+            Sejily.API.Services.Emergency.EmergencyReviewService>();
         // TEMPORARY: shows full patient names to doctors. Replace with the real name masker before release.
         builder.Services.AddScoped<Sejily.API.Services.Notifications.INameMasker,
             Sejily.API.Services.Notifications.PassThroughNameMasker>();
