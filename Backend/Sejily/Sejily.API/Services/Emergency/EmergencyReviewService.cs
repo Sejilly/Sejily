@@ -19,7 +19,9 @@ public class EmergencyReviewService : IEmergencyReviewService
     private sealed class EmergencyReviewRow
     {
         public EmergencyReview Review { get; set; } = null!;
+        public int RequestId { get; set; }
         public DateTime StartAt { get; set; }
+        public DateTime? ExpiresAt { get; set; }
         public string DoctorName { get; set; } = string.Empty;
         public string DoctorSpecialization { get; set; } = string.Empty;
         public string WorkplaceName { get; set; } = string.Empty;
@@ -72,7 +74,9 @@ public class EmergencyReviewService : IEmergencyReviewService
             select new EmergencyReviewRow
             {
                 Review = review,
+                RequestId = review.Access.RequestId,
                 StartAt = review.Access.StartAt,
+                ExpiresAt = review.Access.ExpiresAt,
                 DoctorName = review.Access.Request.Doctor.User.FullName,
                 DoctorSpecialization = review.Access.Request.Doctor.Specialization,
                 WorkplaceName = review.Access.Request.Workplace.Name,
@@ -88,12 +92,12 @@ public class EmergencyReviewService : IEmergencyReviewService
 
         return new EmergencyActiveBanner
         {
-            RequestId = row.Review.Access.RequestId,
+            RequestId = row.RequestId,
             DoctorName = row.DoctorName,
             DoctorSpecialization = row.DoctorSpecialization,
             WorkplaceName = row.WorkplaceName,
             StartAt = row.StartAt,
-            ExpiresAt = row.Review.Access.ExpiresAt,
+            ExpiresAt = row.ExpiresAt,
             ConfirmationStatus = ConfirmationStatusRules.Compute(row.Review, row.StartAt, now, _timing),
             ServerTime = now,
         };
@@ -217,7 +221,9 @@ public class EmergencyReviewService : IEmergencyReviewService
             select new EmergencyReviewRow
             {
                 Review = review,
+                RequestId = review.Access.RequestId,
                 StartAt = review.Access.StartAt,
+                ExpiresAt = review.Access.ExpiresAt,
                 DoctorName = review.Access.Request.Doctor.User.FullName,
                 DoctorSpecialization = review.Access.Request.Doctor.Specialization,
                 WorkplaceName = review.Access.Request.Workplace.Name,
@@ -255,7 +261,7 @@ public class EmergencyReviewService : IEmergencyReviewService
         EmergencyReviewRow row, AuditAction action, int activeUserId, int loggedInUserId, object details) =>
         _audit.Add(new AuditEntry(
             action,
-            row.Review.Access.RequestId,
+            row.RequestId,
             activeUserId,
             EmergencyReviewEntityType,
             row.Review.AccessId,
@@ -272,7 +278,7 @@ public class EmergencyReviewService : IEmergencyReviewService
 
         return new EmergencyReviewResponse
         {
-            RequestId = row.Review.Access.RequestId,
+            RequestId = row.RequestId,
             DoctorName = row.DoctorName,
             DoctorSpecialization = row.DoctorSpecialization,
             WorkplaceName = row.WorkplaceName,
