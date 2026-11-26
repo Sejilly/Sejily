@@ -1,39 +1,43 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Sejily.API.Data;
-using Sejily.API.Models.Entities;
 using Sejily.API.Models.Enums.AccessRequest;
 using Sejily.API.Models.Enums.AuditLog;
 using Sejily.API.Models.Enums.Emergency;
-using Sejily.API.Models.Enums.Notifications;
 using Sejily.API.Services.Audit;
-using Sejily.API.Services.Notifications;
 using Sejily.API.Settings;
 
 namespace Sejily.API.Services.Emergency;
 
 // The escalation job: a patient must answer an emergency access within the response
-// window, and a denial may only live for the undo window. When a window passes with
-// no (reopened) answer, this job closes the question:
-//   - no answer at all        -> the access stands, audit EmergencyNoResponse.
-//   - a denial past its undo  -> the denial is final, audit EmergencyEscalated.
-// It stamps EscalatedAt so each review is escalated exactly once, and tells the
-// doctor what happened with their emergency access.
+// window, and a denial may only be undone during the undo window. When a window passes,
+// this job closes the question and records it for the admins (simulated: a timestamp,
+// audit rows and a log line):
+//   - no answer at all        -> audit EmergencyNoResponse, then EmergencyEscalated.
+//   - a denial past its undo  -> audit EmergencyEscalated.
+// EscalatedAt makes sure each review is escalated only once. Nobody is notified: the
+// doctor must never learn how the patient answered.
 public class EmergencyEscalationJob : BackgroundService
 {
     private const string EmergencyReviewEntityType = "EmergencyReview";
 
     private readonly IServiceScopeFactory _scopeFactory;
     private readonly EscalationSettings _settings;
+    private readonly AccessTimingSettings _timing;
+    private readonly TimeProvider _timeProvider;
     private readonly ILogger<EmergencyEscalationJob> _logger;
 
     public EmergencyEscalationJob(
         IServiceScopeFactory scopeFactory,
         IOptions<EscalationSettings> settings,
+        IOptions<AccessTimingSettings> timing,
+        TimeProvider timeProvider,
         ILogger<EmergencyEscalationJob> logger)
     {
         _scopeFactory = scopeFactory;
         _settings = settings.Value;
+        _timing = timing.Value;
+        _timeProvider = timeProvider;
         _logger = logger;
     }
 
@@ -72,125 +76,144 @@ public class EmergencyEscalationJob : BackgroundService
 
     private async Task EscalateExpiredReviewsAsync(CancellationToken cancellationToken)
     {
-        using var scope = _scopeFactory.CreateScope();
+        var now = _timeProvider.GetUtcNow().UtcDateTime;
+        var accessIds = await FindDueAccessIdsAsync(now, cancellationToken);
 
-        var db = scope.ServiceProvider.GetRequiredService<SejilyDbContext>();
-        var audit = scope.ServiceProvider.GetRequiredService<IAuditService>();
-        var notifications = scope.ServiceProvider.GetRequiredService<INotificationService>();
-        var now = scope.ServiceProvider.GetRequiredService<TimeProvider>()
-            .GetUtcNow().UtcDateTime;
-        var timing = scope.ServiceProvider.GetRequiredService<
-            IOptions<AccessTimingSettings>>().Value;
-
-        // The database cannot call ConfirmationStatusRules, so the same comparisons are
-        // repeated on the columns; a test keeps both sides equal.
-        var rows = await (
-            from review in db.EmergencyReviews
-            where review.EscalatedAt == null
-                  && ((review.PatientResponse == null
-                       && review.Access.StartAt.AddHours(timing.EmergencyResponseHours) <= now)
-                      || (review.PatientResponse == EmergencyPatientResponse.Denied
-                          && review.RespondedAt != null
-                          && review.RespondedAt.Value.AddSeconds(timing.UndoWindowSeconds) <= now))
-            orderby review.AccessId
-            select new EscalationRow
-            {
-                Review = review,
-                RequestId = review.Access.RequestId,
-                RecipientPatientId = review.Access.Request.RecipientPatientId,
-                WorkplaceId = review.Access.Request.WorkplaceId,
-                DoctorId = review.Access.Request.DoctorId,
-            })
-            .Take(_settings.BatchSize)
-            .ToListAsync(cancellationToken);
-
-        foreach (var row in rows)
+        var escalated = 0;
+        foreach (var accessId in accessIds)
         {
-            await EscalateRowAsync(db, audit, notifications, row, now, cancellationToken);
+            cancellationToken.ThrowIfCancellationRequested();
+
+            try
+            {
+                if (await EscalateOneAsync(accessId, now, cancellationToken))
+                {
+                    escalated++;
+                }
+            }
+            catch (OperationCanceledException)
+                when (cancellationToken.IsCancellationRequested)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                // One bad row must not stop the others; it is tried again on the next pass.
+                _logger.LogError(
+                    ex, "Could not escalate emergency access {AccessId}.", accessId);
+            }
         }
 
-        if (rows.Count > 0)
+        if (escalated > 0)
         {
             _logger.LogInformation(
-                "Escalated {Count} expired emergency reviews.", rows.Count);
+                "Escalated {Count} expired emergency reviews.", escalated);
         }
     }
 
-    private async Task EscalateRowAsync(
-        SejilyDbContext db,
-        IAuditService audit,
-        INotificationService notifications,
-        EscalationRow row,
-        DateTime now,
-        CancellationToken cancellationToken)
+    // Ids only. The database cannot call ConfirmationStatusRules, so the same comparisons
+    // are repeated on the columns; each row is checked again with the real rules before
+    // it is escalated.
+    private async Task<List<int>> FindDueAccessIdsAsync(
+        DateTime now, CancellationToken cancellationToken)
     {
-        var timedOut = row.Review.PatientResponse is null;
+        var responseHours = _timing.EmergencyResponseHours;
+        var undoSeconds = _timing.UndoWindowSeconds;
+
+        using var scope = _scopeFactory.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<SejilyDbContext>();
+
+        return await db.EmergencyReviews
+            .AsNoTracking()
+            .Where(review => review.EscalatedAt == null
+                && ((review.PatientResponse == null
+                     && review.Access.StartAt.AddHours(responseHours) <= now)
+                    || (review.PatientResponse == EmergencyPatientResponse.Denied
+                        && review.RespondedAt != null
+                        && review.RespondedAt.Value.AddSeconds(undoSeconds) <= now)))
+            .OrderBy(review => review.AccessId)
+            .Select(review => review.AccessId)
+            .Take(_settings.BatchSize)
+            .ToListAsync(cancellationToken);
+    }
+
+    // Escalates ONE review with its own scope, so its DbContext never carries leftovers from
+    // another row. Returns false when the review no longer needs escalating (the patient
+    // answered or undid in the meantime, or another pass already did it).
+    private async Task<bool> EscalateOneAsync(
+        int accessId, DateTime now, CancellationToken cancellationToken)
+    {
+        using var scope = _scopeFactory.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<SejilyDbContext>();
+        var audit = scope.ServiceProvider.GetRequiredService<IAuditService>();
+
+        var row = await (
+            from review in db.EmergencyReviews
+            where review.AccessId == accessId
+            select new
+            {
+                Review = review,
+                StartAt = review.Access.StartAt,
+                RequestId = review.Access.RequestId,
+                RecipientPatientId = review.Access.Request.RecipientPatientId,
+                WorkplaceId = review.Access.Request.WorkplaceId,
+            })
+            .SingleOrDefaultAsync(cancellationToken);
+
+        if (row is null || row.Review.EscalatedAt is not null)
+        {
+            return false;
+        }
+
+        var status = ConfirmationStatusRules.Compute(row.Review, row.StartAt, now, _timing);
+        if (status is not (ConfirmationStatus.NoResponse or ConfirmationStatus.Reported))
+        {
+            return false;
+        }
+
+        void AddAudit(AuditAction action, object details) =>
+            audit.Add(new AuditEntry(
+                action,
+                row.RequestId,
+                row.RecipientPatientId,
+                EmergencyReviewEntityType,
+                accessId,
+                AccessId: accessId,
+                WorkplaceId: row.WorkplaceId,
+                ActorUserId: null,
+                Details: details));
 
         await using var transaction = await db.Database.BeginTransactionAsync(cancellationToken);
         try
         {
             row.Review.EscalatedAt = now;
 
-            if (timedOut)
+            if (status == ConfirmationStatus.NoResponse)
             {
-                audit.Add(new AuditEntry(
-                    AuditAction.EmergencyNoResponse,
-                    row.RequestId,
-                    row.RecipientPatientId,
-                    EmergencyReviewEntityType,
-                    row.Review.AccessId,
-                    row.Review.AccessId,
-                    row.WorkplaceId,
-                    ActorUserId: null,
-                    new
-                    {
-                        ConfirmationStatus = ConfirmationStatus.NoResponse,
-                        ActedAs = "System",
-                    }));
+                AddAudit(AuditAction.EmergencyNoResponse,
+                    new { ConfirmationStatus = ConfirmationStatus.NoResponse });
+                AddAudit(AuditAction.EmergencyEscalated,
+                    new { Reason = "NoResponse" });
             }
             else
             {
-                audit.Add(new AuditEntry(
-                    AuditAction.EmergencyEscalated,
-                    row.RequestId,
-                    row.RecipientPatientId,
-                    EmergencyReviewEntityType,
-                    row.Review.AccessId,
-                    row.Review.AccessId,
-                    row.WorkplaceId,
-                    ActorUserId: null,
-                    new
-                    {
-                        ConfirmationStatus = ConfirmationStatus.Reported,
-                        ActedAs = "System",
-                    }));
+                AddAudit(AuditAction.EmergencyEscalated,
+                    new { Reason = "PatientDenied" });
             }
-
-            await notifications.NotifyAsync(
-                NotificationType.EmergencyAccess,
-                row.DoctorId,
-                subjectPatientId: row.RecipientPatientId,
-                requestId: row.RequestId,
-                cancellationToken: cancellationToken);
 
             await db.SaveChangesAsync(cancellationToken);
             await transaction.CommitAsync(cancellationToken);
         }
         catch (DbUpdateConcurrencyException)
         {
-            // The patient answered while the pass was running; RowVersion stopped us and
-            // nothing was saved. The next pass re-checks the row in its final state.
+            // The patient answered while we were working; RowVersion stopped the save and
+            // nothing was written. The next pass looks at the row again.
             await transaction.RollbackAsync(cancellationToken);
+            return false;
         }
-    }
 
-    // What one pass needs to escalate a single review.
-    private sealed class EscalationRow
-    {
-        public EmergencyReview Review { get; set; } = null!;
-        public int RequestId { get; set; }
-        public int RecipientPatientId { get; set; }
-        public int WorkplaceId { get; set; }
-        public int DoctorId { get; set; }
+        _logger.LogInformation(
+            "Emergency access {AccessId} escalated to admin (simulated).", accessId);
+        return true;
     }
 }

@@ -6,7 +6,8 @@ namespace Sejily.API.Services.Audit;
 
 // AuditLog rows are append-only: inserted once, never changed again. The database has no
 // rule that enforces this, so this interceptor stops any save that would update or delete
-// one, before the SQL is even sent.
+// one, before the SQL is even sent. It only sees changes made through SaveChanges, so nobody
+// may use ExecuteUpdate or ExecuteDelete on AuditLogs.
 public class AuditAppendOnlyInterceptor : SaveChangesInterceptor
 {
     public override InterceptionResult<int> SavingChanges(
