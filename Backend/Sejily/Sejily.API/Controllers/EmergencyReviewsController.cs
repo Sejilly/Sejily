@@ -23,6 +23,19 @@ public class EmergencyReviewsController : ControllerBase
         _reviews = reviews;
     }
 
+    // GET api/emergency-reviews/active: the emergency banner for the record the active
+    // account owns (204 when there is no open emergency access). The literal segment
+    // never clashes with {requestId:int} below.
+    [HttpGet("active")]
+    [EnableRateLimiting(RateLimitingExtensions.General)]
+    public async Task<IActionResult> GetActive(CancellationToken cancellationToken)
+    {
+        var banner = await _reviews.GetActiveBannerAsync(
+            ActiveUserId(), cancellationToken);
+
+        return banner is null ? NoContent() : Ok(banner);
+    }
+
     // GET api/emergency-reviews/{requestId}: the full page state (computed, nothing stored).
     [HttpGet("{requestId:int}")]
     [EnableRateLimiting(RateLimitingExtensions.General)]

@@ -55,6 +55,50 @@ public class EmergencyReviewService : IEmergencyReviewService
         return BuildResponse(row, Now());
     }
 
+    public async Task<EmergencyActiveBanner?> GetActiveBannerAsync(
+        int activeUserId, CancellationToken cancellationToken)
+    {
+        var now = Now();
+
+        // The newest emergency access that is still open on the active account's record:
+        // not closed by hand, and either permanent or not expired yet.
+        var row = await (
+            from review in _db.EmergencyReviews
+            where review.Access.Request.RecipientPatientId == activeUserId
+                  && review.Access.Request.AccessType == AccessType.Emergency
+                  && review.Access.ClosedAt == null
+                  && (review.Access.ExpiresAt == null || review.Access.ExpiresAt > now)
+            orderby review.Access.StartAt descending
+            select new EmergencyReviewRow
+            {
+                Review = review,
+                StartAt = review.Access.StartAt,
+                DoctorName = review.Access.Request.Doctor.User.FullName,
+                DoctorSpecialization = review.Access.Request.Doctor.Specialization,
+                WorkplaceName = review.Access.Request.Workplace.Name,
+                WorkplaceId = review.Access.Request.WorkplaceId,
+            })
+            .AsNoTracking()
+            .FirstOrDefaultAsync(cancellationToken);
+
+        if (row is null)
+        {
+            return null;
+        }
+
+        return new EmergencyActiveBanner
+        {
+            RequestId = row.Review.Access.RequestId,
+            DoctorName = row.DoctorName,
+            DoctorSpecialization = row.DoctorSpecialization,
+            WorkplaceName = row.WorkplaceName,
+            StartAt = row.StartAt,
+            ExpiresAt = row.Review.Access.ExpiresAt,
+            ConfirmationStatus = ConfirmationStatusRules.Compute(row.Review, row.StartAt, now, _timing),
+            ServerTime = now,
+        };
+    }
+
     public async Task<(EmergencyReviewResult Result, EmergencyReviewResponse? Response)> ConfirmAsync(
         int requestId, int activeUserId, int loggedInUserId, CancellationToken cancellationToken)
     {
