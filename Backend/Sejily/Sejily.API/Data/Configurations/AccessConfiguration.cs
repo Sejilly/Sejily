@@ -37,6 +37,9 @@ public class AccessConfiguration
         builder.Property(x => x.StartAt)
             .IsRequired();
 
+        builder.Property(x => x.FirstExaminationDate)
+            .HasColumnType("date");
+
         builder.Property(x => x.RowVersion)
             .IsRowVersion();
 
