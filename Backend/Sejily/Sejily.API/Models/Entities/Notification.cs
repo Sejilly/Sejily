@@ -17,6 +17,9 @@ public class Notification
     // Opens the request page when tapped. Null for types not tied to a request.
     public int? RequestId { get; set; }
 
+    // Makes outbox delivery idempotent, including repeatable notification types such as extensions.
+    public Guid? SourceOutboxId { get; set; }
+
     public DateTime CreatedAt { get; set; }
 
     public bool IsRead { get; set; }

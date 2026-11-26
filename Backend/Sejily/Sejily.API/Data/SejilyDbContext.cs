@@ -42,6 +42,8 @@ public class SejilyDbContext : IdentityDbContext<User, IdentityRole<int>, int>
 
     public DbSet<Notification> Notifications { get; set; }
 
+    public DbSet<AccessNotificationOutbox> AccessNotificationOutbox { get; set; }
+
     public DbSet<DeviceToken> DeviceTokens { get; set; }
 
     public DbSet<AuditLog> AuditLogs { get; set; }

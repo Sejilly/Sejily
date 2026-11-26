@@ -35,6 +35,8 @@ public class AccessRequestConfiguration: IEntityTypeConfiguration<AccessRequest>
         builder.Property(x => x.SentAt)
             .IsRequired();
 
+        builder.Property(x => x.RejectionRequestedAt);
+
         builder.Property(x => x.RowVersion)
             .IsRowVersion();
 

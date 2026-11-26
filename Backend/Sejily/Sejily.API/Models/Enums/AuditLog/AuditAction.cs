@@ -18,5 +18,7 @@ public enum AuditAction
     AccessClosed = 13,
     AccessExtended = 14,
     AccessExpired = 15,
-    RecordViewed = 16
+    RecordViewed = 16,
+    RejectionFinalized = 17,
+    AccessEndDateChanged = 18
 }

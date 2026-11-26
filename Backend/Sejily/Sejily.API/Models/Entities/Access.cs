@@ -18,6 +18,10 @@ public class Access
     // Null only for Permanent access
     public DateTime? ExpiresAt { get; set; }
 
+    public DateOnly? FirstExaminationDate { get; set; }
+
+    public int? TreatmentLengthDays { get; set; }
+
     // Manual closing information
     public DateTime? ClosedAt { get; set; }
 

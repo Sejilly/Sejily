@@ -1,11 +1,10 @@
 ﻿
-using Sejily.API.Migrations;
 using Sejily.API.Models.Enums;
 using Sejily.API.Models.Enums.AccessRequest;
 
 namespace Sejily.API.Models.Entities;
 
-public class AccessRequest
+public partial class AccessRequest
 {
     public int RequestId { get; set; }
 
@@ -30,6 +29,10 @@ public class AccessRequest
     public DateTime SentAt { get; set; }
 
     public DateTime? DecidedAt { get; set; }
+
+    public DateTime? RejectionRequestedAt { get; set; }
+
+    public DateTime? LastTransitionAt { get; set; }
 
     // Emergency request that replaced this request
     public int? SupersededByRequestId { get; set; }

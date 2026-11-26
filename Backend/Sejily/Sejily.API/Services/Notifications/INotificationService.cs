@@ -31,5 +31,6 @@ public interface INotificationService
         int recipientUserId,
         int? subjectPatientId = null,
         int? requestId = null,
+        Guid? sourceOutboxId = null,
         CancellationToken cancellationToken = default);
 }
