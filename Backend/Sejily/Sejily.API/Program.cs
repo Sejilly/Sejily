@@ -167,6 +167,9 @@ public class Program
         // Emergency access confirmation page
         builder.Services.AddScoped<Sejily.API.Services.Emergency.IEmergencyReviewService,
             Sejily.API.Services.Emergency.EmergencyReviewService>();
+        // Home banner: pending access requests of the logged-in user and their dependents
+        builder.Services.AddScoped<Sejily.API.Services.Home.IHomeBannerQueries,
+            Sejily.API.Services.Home.HomeBannerQueries>();
         // TEMPORARY: shows full patient names to doctors. Replace with the real name masker before release.
         builder.Services.AddScoped<Sejily.API.Services.Notifications.INameMasker,
             Sejily.API.Services.Notifications.PassThroughNameMasker>();
