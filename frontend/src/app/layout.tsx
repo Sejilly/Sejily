@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Vazirmatn } from "next/font/google";
 import "./globals.css";
 import { RegisterProvider } from "@/features/register/RegisterContext";
@@ -14,6 +14,12 @@ const font = Vazirmatn({
 export const metadata: Metadata = {
   title: "سجلّي",
   description: "إنشاء حساب جديد",
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

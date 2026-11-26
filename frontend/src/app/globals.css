@@ -18,6 +18,16 @@
   --color-focus-ring: #5F8FB3;
   --color-be-error: #dc2626;
   --color-be-error-link: #B91C1C;
+  --color-checkbox: #D9E5EF;
+
+
+    /* Dashboard / access management */
+  --color-brand-green: #146851;
+  --color-brand-green-hover: #0f5a41;
+  --color-sidebar-active: #B8CCDD;
+  --color-warning-bg: #FFFBEB;
+  --color-warning-border: #F59E0B;
+  --color-warning-ink: #92600a;
 
 
   --font-sans: var(--font-arabic), system-ui, sans-serif;
@@ -59,4 +69,26 @@ input:-webkit-autofill:focus {
   box-shadow: 0 0 0 1000px #f8f9fb inset !important;
   -webkit-text-fill-color: #0f1b2d !important;
   caret-color: #0f1b2d;
+}
+
+
+/* Dashboard animations */
+@keyframes sj-fade-in { from { opacity: 0 } to { opacity: 1 } }
+@keyframes sj-pop-in { from { opacity: 0; transform: translateY(8px) scale(.98) } to { opacity: 1; transform: none } }
+@keyframes sj-slide-in-left { from { transform: translateX(-100%) } to { transform: none } }
+@keyframes sj-sheet-up { from { transform: translateY(100%) } to { transform: none } }
+.sj-fade-in { animation: sj-fade-in .18s ease-out both }
+.sj-pop-in { animation: sj-pop-in .2s ease-out both }
+.sj-slide-in-left { animation: sj-slide-in-left .24s ease-out both }
+.sj-sheet-up { animation: sj-sheet-up .22s ease-out both }
+@keyframes sj-drawer-in { from { transform: translateX(100%) } to { transform: none } }
+.sj-drawer-in { animation: sj-drawer-in .24s ease-out both }
+
+/* Modal: bottom sheet on phones, centered pop on >= sm */
+.sj-modal-in { animation: sj-sheet-up .24s ease-out both }
+@media (min-width: 640px) { .sj-modal-in { animation-name: sj-pop-in; animation-duration: .2s } }
+.sj-no-scrollbar { scrollbar-width: none }
+.sj-no-scrollbar::-webkit-scrollbar { display: none }
+@media (prefers-reduced-motion: reduce) {
+  .sj-fade-in, .sj-pop-in, .sj-slide-in-left, .sj-sheet-up, .sj-drawer-in, .sj-modal-in { animation: none }
 }

@@ -5,4 +5,5 @@ export const ROUTES = {
     otp: "/otp",
     resetPassword: "/reset-password",
     dashboard: "/dashboard",
+    access: "/dashboard/access",
 } as const;
