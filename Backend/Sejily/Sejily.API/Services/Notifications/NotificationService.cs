@@ -41,8 +41,18 @@ public class NotificationService : INotificationService
         int recipientUserId,
         int? subjectPatientId = null,
         int? requestId = null,
+        Guid? sourceOutboxId = null,
         CancellationToken cancellationToken = default)
     {
+        // An outbox message is delivered once even for notification types that may otherwise repeat.
+        if (sourceOutboxId is not null)
+        {
+            var alreadyDelivered = _db.Notifications.Local.Any(n => n.SourceOutboxId == sourceOutboxId)
+                || await _db.Notifications.AnyAsync(n => n.SourceOutboxId == sourceOutboxId, cancellationToken);
+            if (alreadyDelivered)
+                return;
+        }
+
         // Duplicate check (only when there is a request id). It looks at rows added in this request but
         // not saved yet, and at rows already in the database.
         // Example: the expiry job runs twice; the second run finds the notification and does nothing.
@@ -70,6 +80,7 @@ public class NotificationService : INotificationService
             RecipientUserId = recipientUserId,
             SubjectPatientId = subjectPatientId,
             RequestId = requestId,
+            SourceOutboxId = sourceOutboxId,
             CreatedAt = _timeProvider.GetUtcNow().UtcDateTime,
             IsRead = false
         };

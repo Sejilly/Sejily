@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Sejily.API.Application.Features.DependencyInjection;
+using Sejily.API.Application.AccessRequests;
 using Sejily.API.Application.Repositories.DependencyInjection;
 using Sejily.API.Data;
 using Sejily.API.Extensions;
@@ -236,6 +237,8 @@ public class Program
 
         builder.Services.AddHostedService<
    PatientRegistrationCleanupService>();
+        builder.Services.AddHostedService<AccessRequestMaintenanceWorker>();
+        builder.Services.AddHostedService<AccessNotificationOutboxDispatcher>();
         // Emergency escalation: closes unanswered emergency reviews when their windows end
         builder.Services.AddHostedService<
    Sejily.API.Services.Emergency.EmergencyEscalationJob>();

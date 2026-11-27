@@ -175,6 +175,9 @@ namespace Sejily.API.Migrations
                     b.Property<DateTime?>("ExpiryProcessedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<DateOnly?>("FirstExaminationDate")
+                        .HasColumnType("date");
+
                     b.Property<int>("RequestId")
                         .HasColumnType("int");
 
@@ -186,6 +189,9 @@ namespace Sejily.API.Migrations
 
                     b.Property<DateTime>("StartAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<int?>("TreatmentLengthDays")
+                        .HasColumnType("int");
 
                     b.Property<string>("ValidityType")
                         .IsRequired()
@@ -203,8 +209,53 @@ namespace Sejily.API.Migrations
                         {
                             t.HasCheckConstraint("CK_Accesses_Expiry_After_Start", "ExpiresAt IS NULL OR ExpiresAt > StartAt");
 
-                            t.HasCheckConstraint("CK_Accesses_Permanent_Expiry", "(ValidityType = 'Permanent' AND ExpiresAt IS NULL)\r\nOR\r\n(ValidityType <> 'Permanent' AND ExpiresAt IS NOT NULL)");
+                            t.HasCheckConstraint("CK_Accesses_Permanent_Expiry", "(ValidityType = 'Permanent' AND ExpiresAt IS NULL)\nOR\n(ValidityType <> 'Permanent' AND ExpiresAt IS NOT NULL)");
                         });
+                });
+
+            modelBuilder.Entity("Sejily.API.Models.Entities.AccessNotificationOutbox", b =>
+                {
+                    b.Property<Guid>("OutboxId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("OccurredAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("ProcessedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("RecipientUserId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RequestId")
+                        .HasColumnType("int");
+
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .IsRequired()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
+
+                    b.Property<int?>("SubjectPatientId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
+                    b.HasKey("OutboxId");
+
+                    b.HasIndex("RecipientUserId");
+
+                    b.HasIndex("RequestId");
+
+                    b.HasIndex("SubjectPatientId");
+
+                    b.HasIndex("ProcessedAt", "OccurredAt");
+
+                    b.ToTable("AccessNotificationOutbox", (string)null);
                 });
 
             modelBuilder.Entity("Sejily.API.Models.Entities.AccessRequest", b =>
@@ -233,8 +284,14 @@ namespace Sejily.API.Migrations
                     b.Property<DateTime?>("ExpiryProcessedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<DateTime?>("LastTransitionAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<int>("RecipientPatientId")
                         .HasColumnType("int");
+
+                    b.Property<DateTime?>("RejectionRequestedAt")
+                        .HasColumnType("datetime2");
 
                     b.Property<int?>("RespondedByUserId")
                         .HasColumnType("int");
@@ -270,7 +327,7 @@ namespace Sejily.API.Migrations
 
                     b.ToTable("AccessRequests", null, t =>
                         {
-                            t.HasCheckConstraint("CK_AccessRequests_Decision_DecidedAt", "(Decision IS NULL AND DecidedAt IS NULL)\r\nOR\r\n(Decision IS NOT NULL AND DecidedAt IS NOT NULL)");
+                            t.HasCheckConstraint("CK_AccessRequests_Decision_DecidedAt", "(Decision IS NULL AND DecidedAt IS NULL)\nOR\n(Decision IS NOT NULL AND DecidedAt IS NOT NULL)");
                         });
                 });
 
@@ -552,7 +609,7 @@ namespace Sejily.API.Migrations
 
                     b.ToTable("EmergencyReviews", null, t =>
                         {
-                            t.HasCheckConstraint("CK_EmergencyReviews_Response_RespondedAt", "(PatientResponse IS NULL AND RespondedAt IS NULL)\r\nOR\r\n(PatientResponse IS NOT NULL AND RespondedAt IS NOT NULL)");
+                            t.HasCheckConstraint("CK_EmergencyReviews_Response_RespondedAt", "(PatientResponse IS NULL AND RespondedAt IS NULL)\nOR\n(PatientResponse IS NOT NULL AND RespondedAt IS NOT NULL)");
                         });
                 });
 
@@ -595,6 +652,9 @@ namespace Sejily.API.Migrations
                         .HasColumnType("int");
 
                     b.Property<int>("PatientId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("TreatmentLengthDays")
                         .HasColumnType("int");
 
                     b.Property<int>("WorkplacesId")
@@ -710,6 +770,9 @@ namespace Sejily.API.Migrations
                     b.Property<int?>("RequestId")
                         .HasColumnType("int");
 
+                    b.Property<Guid?>("SourceOutboxId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<int?>("SubjectPatientId")
                         .HasColumnType("int");
 
@@ -721,6 +784,10 @@ namespace Sejily.API.Migrations
                     b.HasKey("NotificationId");
 
                     b.HasIndex("RequestId");
+
+                    b.HasIndex("SourceOutboxId")
+                        .IsUnique()
+                        .HasFilter("[SourceOutboxId] IS NOT NULL");
 
                     b.HasIndex("SubjectPatientId");
 
@@ -1128,6 +1195,32 @@ namespace Sejily.API.Migrations
                     b.Navigation("Request");
                 });
 
+            modelBuilder.Entity("Sejily.API.Models.Entities.AccessNotificationOutbox", b =>
+                {
+                    b.HasOne("Sejily.API.Models.Entities.User", "RecipientUser")
+                        .WithMany()
+                        .HasForeignKey("RecipientUserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Sejily.API.Models.Entities.AccessRequest", "Request")
+                        .WithMany()
+                        .HasForeignKey("RequestId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Sejily.API.Models.Entities.Patient", "SubjectPatient")
+                        .WithMany()
+                        .HasForeignKey("SubjectPatientId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("RecipientUser");
+
+                    b.Navigation("Request");
+
+                    b.Navigation("SubjectPatient");
+                });
+
             modelBuilder.Entity("Sejily.API.Models.Entities.AccessRequest", b =>
                 {
                     b.HasOne("Sejily.API.Models.Entities.Doctor", "Doctor")
@@ -1492,6 +1585,37 @@ namespace Sejily.API.Migrations
                     b.Navigation("MedicalEncounter");
 
                     b.Navigation("Patient");
+                });
+
+            modelBuilder.Entity("Sejily.API.Models.Entities.PatientFamilyDisease", b =>
+                {
+                    b.HasOne("Sejily.API.Models.Entities.Disease", "Disease")
+                        .WithMany()
+                        .HasForeignKey("DiseaseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Sejily.API.Models.Entities.Patient", "Patient")
+                        .WithMany("FamilyDiseases")
+                        .HasForeignKey("PatientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Disease");
+
+                    b.Navigation("Patient");
+                });
+
+            modelBuilder.Entity("Sejily.API.Models.Entities.Access", b =>
+                {
+                    b.Navigation("EmergencyReview");
+                });
+
+            modelBuilder.Entity("Sejily.API.Models.Entities.AccessRequest", b =>
+                {
+                    b.Navigation("Access");
+
+                    b.Navigation("SupersededRequests");
                 });
 
             modelBuilder.Entity("Sejily.API.Models.Entities.PatientFamilyDisease", b =>

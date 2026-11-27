@@ -10,6 +10,9 @@ public class MedicalEncounter
     public int WorkplacesId { get; set; }
     public int PatientId { get; set; }
 
+    // Used by F6 Treatment Duration when this examination was recorded through an active request.
+    public int? TreatmentLengthDays { get; set; }
+
     public Doctor Doctor { get; set; } = null!;
     public Workplace Workplace { get; set; } = null!;
     public Patient Patient { get; set; } = null!;

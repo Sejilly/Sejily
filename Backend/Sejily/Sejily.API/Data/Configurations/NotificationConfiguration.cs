@@ -40,5 +40,9 @@ public class NotificationConfiguration : IEntityTypeConfiguration<Notification>
         // Cursor pagination (newest first) for the list endpoint
         builder.HasIndex(x => new { x.RecipientUserId, x.CreatedAt, x.NotificationId })
             .HasFilter("[DeletedAt] IS NULL");
+
+        builder.HasIndex(x => x.SourceOutboxId)
+            .IsUnique()
+            .HasFilter("[SourceOutboxId] IS NOT NULL");
     }
 }
