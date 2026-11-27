@@ -479,7 +479,13 @@ public class PatientAccessController : ControllerBase
         }
     }
 
-
+   
+    /// ////////////////////////////////////////////////////////////////////////////////////////
+  
+    /// <param name="request"></param>
+    /// <param name="now"></param>
+    /// <param name="patientUserId"></param>
+    /// <returns></returns>
     // =========================================================
     // DETERMINE REQUEST STATUS AND REASON
     // =========================================================

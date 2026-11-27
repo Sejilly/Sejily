@@ -15,11 +15,11 @@ namespace Sejily.API.Controllers;
 [ApiController]
 [Route("api/access-requests")]
 [Authorize(Policy = "DoctorOnly")]
-public class AccessRequestsController : ControllerBase
+public class AccessRequestsDev1Controller : ControllerBase
 {
     private readonly SejilyDbContext _context;
 
-    public AccessRequestsController(SejilyDbContext context)
+    public AccessRequestsDev1Controller(SejilyDbContext context)
     {
         _context = context;
     }
