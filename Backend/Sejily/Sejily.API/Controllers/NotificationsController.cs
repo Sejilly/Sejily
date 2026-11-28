@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.Extensions.Options;
 using Sejily.API.DTOs.Notifications;
 using Sejily.API.Extensions;
@@ -33,6 +34,7 @@ public class NotificationsController : ControllerBase
     // GET api/notifications?limit=20&cursor=...&unreadOnly=false
     // Newest first. limit must be between 1 and MaxLimit (400 otherwise). cursor is the bookmark from the previous page.
     [HttpGet]
+    [EnableRateLimiting(RateLimitingExtensions.General)]
     public async Task<IActionResult> List(
         [FromQuery] int? limit,
         [FromQuery] string? cursor,
@@ -72,6 +74,7 @@ public class NotificationsController : ControllerBase
 
     // GET api/notifications/unread-count: the app asks for this number every 30-60 seconds to show the badge.
     [HttpGet("unread-count")]
+    [EnableRateLimiting(RateLimitingExtensions.General)]
     public async Task<IActionResult> UnreadCount(CancellationToken cancellationToken)
     {
         if (!TryGetLoggedInUserId(out var userId))
@@ -87,6 +90,7 @@ public class NotificationsController : ControllerBase
 
     // POST api/notifications/{id}/read: marks one notification as read. Safe to call twice. 404 if it isn't yours.
     [HttpPost("{id}/read")]
+    [EnableRateLimiting(RateLimitingExtensions.Write)]
     public async Task<IActionResult> MarkRead(int id, CancellationToken cancellationToken)
     {
         if (!TryGetLoggedInUserId(out var userId))
@@ -102,6 +106,7 @@ public class NotificationsController : ControllerBase
 
     // POST api/notifications/read-all: marks all your unread notifications as read. Safe to call twice.
     [HttpPost("read-all")]
+    [EnableRateLimiting(RateLimitingExtensions.Write)]
     public async Task<IActionResult> MarkAllRead(CancellationToken cancellationToken)
     {
         if (!TryGetLoggedInUserId(out var userId))
@@ -115,6 +120,7 @@ public class NotificationsController : ControllerBase
 
     // DELETE api/notifications/{id}: soft delete (hides it; the access request is not affected). 404 if not found.
     [HttpDelete("{id}")]
+    [EnableRateLimiting(RateLimitingExtensions.Write)]
     public async Task<IActionResult> Delete(int id, CancellationToken cancellationToken)
     {
         if (!TryGetLoggedInUserId(out var userId))

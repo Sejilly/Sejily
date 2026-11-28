@@ -7,6 +7,7 @@ using Sejily.API.Application.Features.DependencyInjection;
 using Sejily.API.Application.AccessRequests;
 using Sejily.API.Application.Repositories.DependencyInjection;
 using Sejily.API.Data;
+using Sejily.API.Extensions;
 using Sejily.API.Infrastructure.Diseases.JsonProviders.DependencyInjection;
 using Sejily.API.Models.Entities;
 using Sejily.API.Services;
@@ -28,12 +29,14 @@ public class Program
         builder.Services.AddScoped<Sejily.API.Services.Notifications.PendingPushCollector>();
         builder.Services.AddScoped<Sejily.API.Services.Notifications.PushOnCommitInterceptor>();
         builder.Services.AddScoped<Sejily.API.Services.Notifications.PushOnSaveInterceptor>();
+        builder.Services.AddScoped<Sejily.API.Services.Audit.AuditAppendOnlyInterceptor>();
         builder.Services.AddDbContext<SejilyDbContext>((sp, options) =>
             options.UseSqlServer(
                 builder.Configuration.GetConnectionString("DefaultConnection"))
                 .AddInterceptors(
                     sp.GetRequiredService<Sejily.API.Services.Notifications.PushOnCommitInterceptor>(),
-                    sp.GetRequiredService<Sejily.API.Services.Notifications.PushOnSaveInterceptor>()));
+                    sp.GetRequiredService<Sejily.API.Services.Notifications.PushOnSaveInterceptor>(),
+                    sp.GetRequiredService<Sejily.API.Services.Audit.AuditAppendOnlyInterceptor>()));
 
         // 3. Register ASP.NET Core Identity
         builder.Services
@@ -152,6 +155,22 @@ public class Program
         builder.Services.AddSingleton(TimeProvider.System);
         builder.Services.Configure<Sejily.API.Settings.NotificationSettings>(
             builder.Configuration.GetSection(Sejily.API.Settings.NotificationSettings.SectionName));
+        builder.Services.Configure<Sejily.API.Settings.AccessTimingSettings>(
+            builder.Configuration.GetSection(Sejily.API.Settings.AccessTimingSettings.SectionName));
+        builder.Services.Configure<Sejily.API.Settings.EscalationSettings>(
+            builder.Configuration.GetSection(Sejily.API.Settings.EscalationSettings.SectionName));
+        builder.Services.Configure<Sejily.API.Settings.RateLimitSettings>(
+            builder.Configuration.GetSection(Sejily.API.Settings.RateLimitSettings.SectionName));
+        // Audit rows are added by services in the caller's transaction; the interceptor above
+        // keeps them append-only
+        builder.Services.AddScoped<Sejily.API.Services.Audit.IAuditService,
+            Sejily.API.Services.Audit.AuditService>();
+        // Emergency access confirmation page
+        builder.Services.AddScoped<Sejily.API.Services.Emergency.IEmergencyReviewService,
+            Sejily.API.Services.Emergency.EmergencyReviewService>();
+        // Home banner: pending access requests of the logged-in user and their dependents
+        builder.Services.AddScoped<Sejily.API.Services.Home.IHomeBannerQueries,
+            Sejily.API.Services.Home.HomeBannerQueries>();
         // TEMPORARY: shows full patient names to doctors. Replace with the real name masker before release.
         builder.Services.AddScoped<Sejily.API.Services.Notifications.INameMasker,
             Sejily.API.Services.Notifications.PassThroughNameMasker>();
@@ -213,10 +232,16 @@ public class Program
             .AddRepositories()
             .AddApplicationFeatures();
 
+        // Rate limiting: three policies (general / write / emergency-respond), counted per logged-in user
+        builder.Services.AddSejilyRateLimiting();
+
         builder.Services.AddHostedService<
    PatientRegistrationCleanupService>();
         builder.Services.AddHostedService<AccessRequestMaintenanceWorker>();
         builder.Services.AddHostedService<AccessNotificationOutboxDispatcher>();
+        // Emergency escalation: closes unanswered emergency reviews when their windows end
+        builder.Services.AddHostedService<
+   Sejily.API.Services.Emergency.EmergencyEscalationJob>();
         var app = builder.Build();
 
         using (var scope = app.Services.CreateScope())
@@ -242,6 +267,9 @@ public class Program
         app.UseAuthentication();
 
         app.UseAuthorization();
+
+        // After authorization, so the limiter can see who the logged-in user is
+        app.UseRateLimiter();
 
         app.MapControllers();
 
