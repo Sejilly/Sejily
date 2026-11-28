@@ -9,6 +9,7 @@ namespace Sejily.API.Infrastructure.Diseases.JsonProviders;
 internal class DiseaseProvider : IDiseaseProvider
 {
     private readonly Dictionary<DiseaseIcdCode, Disease> _diseases;
+    private static readonly JsonSerializerOptions SerializerOptions = new(JsonSerializerDefaults.Web);
 
     public DiseaseProvider()
     {
@@ -23,7 +24,7 @@ internal class DiseaseProvider : IDiseaseProvider
                 "Disease data resource not found."
             );
 
-        var diseases = JsonSerializer.Deserialize<List<Disease>>(stream)
+        var diseases = JsonSerializer.Deserialize<List<Disease>>(stream, SerializerOptions)
             ?? throw new InvalidOperationException(
                 "Disease data could not be deserialized."
             );
